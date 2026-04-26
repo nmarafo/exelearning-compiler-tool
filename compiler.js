@@ -163,6 +163,24 @@ export async function compileExeProject(pagesConfig) {
                 snippet = snippet.replace(/<div class="exe-rubrics-DataGame js-hidden"><\/div>/g, `<div class="exe-rubrics-view">${rubHtml}</div><div class="exe-rubrics-DataGame js-hidden"></div>`);
             }
 
+            if (idev.type === 'guess') {
+                props.title = props.title || "Adivina";
+                props.instructions = props.instructions || "";
+                props.msgs = {
+                    msgCorrect: props.feedback || "¡Correcto!",
+                    msgIncorrect: "¡Sigue intentándolo!",
+                    msgLookAnswer: "Mira la respuesta",
+                    msgSubmit: "Comprobar"
+                };
+                props.words = [{
+                    word: props.term || "",
+                    hint: props.hint || "",
+                    feedback: props.feedback || ""
+                }];
+                // Asegurar que las instrucciones se vean en la vista previa
+                snippet = snippet.replace(/<p>Adivina las palabras.<\/p>/g, props.instructions);
+            }
+
             if (idev.type === 'image-gallery' && props.images) {
                 let galleryHtml = '<div class="exe-image-gallery" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:1rem;">';
                 props.images.forEach(img => {
