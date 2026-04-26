@@ -18,15 +18,15 @@ ESTRUCTURA REQUERIDA:
 ${SHARED_RULES}`,
 
     2: `Eres un Arquitecto eXeLearning. FASE 2: SECUENCIA COMPETENCIAL.
-Genera el JSON para los bloques centrales de la SA. Analiza la secuencia y crea páginas para cada sesión o bloque de contenido.
+Genera el JSON para una única Sesión/Actividad/Bloque de la secuencia competencial. Analiza la SA adjunta y crea el contenido para esta parte específica.
 
 IDEVICES RECOMENDADOS (Variedad):
-- 'udl-content' + 'interactive-video' para Motivación.
-- 'casestudy' + 'guess' para Exploración.
-- 'text' + 'external-website' para Estructuración.
-- 'form' + 'checklist' para Aplicación.
+- 'udl-content' + 'interactive-video'.
+- 'casestudy' + 'guess' o 'select-media-files'.
+- 'text' + 'external-website'.
+- 'form' + 'checklist'.
 
-Genera de 2 a 4 páginas detalladas según la SA adjunta.
+IMPORTANTE: Genera solo el contenido de UNA sesión/bloque. Repetiremos este proceso para el resto.
 ${SHARED_RULES}`,
 
     3: `Eres un Arquitecto eXeLearning. FASE 3: CIERRE Y METADATOS.
@@ -48,12 +48,37 @@ document.addEventListener('DOMContentLoaded', () => {
     const errorDisplay = document.getElementById('error-display');
     const phaseBtns = document.querySelectorAll('.phase-btn');
     
-    // Textareas por fases
+    // Inputs fijos
     const phase1Input = document.getElementById('json-phase-1');
-    const phase2Input = document.getElementById('json-phase-2');
     const phase3Input = document.getElementById('json-phase-3');
 
+    // Configuración dinámica Fase 2
+    const sessionCountInput = document.getElementById('session-count');
+    const sessionsContainer = document.getElementById('sessions-container');
+
     let currentPhase = "1";
+
+    // Gestionar número de sesiones
+    sessionCountInput.addEventListener('input', () => {
+        const count = parseInt(sessionCountInput.value) || 1;
+        const currentInputs = sessionsContainer.querySelectorAll('textarea');
+        
+        if (count > currentInputs.length) {
+            // Añadir textareas
+            for (let i = currentInputs.length + 1; i <= count; i++) {
+                const textarea = document.createElement('textarea');
+                textarea.id = `json-phase-2-${i}`;
+                textarea.className = 'phase-textarea';
+                textarea.placeholder = `JSON Sesión/Actividad/Bloque ${i}...`;
+                sessionsContainer.appendChild(textarea);
+            }
+        } else if (count < currentInputs.length) {
+            // Eliminar textareas
+            for (let i = currentInputs.length; i > count; i--) {
+                sessionsContainer.removeChild(currentInputs[i-1]);
+            }
+        }
+    });
 
     // Selección de Fase
     phaseBtns.forEach(btn => {
@@ -87,11 +112,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (Array.isArray(p1)) projectPages = projectPages.concat(p1);
             }
 
-            // Procesar Fase 2
-            if (phase2Input.value.trim()) {
-                const p2 = JSON.parse(phase2Input.value);
-                if (Array.isArray(p2)) projectPages = projectPages.concat(p2);
-            }
+            // Procesar Fase 2 (Dinámica)
+            const sessionInputs = sessionsContainer.querySelectorAll('textarea');
+            sessionInputs.forEach(input => {
+                if (input.value.trim()) {
+                    const p = JSON.parse(input.value);
+                    if (Array.isArray(p)) projectPages = projectPages.concat(p);
+                    else projectPages.push(p); // Si la IA devuelve un objeto de página simple
+                }
+            });
 
             // Procesar Fase 3
             if (phase3Input.value.trim()) {
@@ -110,7 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const url = window.URL.createObjectURL(zipBlob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `situacion_aprendizaje_completa_${Date.now()}.elpx`;
+            a.download = `sa_completa_phased_${Date.now()}.elpx`;
             document.body.appendChild(a);
             a.click();
             window.URL.revokeObjectURL(url);

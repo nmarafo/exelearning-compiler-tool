@@ -63,9 +63,15 @@
                     <textarea id="json-phase-1" class="phase-textarea" placeholder='[ { "page_name": "Portada", ... } ]'></textarea>
                 </div>
                 
-                <div class="input-group">
-                    <label>Fase 2: Secuencia Competencial (Sesiones)</label>
-                    <textarea id="json-phase-2" class="phase-textarea" placeholder='[ { "page_name": "Sesión 1", ... } ]'></textarea>
+                <div class="input-group phase-2-config">
+                    <label>Fase 2: Secuencia Competencial</label>
+                    <div class="session-counter">
+                        <span>Número de Sesiones/Actividades/Bloques:</span>
+                        <input type="number" id="session-count" value="1" min="1" max="10">
+                    </div>
+                    <div id="sessions-container" class="phased-inputs-dynamic">
+                        <textarea id="json-phase-2-1" class="phase-textarea" placeholder='JSON Sesión/Actividad/Bloque 1...'></textarea>
+                    </div>
                 </div>
 
                 <div class="input-group">
