@@ -237,8 +237,14 @@ export async function compileExeProject(pagesConfig) {
             const jsonPropsRegex = /(<jsonProperties><!\[CDATA\[)(.*?)(\]\]><\/jsonProperties>)/;
             if (jsonPropsRegex.test(snippet)) {
                 snippet = snippet.replace(jsonPropsRegex, (match, p1, p2, p3) => {
-                    // Mantenemos el ID original si existe en el snippet pero no en props
-                    const originalJson = JSON.parse(p2 || "{}");
+                    let originalJson = {};
+                    try {
+                        if (p2 && p2.trim() !== "") {
+                            originalJson = JSON.parse(p2);
+                        }
+                    } catch (e) {
+                        console.warn("Error parseando jsonProperties original, se usará objeto vacío:", e);
+                    }
                     const mergedProps = { ...originalJson, ...props };
                     return p1 + JSON.stringify(mergedProps) + p3;
                 });
