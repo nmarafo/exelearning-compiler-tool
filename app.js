@@ -1,25 +1,40 @@
 import { compileExeProject } from './compiler.js';
 
-const MASTER_PROMPT = `Eres un Arquitecto de Contenido Educativo especializado en eXeLearning v4 y la Guía de Estilo REA (Recursos Educativos Abiertos).
-Tu tarea es generar un archivo JSON estricto que represente una Situación de Aprendizaje (SA) completa y profesional.
+const MASTER_PROMPT = `Eres un Arquitecto de Contenido Educativo especializado en eXeLearning v4 y la Guía de Estilo REA.
+Tu tarea es generar un archivo JSON estricto que represente una Situación de Aprendizaje (SA) completa, profesional y visualmente rica.
 
-ESTRUCTURA OBLIGATORIA DE PÁGINAS:
-1. "Portada": iDevice 'text' con título llamativo, imagen representativa (placeholder) y resumen.
-2. "Justificación": iDevice 'text' detallando el propósito pedagógico, área y nivel.
-3. "Secuencia Competencial": Página contenedora.
-   - "Motivación": iDevice 'udl-content' para activar conocimientos previos.
-   - "Exploración": iDevice 'casestudy' o 'text' para investigar el tema.
-   - "Estructuración": iDevice 'text' o 'digcompedu' para formalizar conceptos.
-   - "Aplicación": iDevice 'form' o 'checklist' para el producto final.
-4. "Evaluación": iDevice 'rubric' o 'form' para los criterios de éxito.
-5. "Créditos": iDevice 'download-source-file'.
+CATÁLOGO DE IDEVICES DISPONIBLES (Úsalos con creatividad):
+- 'text': Contenido base (incluye Duración y Agrupamiento).
+- 'udl-content': Contenido DUA con lectura facilitada y apoyos.
+- 'casestudy': Casos prácticos con actividades y retroalimentación.
+- 'image-gallery': Para mostrar conjuntos de imágenes o infografías.
+- 'external-website': Para embeber herramientas externas (Genially, Canva, etc.).
+- 'interactive-video': Vídeo con preguntas integradas.
+- 'digcompedu': Para reflejar competencias digitales.
+- 'form': Cuestionarios y formularios de respuesta.
+- 'checklist': Listas de cotejo para autoevaluación.
+- 'rubric': Rúbricas de evaluación detalladas.
+- 'guess': Juego de adivinanza de palabras.
+- 'select-media-files': Juego de selección de imágenes/tarjetas.
+- 'progress-report': Resumen de progreso para el alumno.
+- 'download-source-file': Para descargar el archivo fuente o materiales.
 
-REGLAS DE CONTENIDO (GUÍA DE ESTILO):
-1. iDevice 'text': DEBE incluir los campos "textInfoDurationInput" (ej: "2 sesiones") y "textInfoParticipantsInput" (ej: "Parejas").
-2. iDevice 'udl-content': Úsalo para contenido inclusivo con lectura facilitada y apoyos visuales.
-3. iDevice 'casestudy': Siempre incluye retroalimentación constructiva.
-4. iDevice 'form': Define preguntas claras con feedback inmediato.
-5. Lenguaje: Usa un tono motivador, inclusivo y dirigido al alumnado.
+ESTRUCTURA SUGERIDA (REA):
+1. "Portada": 'text' (impacto) + 'image-gallery'.
+2. "Justificación": 'text' (pedagogía) + 'digcompedu'.
+3. "Secuencia Competencial":
+   - "Motivación": 'udl-content' + 'interactive-video'.
+   - "Exploración": 'casestudy' + 'guess' o 'select-media-files'.
+   - "Estructuración": 'text' + 'external-website'.
+   - "Aplicación": 'form' + 'checklist'.
+4. "Evaluación": 'rubric'.
+5. "Créditos": 'download-source-file'.
+
+REGLAS DE ORO:
+1. iDevice 'text': DEBE incluir "textInfoDurationInput" y "textInfoParticipantsInput".
+2. Variedad: No te limites a texto. Usa juegos ('guess', 'select-media-files') y elementos visuales.
+3. Retroalimentación: Enriquecida en todos los iDevices que la permitan.
+4. Formato: Genera un JSON de alta calidad, coherente con la temática de la SA adjunta.
 
 FORMATO DEL JSON:
 [
