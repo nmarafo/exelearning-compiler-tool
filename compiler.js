@@ -75,72 +75,71 @@ export async function compileExeProject(pagesConfig) {
             }
 
             // Normalización de datos (Mapeo de claves IA -> eXeLearning)
-            if (idev.content) {
-                const c = idev.content;
+            // Aseguramos que trabajamos sobre un objeto de propiedades
+            const c = idev.content && typeof idev.content === 'object' ? idev.content : idev;
+            
+            // Texto y metadatos (Soporte para image y summary inyectados en el cuerpo)
+            if (idev.type === 'text') {
+                let fullHtml = "";
+                if (c.image) fullHtml += `<p style="text-align:center;"><img src="${c.image}" alt="Imagen decorativa" style="max-width:100%; height:auto;"></p>`;
+                if (c.summary) fullHtml += `<div class="exe-summary" style="background:#f0f9ff; padding:1rem; border-radius:0.5rem; margin-bottom:1rem; border:1px solid #bae6fd;"><strong>Resumen:</strong> ${c.summary}</div>`;
                 
-                // Texto y metadatos (Soporte para image y summary inyectados en el cuerpo)
-                if (idev.type === 'text') {
-                    let fullHtml = "";
-                    if (c.image) fullHtml += `<p style="text-align:center;"><img src="${c.image}" alt="Imagen decorativa" style="max-width:100%; height:auto;"></p>`;
-                    if (c.summary) fullHtml += `<div class="exe-summary" style="background:#f0f9ff; padding:1rem; border-radius:0.5rem; margin-bottom:1rem; border:1px solid #bae6fd;"><strong>Resumen:</strong> ${c.summary}</div>`;
-                    
-                    const mainContent = c.content || c.textTextarea || "";
-                    fullHtml += `<div class="exe-text-content">${mainContent}</div>`;
-                    
-                    c.textTextarea = `<div class="exe-text-activity">${fullHtml}</div>`;
-                }
+                const mainContent = c.content && typeof c.content === 'string' ? c.content : (c.textTextarea || "");
+                fullHtml += `<div class="exe-text-content">${mainContent}</div>`;
                 
-                if (c.duration) c.textInfoDurationInput = c.duration;
-                if (c.participants) c.textInfoParticipantsInput = c.participants;
+                c.textTextarea = `<div class="exe-text-activity">${fullHtml}</div>`;
+            }
+            
+            if (c.duration) c.textInfoDurationInput = c.duration;
+            if (c.participants) c.textInfoParticipantsInput = c.participants;
 
-                // Caso práctico
-                if (idev.type === 'casestudy') {
-                    if (c.story) c.history = c.story;
-                    if (c.activity || c.feedback) {
-                        c.activities = [{
-                            activity: c.activity || "Actividad",
-                            feedback: c.feedback || "Retroalimentación",
-                            buttonCaption: c.buttonCaption || "Mostrar retroalimentación"
-                        }];
-                    }
+            // Caso práctico
+            if (idev.type === 'casestudy') {
+                if (c.story) c.history = c.story;
+                if (c.activity || c.feedback) {
+                    c.activities = [{
+                        activity: c.activity || "Actividad",
+                        feedback: c.feedback || "Retroalimentación",
+                        buttonCaption: c.buttonCaption || "Mostrar retroalimentación"
+                    }];
                 }
+            }
 
-                // DigCompEdu (Mapeo de áreas a texto)
-                if (idev.type === 'digcompedu' && c.areas) {
-                    let digHtml = "<ul>";
-                    c.areas.forEach(a => {
-                        digHtml += `<li><strong>${a.area}:</strong> ${a.description}</li>`;
-                    });
-                    digHtml += "</ul>";
-                    if (c.justification) digHtml += `<p><em>${c.justification}</em></p>`;
-                    c.digHtml = `<div class="digcompeduIdeviceContent"><h3>Resumen DigCompEdu</h3>${digHtml}</div>`;
-                    c.content = c.digHtml; // Para compatibilidad con jsonProperties
-                }
+            // DigCompEdu
+            if (idev.type === 'digcompedu' && c.areas) {
+                let digHtml = "<ul>";
+                c.areas.forEach(a => {
+                    digHtml += `<li><strong>${a.area}:</strong> ${a.description}</li>`;
+                });
+                digHtml += "</ul>";
+                if (c.justification) digHtml += `<p><em>${c.justification}</em></p>`;
+                c.digHtml = `<div class="digcompeduIdeviceContent"><h3>Resumen DigCompEdu</h3>${digHtml}</div>`;
+                c.content = c.digHtml; 
+            }
 
-                // Formulario / Cuestionario
-                if (idev.type === 'form' && c.questions) {
-                    c.questionsData = c.questions.map(q => ({
-                        question: typeof q === 'string' ? q : (q.question || ""),
-                        type: "textarea",
-                        feedback: q.feedback || ""
-                    }));
-                }
+            // Formulario
+            if (idev.type === 'form' && c.questions) {
+                c.questionsData = c.questions.map(q => ({
+                    question: typeof q === 'string' ? q : (q.question || ""),
+                    type: "textarea",
+                    feedback: q.feedback || ""
+                }));
+            }
 
-                // UDL / DUA
-                if (idev.type === 'udl-content' && (c.content || c.textTextarea)) {
-                    const text = c.content || c.textTextarea;
-                    snippet = snippet.replace(/<p>Contenido principal<\/p>/g, text);
-                }
+            // UDL / DUA
+            if (idev.type === 'udl-content') {
+                const text = (typeof c.content === 'string' ? c.content : null) || c.textTextarea || "";
+                snippet = snippet.replace(/<p>Contenido principal<\/p>/g, text);
+            }
 
-                // Galería de imágenes
-                if (idev.type === 'image-gallery' && c.images) {
-                    let galleryHtml = '<div class="exe-image-gallery" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:1rem;">';
-                    c.images.forEach(img => {
-                        galleryHtml += `<figure style="margin:0;"><img src="${img.url}" alt="${img.caption}" style="width:100%; border-radius:8px;"><figcaption style="font-size:0.8rem; margin-top:0.5rem; text-align:center;">${img.caption}</figcaption></figure>`;
-                    });
-                    galleryHtml += '</div>';
-                    snippet = snippet.replace(/<div class="imageGallery-body"><\/div>/g, `<div class="imageGallery-body">${galleryHtml}</div>`);
-                }
+            // Galería de imágenes
+            if (idev.type === 'image-gallery' && c.images) {
+                let galleryHtml = '<div class="exe-image-gallery" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:1rem;">';
+                c.images.forEach(img => {
+                    galleryHtml += `<figure style="margin:0;"><img src="${img.url}" alt="${img.caption}" style="width:100%; border-radius:8px;"><figcaption style="font-size:0.8rem; margin-top:0.5rem; text-align:center;">${img.caption}</figcaption></figure>`;
+                });
+                galleryHtml += '</div>';
+                snippet = snippet.replace(/<div class="imageGallery-body"><\/div>/g, `<div class="imageGallery-body">${galleryHtml}</div>`);
             }
 
             // Inyectar JSONProperties (ESTADO DEL EDITOR)
