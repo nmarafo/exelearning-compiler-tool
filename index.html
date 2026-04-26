@@ -29,14 +29,21 @@
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
                 </div>
                 <div>
-                    <h3>1. Prepara tu IA</h3>
-                    <p>Copia este prompt y pégalo en ChatGPT, Gemini o Claude <strong>adjuntando la SA que quieres maquetar</strong> para obtener el JSON correcto.</p>
+                    <h3>1. Flujo por Fases (IA)</h3>
+                    <p>Selecciona una fase para obtener el prompt específico y evitar que la IA se quede corta.</p>
                 </div>
             </div>
+            
+            <div class="phase-selector">
+                <button class="phase-btn active" data-phase="1">Fase 1: Portada y Justificación</button>
+                <button class="phase-btn" data-phase="2">Fase 2: Secuencia (Sesiones)</button>
+                <button class="phase-btn" data-phase="3">Fase 3: Cierre y Créditos</button>
+            </div>
+
             <button id="btn-copy-prompt" class="action-button secondary">
-                Copiar Prompt Maestro
+                Copiar Prompt de la Fase
             </button>
-            <div id="copy-status" class="status-msg">¡Copiado al portapapeles!</div>
+            <div id="copy-status" class="status-msg">¡Prompt copiado!</div>
         </section>
 
         <section class="glass-panel input-panel">
@@ -45,16 +52,29 @@
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
                 </div>
                 <div>
-                    <h3>2. Pega el JSON</h3>
-                    <p>Introduce el código JSON generado por la IA a continuación.</p>
+                    <h3>2. Construye tu Proyecto</h3>
+                    <p>Pega el JSON de cada fase y añádelo al proyecto global.</p>
                 </div>
             </div>
-            <textarea id="json-input" placeholder='[ { "page_name": "Inicio", "idevices": [...] } ]'></textarea>
+
+            <div class="project-stats" id="project-stats">
+                Páginas actuales: <span id="page-count">0</span> | iDevices: <span id="idev-count">0</span>
+            </div>
+
+            <textarea id="json-input" placeholder='Pega aquí el JSON generado por la IA...'></textarea>
             
-            <button id="btn-compile" class="action-button primary">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-                Generar y Descargar .elpx
-            </button>
+            <div class="button-group">
+                <button id="btn-add-json" class="action-button secondary">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    Añadir al Proyecto
+                </button>
+                <button id="btn-compile" class="action-button primary" disabled>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+                    Finalizar y Descargar .elpx
+                </button>
+            </div>
+            
+            <button id="btn-reset" class="reset-link">Empezar proyecto de cero</button>
             <div id="error-display" class="error-msg"></div>
         </section>
 
