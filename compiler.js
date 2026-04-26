@@ -74,112 +74,113 @@ export async function compileExeProject(pagesConfig) {
                 blockName = 'Contenido DUA';
             }
 
-            // Normalización de datos (Mapeo de claves IA -> eXeLearning)
-            // Aseguramos que trabajamos sobre un objeto de propiedades
-            const c = idev.content && typeof idev.content === 'object' ? idev.content : idev;
-            
-            // Texto y metadatos (Soporte para image y summary inyectados en el cuerpo)
-            if (idev.type === 'text') {
-                let fullHtml = "";
-                if (c.image) fullHtml += `<p style="text-align:center;"><img src="${c.image}" alt="Imagen decorativa" style="max-width:100%; height:auto;"></p>`;
-                if (c.summary) fullHtml += `<div class="exe-summary" style="background:#f0f9ff; padding:1rem; border-radius:0.5rem; margin-bottom:1rem; border:1px solid #bae6fd;"><strong>Resumen:</strong> ${c.summary}</div>`;
-                
-                const mainContent = c.content && typeof c.content === 'string' ? c.content : (c.textTextarea || "");
-                fullHtml += `<div class="exe-text-content">${mainContent}</div>`;
-                
-                c.textTextarea = `<div class="exe-text-activity">${fullHtml}</div>`;
+            // 3. Normalización de datos (Mapeo de claves IA -> eXeLearning)
+            // Extraemos todas las propiedades a un objeto plano 'props'
+            let props = { ...idev };
+            if (idev.content && typeof idev.content === 'object') {
+                Object.assign(props, idev.content);
             }
             
-            if (c.duration) c.textInfoDurationInput = c.duration;
-            if (c.participants) c.textInfoParticipantsInput = c.participants;
+            // Caso especial: si 'content' es una cadena, la movemos a la propiedad de texto
+            if (typeof idev.content === 'string' && !props.textTextarea) {
+                props.textTextarea = idev.content;
+            }
 
-            // Caso práctico
+            // Procesamiento específico por tipo
+            if (idev.type === 'text') {
+                let fullHtml = "";
+                if (props.image) fullHtml += `<p style="text-align:center;"><img src="${props.image}" alt="Imagen" style="max-width:100%; height:auto;"></p>`;
+                if (props.summary) fullHtml += `<div class="exe-summary" style="background:#f0f9ff; padding:1rem; border-radius:0.5rem; margin-bottom:1rem; border:1px solid #bae6fd;"><strong>Resumen:</strong> ${props.summary}</div>`;
+                
+                const mainText = props.content && typeof props.content === 'string' ? props.content : (props.textTextarea || "");
+                fullHtml += `<div class="exe-text-content">${mainText}</div>`;
+                
+                props.textTextarea = `<div class="exe-text-activity">${fullHtml}</div>`;
+            }
+            
+            if (props.duration) props.textInfoDurationInput = props.duration;
+            if (props.participants) props.textInfoParticipantsInput = props.participants;
+
             if (idev.type === 'casestudy') {
-                if (c.story) c.history = c.story;
-                if (c.activity || c.feedback) {
-                    c.activities = [{
-                        activity: c.activity || "Actividad",
-                        feedback: c.feedback || "Retroalimentación",
-                        buttonCaption: c.buttonCaption || "Mostrar retroalimentación"
+                if (props.story) props.history = props.story;
+                if (props.activity || props.feedback) {
+                    props.activities = [{
+                        activity: props.activity || "Actividad",
+                        feedback: props.feedback || "Retroalimentación",
+                        buttonCaption: props.buttonCaption || "Mostrar retroalimentación"
                     }];
                 }
             }
 
-            // DigCompEdu
-            if (idev.type === 'digcompedu' && c.areas) {
+            if (idev.type === 'digcompedu' && props.areas) {
                 let digHtml = "<ul>";
-                c.areas.forEach(a => {
+                props.areas.forEach(a => {
                     digHtml += `<li><strong>${a.area}:</strong> ${a.description}</li>`;
                 });
                 digHtml += "</ul>";
-                if (c.justification) digHtml += `<p><em>${c.justification}</em></p>`;
-                c.digHtml = `<div class="digcompeduIdeviceContent"><h3>Resumen DigCompEdu</h3>${digHtml}</div>`;
-                c.content = c.digHtml; 
+                if (props.justification) digHtml += `<p><em>${props.justification}</em></p>`;
+                props.digHtml = `<div class="digcompeduIdeviceContent"><h3>Resumen DigCompEdu</h3>${digHtml}</div>`;
             }
 
-            // Formulario
-            if (idev.type === 'form' && c.questions) {
-                c.questionsData = c.questions.map(q => ({
+            if (idev.type === 'form' && props.questions) {
+                props.questionsData = props.questions.map(q => ({
                     question: typeof q === 'string' ? q : (q.question || ""),
                     type: "textarea",
                     feedback: q.feedback || ""
                 }));
             }
 
-            // UDL / DUA
             if (idev.type === 'udl-content') {
-                const text = (typeof c.content === 'string' ? c.content : null) || c.textTextarea || "";
-                snippet = snippet.replace(/<p>Contenido principal<\/p>/g, text);
+                const udlText = (typeof props.content === 'string' ? props.content : null) || props.textTextarea || "";
+                snippet = snippet.replace(/<p>Contenido principal<\/p>/g, udlText);
             }
 
-            // Galería de imágenes
-            if (idev.type === 'image-gallery' && c.images) {
+            if (idev.type === 'image-gallery' && props.images) {
                 let galleryHtml = '<div class="exe-image-gallery" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:1rem;">';
-                c.images.forEach(img => {
+                props.images.forEach(img => {
                     galleryHtml += `<figure style="margin:0;"><img src="${img.url}" alt="${img.caption}" style="width:100%; border-radius:8px;"><figcaption style="font-size:0.8rem; margin-top:0.5rem; text-align:center;">${img.caption}</figcaption></figure>`;
                 });
                 galleryHtml += '</div>';
                 snippet = snippet.replace(/<div class="imageGallery-body"><\/div>/g, `<div class="imageGallery-body">${galleryHtml}</div>`);
             }
 
-            // Inyectar JSONProperties (ESTADO DEL EDITOR)
-            if (idev.content) {
-                snippet = snippet.replace(/(<jsonProperties><!\[CDATA\[)(.*?)(\]\]><\/jsonProperties>)/, (match, p1, p2, p3) => {
-                    if (!p2) return match;
-                    try {
-                        let obj = JSON.parse(p2);
-                        Object.assign(obj, idev.content);
-                        if (obj.ideviceId) obj.ideviceId = ideviceId;
-                        if (obj.id) obj.id = ideviceId;
-                        return p1 + JSON.stringify(obj) + p3;
-                    } catch (e) {
-                        return match;
-                    }
-                });
-                
-                // Reemplazo de marcadores HTML (VISTA ESTÁTICA Y JSON)
-                if (idev.content.textTextarea) {
-                    snippet = snippet.replaceAll('{{CONTENT}}', idev.content.textTextarea);
+            // 4. Inyección en el XML
+            // A) JSONProperties (Estado interno)
+            snippet = snippet.replace(/(<jsonProperties><!\[CDATA\[)(.*?)(\]\]><\/jsonProperties>)/, (match, p1, p2, p3) => {
+                if (!p2) return match;
+                try {
+                    let obj = JSON.parse(p2);
+                    Object.assign(obj, props);
+                    if (obj.ideviceId) obj.ideviceId = ideviceId;
+                    if (obj.id) obj.id = ideviceId;
+                    return p1 + JSON.stringify(obj) + p3;
+                } catch (e) {
+                    return match;
                 }
-                if (idev.content.history) {
-                    snippet = snippet.replaceAll('{{HISTORY}}', idev.content.history);
-                }
-                if (idev.content.activities && idev.content.activities[0]) {
-                    snippet = snippet.replaceAll('{{ACTIVITY}}', idev.content.activities[0].activity);
-                    snippet = snippet.replaceAll('{{FEEDBACK}}', idev.content.activities[0].feedback);
-                }
-                if (idev.content.digHtml) {
-                    snippet = snippet.replaceAll('{{DIGCOMP_CONTENT}}', idev.content.digHtml);
-                }
+            });
+            
+            // B) Marcadores HTML (Vista previa)
+            if (props.textTextarea) snippet = snippet.replaceAll('{{CONTENT}}', props.textTextarea);
+            if (props.history) snippet = snippet.replaceAll('{{HISTORY}}', props.history);
+            if (props.activities && props.activities[0]) {
+                snippet = snippet.replaceAll('{{ACTIVITY}}', props.activities[0].activity);
+                snippet = snippet.replaceAll('{{FEEDBACK}}', props.activities[0].feedback);
+            }
+            if (props.digHtml) snippet = snippet.replaceAll('{{DIGCOMP_CONTENT}}', props.digHtml);
 
-                // Codificación URI para iDevices de juegos/interactivos
-                const uriEncodedTypes = ['checklist', 'guess', 'select-media-files', 'rubric'];
-                if (uriEncodedTypes.includes(idev.type)) {
-                    snippet = snippet.replace(/(<div class=".*?DataGame js-hidden">)(.*?)(<\/div>)/, (match, p1, p2, p3) => {
-                        const encodedData = encodeURIComponent(JSON.stringify(idev.content));
-                        return p1 + encodedData + p3;
-                    });
-                }
+            // C) Limpieza de marcadores no usados
+            snippet = snippet.replaceAll('{{CONTENT}}', '')
+                             .replaceAll('{{HISTORY}}', '')
+                             .replaceAll('{{ACTIVITY}}', '')
+                             .replaceAll('{{FEEDBACK}}', '')
+                             .replaceAll('{{DIGCOMP_CONTENT}}', '');
+
+            // D) Codificación URI interactiva
+            const uriEncodedTypes = ['checklist', 'guess', 'select-media-files', 'rubric'];
+            if (uriEncodedTypes.includes(idev.type)) {
+                snippet = snippet.replace(/(<div class=".*?DataGame js-hidden">)(.*?)(<\/div>)/, (match, p1, p2, p3) => {
+                    return p1 + encodeURIComponent(JSON.stringify(props)) + p3;
+                });
             }
 
             xml += `
