@@ -1,11 +1,11 @@
 import { compileExeProject } from './compiler.js';
 
 const SHARED_RULES = `REGLAS TÉCNICAS:
-1. iDevice 'text': DEBE incluir "textInfoDurationInput" y "textInfoParticipantsInput".
-2. iDevice 'udl-content': Úsalo para contenido inclusivo.
-3. iDevice 'casestudy': Incluye retroalimentación.
-4. iDevice 'form': Define preguntas claras.
-5. FORMATO: Devuelve ÚNICAMENTE un array JSON válido [ { "page_name": "...", "idevices": [...] } ] o un objeto de página simple { "page_name": "...", "idevices": [...] }`;
+1. iDevice 'text': Incluye "content", "duration" y "participants".
+2. iDevice 'casestudy': Usa "story", "activity" y "feedback".
+3. iDevice 'form': Usa "questions" (array de textos).
+4. iDevice 'image-gallery': Usa "images" (array con url y caption).
+5. FORMATO: Devuelve ÚNICAMENTE un objeto JSON de página: { "page_name": "...", "idevices": [...] }`;
 
 const PHASED_PROMPTS = {
     1: `Eres un Arquitecto eXeLearning. FASE 1: INICIO Y FUNDAMENTACIÓN.
