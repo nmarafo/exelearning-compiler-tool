@@ -5,7 +5,7 @@ const SHARED_RULES = `REGLAS TÉCNICAS:
 2. iDevice 'udl-content': Úsalo para contenido inclusivo.
 3. iDevice 'casestudy': Incluye retroalimentación.
 4. iDevice 'form': Define preguntas claras.
-5. FORMATO: Devuelve ÚNICAMENTE un array JSON válido [ { "page_name": "...", "idevices": [...] } ]`;
+5. FORMATO: Devuelve ÚNICAMENTE un array JSON válido [ { "page_name": "...", "idevices": [...] } ] o un objeto de página simple { "page_name": "...", "idevices": [...] }`;
 
 const PHASED_PROMPTS = {
     1: `Eres un Arquitecto eXeLearning. FASE 1: INICIO Y FUNDAMENTACIÓN.
@@ -62,27 +62,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let currentPhase = "1";
 
-    // Gestionar número de sesiones en la interfaz de construcción
-    sessionCountInput.addEventListener('input', () => {
+    // Función para renderizar textareas de sesiones
+    function renderSessionInputs() {
         const count = parseInt(sessionCountInput.value) || 1;
-        const currentInputs = sessionsContainer.querySelectorAll('textarea');
+        const currentData = {};
         
-        if (count > currentInputs.length) {
-            for (let i = currentInputs.length + 1; i <= count; i++) {
-                const group = document.createElement('div');
-                group.className = 'input-group';
-                group.innerHTML = `
-                    <label>Sesión/Actividad/Bloque ${i}</label>
-                    <textarea id="json-phase-2-${i}" class="phase-textarea" placeholder='Pega aquí el JSON de la Sesión ${i}...'></textarea>
-                `;
-                sessionsContainer.appendChild(group);
-            }
-        } else if (count < currentInputs.length) {
-            for (let i = currentInputs.length; i > count; i--) {
-                sessionsContainer.removeChild(sessionsContainer.lastChild);
-            }
+        // Guardar datos actuales para no perderlos al re-renderizar
+        sessionsContainer.querySelectorAll('textarea').forEach(tx => {
+            currentData[tx.id] = tx.value;
+        });
+
+        sessionsContainer.innerHTML = '';
+        for (let i = 1; i <= count; i++) {
+            const id = `json-phase-2-${i}`;
+            const group = document.createElement('div');
+            group.className = 'input-group';
+            group.innerHTML = `
+                <label>Sesión/Actividad/Bloque ${i}</label>
+                <textarea id="${id}" class="phase-textarea" placeholder='Pega aquí el JSON de la Sesión ${i}...'>${currentData[id] || ''}</textarea>
+            `;
+            sessionsContainer.appendChild(group);
         }
-    });
+    }
+
+    // Inicializar y escuchar cambios
+    renderSessionInputs();
+    sessionCountInput.addEventListener('change', renderSessionInputs);
+    sessionCountInput.addEventListener('keyup', renderSessionInputs);
 
     // Selección de Fase
     phaseBtns.forEach(btn => {
@@ -91,7 +97,6 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.classList.add('active');
             currentPhase = btn.dataset.phase;
 
-            // Mostrar/Ocultar controles extra para Fase 2
             if (currentPhase === "2") {
                 promptExtraControls.classList.remove('js-hidden');
             } else {
@@ -127,6 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (phase1Input.value.trim()) {
                 const p1 = JSON.parse(phase1Input.value);
                 if (Array.isArray(p1)) projectPages = projectPages.concat(p1);
+                else projectPages.push(p1);
             }
 
             const sessionInputs = sessionsContainer.querySelectorAll('textarea');
@@ -141,6 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (phase3Input.value.trim()) {
                 const p3 = JSON.parse(phase3Input.value);
                 if (Array.isArray(p3)) projectPages = projectPages.concat(p3);
+                else projectPages.push(p3);
             }
 
             if (projectPages.length === 0) {
