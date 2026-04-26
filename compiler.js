@@ -132,6 +132,15 @@ export async function compileExeProject(pagesConfig) {
                     type: "textarea",
                     feedback: q.feedback || ""
                 }));
+
+                let formHtml = "";
+                props.questionsData.forEach((q, i) => {
+                    formHtml += `<div class="exe-form-question" style="margin-bottom:1.5rem;">
+                        <p><strong>Pregunta ${i+1}:</strong> ${q.question}</p>
+                        <textarea style="width:100%; height:80px; border-radius:4px; border:1px solid #ccc; padding:8px;"></textarea>
+                    </div>`;
+                });
+                snippet = snippet.replace(/<div class="form-instructions">/g, `<div class="form-questions-list">${formHtml}</div><div class="form-instructions">`);
             }
 
             if (idev.type === 'udl-content') {
