@@ -17,8 +17,8 @@ ESTRUCTURA REQUERIDA:
 
 ${SHARED_RULES}`,
 
-    2: `Eres un Arquitecto eXeLearning. FASE 2: SECUENCIA COMPETENCIAL.
-Genera el JSON para una única Sesión/Actividad/Bloque de la secuencia competencial. Analiza la SA adjunta y crea el contenido para esta parte específica.
+    2: (num) => `Eres un Arquitecto eXeLearning. FASE 2: SECUENCIA COMPETENCIAL.
+Céntrate EXCLUSIVAMENTE en generar el JSON para la Sesión/Bloque/Actividad nº ${num} de la secuencia competencial analizando la SA adjunta.
 
 IDEVICES RECOMENDADOS (Variedad):
 - 'udl-content' + 'interactive-video'.
@@ -26,7 +26,7 @@ IDEVICES RECOMENDADOS (Variedad):
 - 'text' + 'external-website'.
 - 'form' + 'checklist'.
 
-IMPORTANTE: Genera solo el contenido de UNA sesión/bloque. Repetiremos este proceso para el resto.
+IMPORTANTE: Genera solo el contenido de esta sesión/bloque específico.
 ${SHARED_RULES}`,
 
     3: `Eres un Arquitecto eXeLearning. FASE 3: CIERRE Y METADATOS.
@@ -48,6 +48,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const errorDisplay = document.getElementById('error-display');
     const phaseBtns = document.querySelectorAll('.phase-btn');
     
+    // Controles de Prompt
+    const promptExtraControls = document.getElementById('prompt-extra-controls');
+    const promptSessionNumber = document.getElementById('prompt-session-number');
+
     // Inputs fijos
     const phase1Input = document.getElementById('json-phase-1');
     const phase3Input = document.getElementById('json-phase-3');
@@ -58,24 +62,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let currentPhase = "1";
 
-    // Gestionar número de sesiones
+    // Gestionar número de sesiones en la interfaz de construcción
     sessionCountInput.addEventListener('input', () => {
         const count = parseInt(sessionCountInput.value) || 1;
         const currentInputs = sessionsContainer.querySelectorAll('textarea');
         
         if (count > currentInputs.length) {
-            // Añadir textareas
             for (let i = currentInputs.length + 1; i <= count; i++) {
-                const textarea = document.createElement('textarea');
-                textarea.id = `json-phase-2-${i}`;
-                textarea.className = 'phase-textarea';
-                textarea.placeholder = `JSON Sesión/Actividad/Bloque ${i}...`;
-                sessionsContainer.appendChild(textarea);
+                const group = document.createElement('div');
+                group.className = 'input-group';
+                group.innerHTML = `
+                    <label>Sesión/Actividad/Bloque ${i}</label>
+                    <textarea id="json-phase-2-${i}" class="phase-textarea" placeholder='Pega aquí el JSON de la Sesión ${i}...'></textarea>
+                `;
+                sessionsContainer.appendChild(group);
             }
         } else if (count < currentInputs.length) {
-            // Eliminar textareas
             for (let i = currentInputs.length; i > count; i--) {
-                sessionsContainer.removeChild(currentInputs[i-1]);
+                sessionsContainer.removeChild(sessionsContainer.lastChild);
             }
         }
     });
@@ -86,12 +90,26 @@ document.addEventListener('DOMContentLoaded', () => {
             phaseBtns.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             currentPhase = btn.dataset.phase;
+
+            // Mostrar/Ocultar controles extra para Fase 2
+            if (currentPhase === "2") {
+                promptExtraControls.classList.remove('js-hidden');
+            } else {
+                promptExtraControls.classList.add('js-hidden');
+            }
         });
     });
 
     // Copiar Prompt
     btnCopy.addEventListener('click', () => {
-        const prompt = PHASED_PROMPTS[currentPhase];
+        let prompt = "";
+        if (currentPhase === "2") {
+            const num = promptSessionNumber.value || 1;
+            prompt = PHASED_PROMPTS[2](num);
+        } else {
+            prompt = PHASED_PROMPTS[currentPhase];
+        }
+
         navigator.clipboard.writeText(prompt).then(() => {
             copyStatus.style.display = 'block';
             setTimeout(() => {
@@ -106,23 +124,20 @@ document.addEventListener('DOMContentLoaded', () => {
         let projectPages = [];
 
         try {
-            // Procesar Fase 1
             if (phase1Input.value.trim()) {
                 const p1 = JSON.parse(phase1Input.value);
                 if (Array.isArray(p1)) projectPages = projectPages.concat(p1);
             }
 
-            // Procesar Fase 2 (Dinámica)
             const sessionInputs = sessionsContainer.querySelectorAll('textarea');
             sessionInputs.forEach(input => {
                 if (input.value.trim()) {
                     const p = JSON.parse(input.value);
                     if (Array.isArray(p)) projectPages = projectPages.concat(p);
-                    else projectPages.push(p); // Si la IA devuelve un objeto de página simple
+                    else projectPages.push(p);
                 }
             });
 
-            // Procesar Fase 3
             if (phase3Input.value.trim()) {
                 const p3 = JSON.parse(phase3Input.value);
                 if (Array.isArray(p3)) projectPages = projectPages.concat(p3);
@@ -139,7 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const url = window.URL.createObjectURL(zipBlob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `sa_completa_phased_${Date.now()}.elpx`;
+            a.download = `sa_phased_v4_${Date.now()}.elpx`;
             document.body.appendChild(a);
             a.click();
             window.URL.revokeObjectURL(url);

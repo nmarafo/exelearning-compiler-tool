@@ -35,9 +35,14 @@
             </div>
             
             <div class="phase-selector">
-                <button class="phase-btn active" data-phase="1">Fase 1: Portada y Justificación</button>
-                <button class="phase-btn" data-phase="2">Fase 2: Secuencia (Sesiones)</button>
-                <button class="phase-btn" data-phase="3">Fase 3: Cierre y Créditos</button>
+                <button class="phase-btn active" data-phase="1">Fase 1: Portada</button>
+                <button class="phase-btn" data-phase="2">Fase 2: Secuencia</button>
+                <button class="phase-btn" data-phase="3">Fase 3: Cierre</button>
+            </div>
+
+            <div id="prompt-extra-controls" class="prompt-extra-controls js-hidden">
+                <span>Generar para la Sesión/Bloque/Actividad nº:</span>
+                <input type="number" id="prompt-session-number" value="1" min="1" max="10">
             </div>
 
             <button id="btn-copy-prompt" class="action-button secondary">
