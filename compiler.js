@@ -78,8 +78,18 @@ export async function compileExeProject(pagesConfig) {
             if (idev.content) {
                 const c = idev.content;
                 
-                // Texto y metadatos
-                if (c.content && !c.textTextarea) c.textTextarea = c.content;
+                // Texto y metadatos (Soporte para image y summary inyectados en el cuerpo)
+                if (idev.type === 'text') {
+                    let fullHtml = "";
+                    if (c.image) fullHtml += `<p style="text-align:center;"><img src="${c.image}" alt="Imagen decorativa" style="max-width:100%; height:auto;"></p>`;
+                    if (c.summary) fullHtml += `<div class="exe-summary" style="background:#f0f9ff; padding:1rem; border-radius:0.5rem; margin-bottom:1rem; border:1px solid #bae6fd;"><strong>Resumen:</strong> ${c.summary}</div>`;
+                    
+                    const mainContent = c.content || c.textTextarea || "";
+                    fullHtml += `<div class="exe-text-content">${mainContent}</div>`;
+                    
+                    c.textTextarea = `<div class="exe-text-activity">${fullHtml}</div>`;
+                }
+                
                 if (c.duration) c.textInfoDurationInput = c.duration;
                 if (c.participants) c.textInfoParticipantsInput = c.participants;
 
@@ -95,6 +105,18 @@ export async function compileExeProject(pagesConfig) {
                     }
                 }
 
+                // DigCompEdu (Mapeo de áreas a texto)
+                if (idev.type === 'digcompedu' && c.areas) {
+                    let digHtml = "<ul>";
+                    c.areas.forEach(a => {
+                        digHtml += `<li><strong>${a.area}:</strong> ${a.description}</li>`;
+                    });
+                    digHtml += "</ul>";
+                    if (c.justification) digHtml += `<p><em>${c.justification}</em></p>`;
+                    c.digHtml = `<div class="digcompeduIdeviceContent"><h3>Resumen DigCompEdu</h3>${digHtml}</div>`;
+                    c.content = c.digHtml; // Para compatibilidad con jsonProperties
+                }
+
                 // Formulario / Cuestionario
                 if (idev.type === 'form' && c.questions) {
                     c.questionsData = c.questions.map(q => ({
@@ -105,23 +127,23 @@ export async function compileExeProject(pagesConfig) {
                 }
 
                 // UDL / DUA
-                if (idev.type === 'udl-content' && c.content) {
-                    // Reemplazar el marcador en el snippet HTML
-                    snippet = snippet.replace(/<p>Contenido principal<\/p>/g, c.content);
+                if (idev.type === 'udl-content' && (c.content || c.textTextarea)) {
+                    const text = c.content || c.textTextarea;
+                    snippet = snippet.replace(/<p>Contenido principal<\/p>/g, text);
                 }
 
-                // Galería de imágenes (Simulación en HTML)
+                // Galería de imágenes
                 if (idev.type === 'image-gallery' && c.images) {
-                    let galleryHtml = '<div class="exe-image-gallery">';
+                    let galleryHtml = '<div class="exe-image-gallery" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:1rem;">';
                     c.images.forEach(img => {
-                        galleryHtml += `<figure><img src="${img.url}" alt="${img.caption}"><figcaption>${img.caption}</figcaption></figure>`;
+                        galleryHtml += `<figure style="margin:0;"><img src="${img.url}" alt="${img.caption}" style="width:100%; border-radius:8px;"><figcaption style="font-size:0.8rem; margin-top:0.5rem; text-align:center;">${img.caption}</figcaption></figure>`;
                     });
                     galleryHtml += '</div>';
                     snippet = snippet.replace(/<div class="imageGallery-body"><\/div>/g, `<div class="imageGallery-body">${galleryHtml}</div>`);
                 }
             }
 
-            // Inyectar JSONProperties
+            // Inyectar JSONProperties (ESTADO DEL EDITOR)
             if (idev.content) {
                 snippet = snippet.replace(/(<jsonProperties><!\[CDATA\[)(.*?)(\]\]><\/jsonProperties>)/, (match, p1, p2, p3) => {
                     if (!p2) return match;
@@ -136,12 +158,19 @@ export async function compileExeProject(pagesConfig) {
                     }
                 });
                 
-                // Reemplazo de marcadores HTML comunes
+                // Reemplazo de marcadores HTML (VISTA ESTÁTICA Y JSON)
                 if (idev.content.textTextarea) {
-                    snippet = snippet.replace(/<p>Mi texto<\/p>/g, idev.content.textTextarea);
+                    snippet = snippet.replaceAll('{{CONTENT}}', idev.content.textTextarea);
                 }
                 if (idev.content.history) {
-                    snippet = snippet.replace(/<p>Mi historia<\/p>/g, idev.content.history);
+                    snippet = snippet.replaceAll('{{HISTORY}}', idev.content.history);
+                }
+                if (idev.content.activities && idev.content.activities[0]) {
+                    snippet = snippet.replaceAll('{{ACTIVITY}}', idev.content.activities[0].activity);
+                    snippet = snippet.replaceAll('{{FEEDBACK}}', idev.content.activities[0].feedback);
+                }
+                if (idev.content.digHtml) {
+                    snippet = snippet.replaceAll('{{DIGCOMP_CONTENT}}', idev.content.digHtml);
                 }
 
                 // Codificación URI para iDevices de juegos/interactivos

@@ -6,10 +6,10 @@ export const SNIPPETS_DICT = {
           <odeIdeviceTypeName>text</odeIdeviceTypeName>
           <htmlView><![CDATA[<div class="exe-text-template">
     <div class="exe-text-activity">
-        <p>Mi texto</p>
+        {{CONTENT}}
     </div>
 </div>]]></htmlView>
-          <jsonProperties><![CDATA[{"ideviceId":"UUID-IDEVICE","textInfoDurationInput":"","textInfoDurationTextInput":"Duración","textInfoParticipantsInput":"","textInfoParticipantsTextInput":"Agrupamiento","textTextarea":"<div class=\\"exe-text-activity\\"><p>Mi texto</p></div>","textFeedbackInput":"Mostrar retroalimentación","textFeedbackTextarea":""}]]></jsonProperties>
+          <jsonProperties><![CDATA[{"ideviceId":"UUID-IDEVICE","textInfoDurationInput":"","textInfoDurationTextInput":"Duración","textInfoParticipantsInput":"","textInfoParticipantsTextInput":"Agrupamiento","textTextarea":"<div class=\\"exe-text-activity\\">{{CONTENT}}</div>","textFeedbackInput":"Mostrar retroalimentación","textFeedbackTextarea":""}]]></jsonProperties>
           <odeComponentsOrder>0</odeComponentsOrder>
           <odeComponentsProperties>
           </odeComponentsProperties>
@@ -20,8 +20,8 @@ export const SNIPPETS_DICT = {
           <odeBlockId>UUID-BLOQUE</odeBlockId>
           <odeIdeviceId>UUID-IDEVICE</odeIdeviceId>
           <odeIdeviceTypeName>casestudy</odeIdeviceTypeName>
-          <htmlView><![CDATA[<div class="exe-casestudy-container"><div class="caseStudyContent"><div class="CSP-History mb-3"><p>Mi historia</p></div><div class="CSP-Activities mb-3"><div class="CSP-Activity mb-3"><p>Mi actividad</p></div><div class="iDevice_buttons feedback-button js-required"><input type="button" class="CSP-FeedbackBtn feedbacktooglebutton" value="Mostrar retroalimentación"></div><div class="CSP-FeedbackText feedback js-feedback js-hidden" style="display: none;"><p>Mi retroalimentación</p></div></div></div></div>]]></htmlView>
-          <jsonProperties><![CDATA[{"id":"UUID-IDEVICE","typeGame":"Case study","history":"<p>Mi historia</p>","textInfoDurationInput":"","textInfoDurationTextInput":"Duración","textInfoParticipantsInput":"","textInfoParticipantsTextInput":"Agrupamiento","activities":[{"activity":"<p>Mi actividad</p>","feedback":"<p>Mi retroalimentación</p>","buttonCaption":"Mostrar retroalimentación"}]}]]></jsonProperties>
+          <htmlView><![CDATA[<div class="exe-casestudy-container"><div class="caseStudyContent"><div class="CSP-History mb-3">{{HISTORY}}</div><div class="CSP-Activities mb-3"><div class="CSP-Activity mb-3">{{ACTIVITY}}</div><div class="iDevice_buttons feedback-button js-required"><input type="button" class="CSP-FeedbackBtn feedbacktooglebutton" value="Mostrar retroalimentación"></div><div class="CSP-FeedbackText feedback js-feedback js-hidden" style="display: none;">{{FEEDBACK}}</div></div></div></div>]]></htmlView>
+          <jsonProperties><![CDATA[{"id":"UUID-IDEVICE","typeGame":"Case study","history":"{{HISTORY}}","textInfoDurationInput":"","textInfoDurationTextInput":"Duración","textInfoParticipantsInput":"","textInfoParticipantsTextInput":"Agrupamiento","activities":[{"activity":"{{ACTIVITY}}","feedback":"{{FEEDBACK}}","buttonCaption":"Mostrar retroalimentación"}]}]]></jsonProperties>
           <odeComponentsOrder>0</odeComponentsOrder>
           <odeComponentsProperties>
           </odeComponentsProperties>
@@ -32,8 +32,8 @@ export const SNIPPETS_DICT = {
           <odeBlockId>UUID-BLOQUE</odeBlockId>
           <odeIdeviceId>UUID-IDEVICE</odeIdeviceId>
           <odeIdeviceTypeName>digcompedu</odeIdeviceTypeName>
-          <htmlView><![CDATA[<div class="digcompeduIdeviceContent"><h3>Resumen DigCompEdu</h3><p>Selected indicators: 0</p></div>]]></htmlView>
-          <jsonProperties><![CDATA[{"ideviceId":"UUID-IDEVICE","digcompeduSelected":[],"digcompeduDisplayMode":"table","digcompeduDataLang":"es","digcompeduGranularity":"indicator"}]]></jsonProperties>
+          <htmlView><![CDATA[<div class="digcompedu-container"><div class="digcompeduIdeviceContent">{{DIGCOMP_CONTENT}}</div></div>]]></htmlView>
+          <jsonProperties><![CDATA[{"id":"UUID-IDEVICE","typeGame":"DigCompEdu","content":"{{DIGCOMP_CONTENT}}"}]]></jsonProperties>
           <odeComponentsOrder>0</odeComponentsOrder>
           <odeComponentsProperties>
           </odeComponentsProperties>
