@@ -8,35 +8,36 @@ const SHARED_RULES = `REGLAS TÉCNICAS:
 5. FORMATO: Devuelve ÚNICAMENTE un objeto JSON de página: { "page_name": "...", "idevices": [...] }`;
 
 const PHASED_PROMPTS = {
-    1: `Eres un Arquitecto eXeLearning. FASE 1: INICIO Y FUNDAMENTACIÓN.
-Genera el JSON para las páginas iniciales de la Situación de Aprendizaje (SA) adjunta.
-
-ESTRUCTURA REQUERIDA:
-1. "Portada": iDevice 'text' con título llamativo, imagen y resumen + 'image-gallery'.
-2. "Justificación": iDevice 'text' detallando el propósito pedagógico, área y nivel + 'digcompedu'.
+    1: `Eres un Arquitecto eXeLearning experto en DUA y DigCompEdu. FASE 1: INICIO Y FUNDAMENTACIÓN.
+Genera el JSON para la portada y justificación de la SA.
+IDEVICES RECOMENDADOS:
+- 'text': Portada con imagen evocadora, resumen y metadatos (duración, participantes).
+- 'digcompedu': Detalla las competencias digitales trabajadas.
+- 'udl-content': Presenta los objetivos con versiones de audio/lectura fácil para inclusión.
+- 'download-source-file': Adjunta guías o mapas en PDF.
 
 ${SHARED_RULES}`,
 
-    2: (num) => `Eres un Arquitecto eXeLearning. FASE 2: SECUENCIA COMPETENCIAL.
-Céntrate EXCLUSIVAMENTE en generar el JSON para la Sesión/Bloque/Actividad nº ${num} de la secuencia competencial analizando la SA adjunta.
+    2: (num) => `Eres un Arquitecto eXeLearning experto en Gamificación. FASE 2: SECUENCIA (Sesión/Bloque/Actividad nº${num}).
+Céntrate EXCLUSIVAMENTE en generar el JSON para la Sesión o Bloque nº${num}.
+IDEVICES RECOMENDADOS PARA VARIAR:
+- 'udl-content' + 'interactive-video': Para motivar y presentar teoría.
+- 'casestudy' + 'guess': Para exploración y retos rápidos de vocabulario.
+- 'text' + 'external-website': Para profundizar con fuentes de National Geographic u otros.
+- 'select-media-files' o 'form': Para práctica y evaluación formativa.
+- 'image-gallery': Para mostrar mapas, grabados o paisajes históricos.
 
-IDEVICES RECOMENDADOS (Variedad):
-- 'udl-content' + 'interactive-video'.
-- 'casestudy' + 'guess' o 'select-media-files'.
-- 'text' + 'external-website'.
-- 'form' + 'checklist'.
-
-IMPORTANTE: Genera solo el contenido de esta sesión/bloque específico.
+Asegúrate de que cada iDevice tenga un título ("title") descriptivo y motivador.
 ${SHARED_RULES}`,
 
     3: `Eres un Arquitecto eXeLearning. FASE 3: CIERRE Y METADATOS.
-Genera el JSON para las secciones finales de la SA.
-
-ESTRUCTURA REQUERIDA:
-1. "Evaluación": iDevice 'rubric' detallada.
-2. "Guía Didáctica": iDevice 'text' con orientaciones para el docente.
-3. "Fuentes y Créditos": iDevice 'text' con bibliografía.
-4. "Descarga": iDevice 'download-source-file'.
+Genera el JSON para el cierre y la evaluación de la SA.
+IDEVICES RECOMENDADOS:
+- 'text': Resumen del legado, conclusiones y bibliografía.
+- 'checklist': Lista de objetivos alcanzados (autoevaluación del alumno).
+- 'rubric': Tabla de evaluación detallada (categorías y niveles 1-4).
+- 'progress-report': Para que el alumno vea su resumen de trabajo.
+- 'download-source-file': Para descargar el paquete .elpx fuente.
 
 ${SHARED_RULES}`
 };

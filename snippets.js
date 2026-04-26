@@ -169,5 +169,29 @@ export const SNIPPETS_DICT = {
           <odeComponentsOrder>0</odeComponentsOrder>
           <odeComponentsProperties>
           </odeComponentsProperties>
+        </odeComponent>`,
+
+    'quick-questions-multiple-choice': `<odeComponent>
+          <odePageId>UUID-PAGINA</odePageId>
+          <odeBlockId>UUID-BLOQUE</odeBlockId>
+          <odeIdeviceId>UUID-IDEVICE</odeIdeviceId>
+          <odeIdeviceTypeName>quick-questions-multiple-choice</odeIdeviceTypeName>
+          <htmlView><![CDATA[<div class="quick-questions-multiple-choice-IDevice"><div class="quick-questions-multiple-choice-DataGame js-hidden"></div></div>]]></htmlView>
+          <jsonProperties></jsonProperties>
+          <odeComponentsOrder>0</odeComponentsOrder>
+          <odeComponentsProperties>
+          </odeComponentsProperties>
+        </odeComponent>`,
+
+    'trueorfalse': `<odeComponent>
+          <odePageId>UUID-PAGINA</odePageId>
+          <odeBlockId>UUID-BLOQUE</odeBlockId>
+          <odeIdeviceId>UUID-IDEVICE</odeIdeviceId>
+          <odeIdeviceTypeName>trueorfalse</odeIdeviceTypeName>
+          <htmlView><![CDATA[<div class="true-false-IDevice"><div class="true-false-DataGame js-hidden"></div></div>]]></htmlView>
+          <jsonProperties></jsonProperties>
+          <odeComponentsOrder>0</odeComponentsOrder>
+          <odeComponentsProperties>
+          </odeComponentsProperties>
         </odeComponent>`
 };
