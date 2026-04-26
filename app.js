@@ -1,43 +1,43 @@
 import { compileExeProject } from './compiler.js';
 
 const SHARED_RULES = `REGLAS TÉCNICAS:
-1. iDevice 'text': Usa "title" (obligatorio), "content", "image" (URL directa y válida), "duration" y "participants".
-2. iDevice 'casestudy': Usa "title", "story", "activity" y "feedback".
-3. iDevice 'form': Usa "title", "questions" (array).
-4. iDevice 'image-gallery': Usa "title", "images" (array con url y caption).
-5. FORMATO: Devuelve ÚNICAMENTE un objeto JSON de página: { "page_name": "...", "idevices": [...] }`;
+1. iDevice 'text': Usa "title", "main_text", "image" (URL directa), "duration" y "participants".
+2. iDevice 'udl-content': Usa "title", "main_text", "easy_reading" y "audio_script".
+3. iDevice 'interactive-video': Usa "title" y "url" (de YouTube).
+4. iDevice 'casestudy': Usa "title", "story", "activity" y "feedback".
+5. iDevice 'image-gallery': Usa "title", "images" (array de {url, caption}).
+6. iDevice 'form': Usa "title", "questions" (array).
+7. iDevice 'guess': Usa "title", "term", "instructions", "hint" (pista) y "feedback".
+8. FORMATO: Devuelve ÚNICAMENTE un objeto JSON de página: { "page_name": "...", "idevices": [...] }`;
 
 const PHASED_PROMPTS = {
-    1: `Eres un Arquitecto eXeLearning experto en DUA y DigCompEdu. FASE 1: INICIO Y FUNDAMENTACIÓN.
-Genera el JSON para la portada y justificación de la SA.
-IDEVICES RECOMENDADOS:
-- 'text': Portada con imagen evocadora, resumen y metadatos (duración, participantes).
-- 'digcompedu': Detalla las competencias digitales trabajadas.
-- 'udl-content': Presenta los objetivos con versiones de audio/lectura fácil para inclusión.
-- 'download-source-file': Adjunta guías o mapas en PDF.
+    1: `Eres un Arquitecto eXeLearning. FASE 1: INICIO Y FUNDAMENTACIÓN.
+Genera el JSON para las páginas iniciales basándote en la SA y el listado de recursos multimedia.
+OBLIGATORIO incluir estos iDevices si están en la SA:
+- 'text' (Portada): Usa una imagen si hay URL disponible, o deja el campo listo.
+- 'digcompedu': Detalla áreas y justificación.
+- 'udl-content': Con versiones normal, fácil y guion de audio.
+- 'download-source-file': Para archivos adjuntos.
+- 'image-gallery' (si hay imágenes).
+- 'casestudy' (si hay un caso práctico).
+- 'guess' (si hay un juego de adivinar).
 
 ${SHARED_RULES}`,
 
-    2: (num) => `Eres un Arquitecto eXeLearning experto en Gamificación. FASE 2: SECUENCIA (Sesión/Bloque/Actividad nº${num}).
-Céntrate EXCLUSIVAMENTE en generar el JSON para la Sesión o Bloque nº${num}.
-IDEVICES RECOMENDADOS PARA VARIAR:
-- 'udl-content' + 'interactive-video': Para motivar y presentar teoría.
-- 'casestudy' + 'guess': Para exploración y retos rápidos de vocabulario.
-- 'text' + 'external-website': Para profundizar con fuentes de National Geographic u otros.
-- 'select-media-files' o 'form': Para práctica y evaluación formativa.
-- 'image-gallery': Para mostrar mapas, grabados o paisajes históricos.
+    2: (num) => `Eres un Arquitecto eXeLearning. FASE 2: SECUENCIA (Sesión/Bloque nº${num}).
+Genera el JSON para la Sesión nº${num}. REVISA el listado de vídeos de YouTube adjunto y usa la URL que mejor encaje con la temática de esta sesión.
+IDEVICES REQUERIDOS:
+- Todos los mencionados en la SA para esta sesión (ej: interactive-video, select-media-files, udl-content, etc.).
+- Para 'interactive-video', busca la URL en el listado de recursos multimedia.
 
-Asegúrate de que cada iDevice tenga un título ("title") descriptivo y motivador.
 ${SHARED_RULES}`,
 
-    3: `Eres un Arquitecto eXeLearning. FASE 3: CIERRE Y METADATOS.
-Genera el JSON para el cierre y la evaluación de la SA.
-IDEVICES RECOMENDADOS:
-- 'text': Resumen del legado, conclusiones y bibliografía.
-- 'checklist': Lista de objetivos alcanzados (autoevaluación del alumno).
-- 'rubric': Tabla de evaluación detallada (categorías y niveles 1-4).
-- 'progress-report': Para que el alumno vea su resumen de trabajo.
-- 'download-source-file': Para descargar el paquete .elpx fuente.
+    3: `Eres un Arquitecto eXeLearning. FASE 3: CIERRE Y EVALUACIÓN.
+Genera el JSON final.
+- 'rubric': Crea una tabla detallada.
+- 'checklist': Lista de autoevaluación.
+- 'progress-report': Informe de progreso.
+- 'text': Conclusiones y créditos.
 
 ${SHARED_RULES}`
 };

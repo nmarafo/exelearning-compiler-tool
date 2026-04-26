@@ -92,7 +92,7 @@ export async function compileExeProject(pagesConfig) {
                 if (props.image) fullHtml += `<p style="text-align:center;"><img src="${props.image}" alt="Imagen" style="max-width:100%; height:auto;"></p>`;
                 if (props.summary) fullHtml += `<div class="exe-summary" style="background:#f0f9ff; padding:1rem; border-radius:0.5rem; margin-bottom:1rem; border:1px solid #bae6fd;"><strong>Resumen:</strong> ${props.summary}</div>`;
                 
-                const mainText = props.content && typeof props.content === 'string' ? props.content : (props.textTextarea || "");
+                const mainText = props.content || props.main_text || props.textTextarea || "";
                 fullHtml += `<div class="exe-text-content">${mainText}</div>`;
                 
                 props.textTextarea = `<div class="exe-text-activity">${fullHtml}</div>`;
@@ -102,7 +102,7 @@ export async function compileExeProject(pagesConfig) {
             if (props.participants) props.textInfoParticipantsInput = props.participants;
 
             if (idev.type === 'casestudy') {
-                if (props.story) props.history = props.story;
+                if (props.story || props.history) props.history = props.story || props.history;
                 if (props.activity || props.feedback) {
                     props.activities = [{
                         activity: props.activity || "Actividad",
@@ -131,8 +131,13 @@ export async function compileExeProject(pagesConfig) {
             }
 
             if (idev.type === 'udl-content') {
-                const udlText = (typeof props.content === 'string' ? props.content : null) || props.textTextarea || "";
-                snippet = snippet.replace(/<p>Contenido principal<\/p>/g, udlText);
+                const udlMain = props.main_text || props.content || props.textTextarea || "";
+                const udlEasy = props.easy_reading || props.simplified || "";
+                const udlAudio = props.audio_script || props.audio || "";
+                
+                snippet = snippet.replace(/<p>Contenido principal<\/p>/g, udlMain);
+                snippet = snippet.replace(/<p>Lectura facilitada<\/p>/g, udlEasy);
+                snippet = snippet.replace(/<p>Audio<\/p>/g, udlAudio);
             }
 
             if (idev.type === 'image-gallery' && props.images) {
