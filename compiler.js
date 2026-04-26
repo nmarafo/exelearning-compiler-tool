@@ -230,11 +230,11 @@ export async function compileExeProject(pagesConfig) {
             // D) Codificación URI interactiva (Juegos) y Sincronización de jsonProperties
             const uriEncodedTypes = ['checklist', 'guess', 'select-media-files', 'rubric'];
             if (uriEncodedTypes.includes(idev.type)) {
-                // Regex robusto para capturar el div DataGame js-hidden
-                const dataGameRegex = /(<div[^>]*class="[^"]*DataGame js-hidden"[^>]*>)(.*?)(<\/div>)/i;
+                // Regex robusto para capturar el div DataGame (con o sin js-hidden)
+                const dataGameRegex = /(<div[^>]*class="[^"]*DataGame[^"]*"[^>]*>)(.*?)(<\/div>)/i;
                 if (dataGameRegex.test(snippet)) {
                     snippet = snippet.replace(dataGameRegex, (match, p1, p2, p3) => {
-                        return p1 + encodeURIComponent(JSON.stringify(props)) + p3;
+                        return p1 + JSON.stringify(props) + p3;
                     });
                 }
             }
