@@ -18,15 +18,17 @@ export async function compileExeProject(pagesConfig) {
 <!DOCTYPE ode SYSTEM "content.dtd">
 <ode xmlns="http://www.intef.es/xsd/ode" version="2.0">
 <userPreferences>
-  <userPreference><key>theme</key><value>base</value></userPreference>
+  <userPreference><key>theme</key><value>intef</value></userPreference>
 </userPreferences>
 <odeResources>
   <odeResource><key>odeId</key><value>${PROJECT_ID}</value></odeResource>
   <odeResource><key>exe_version</key><value>3.0</value></odeResource>
 </odeResources>
 <odeProperties>
-  <odeProperty><key>pp_title</key><value>Proyecto Generado por IA</value></odeProperty>
+  <odeProperty><key>pp_title</key><value>Situación de Aprendizaje REA</value></odeProperty>
   <odeProperty><key>pp_lang</key><value>es</value></odeProperty>
+  <odeProperty><key>pp_license</key><value>creative commons: attribution - share alike 4.0</value></odeProperty>
+  <odeProperty><key>pp_licenseUrl</key><value>https://creativecommons.org/licenses/by-sa/4.0/</value></odeProperty>
 </odeProperties>
 <odeNavStructures>`;
 
@@ -61,6 +63,17 @@ export async function compileExeProject(pagesConfig) {
             snippet = snippet.replace(/UUID-IDEVICE/g, ideviceId);
             snippet = snippet.replace(/UUID-EVALUACION/g, evalId);
 
+            // Determinar Icono y Nombre de Bloque según tipo
+            let iconName = 'activity';
+            let blockName = 'Contenido';
+            if (['form', 'guess', 'select-media-files', 'checklist'].includes(idev.type)) {
+                iconName = 'interactive';
+                blockName = 'Actividad Interactiva';
+            } else if (idev.type === 'udl-content') {
+                iconName = 'info';
+                blockName = 'Contenido DUA';
+            }
+
             // A) iDevices URI Encoded
             const uriEncodedTypes = ['checklist', 'guess', 'select-media-files', 'rubric'];
             if (uriEncodedTypes.includes(idev.type) && idev.content) {
@@ -76,6 +89,9 @@ export async function compileExeProject(pagesConfig) {
                     try {
                         let obj = JSON.parse(p2);
                         Object.assign(obj, idev.content);
+                        // Asegurar que el ideviceId en el JSON sea el mismo que el estructural
+                        if (obj.ideviceId) obj.ideviceId = ideviceId;
+                        if (obj.id) obj.id = ideviceId;
                         return p1 + JSON.stringify(obj) + p3;
                     } catch (e) {
                         return match;
@@ -91,8 +107,9 @@ export async function compileExeProject(pagesConfig) {
     <odePagStructure>
       <odePageId>${pageId}</odePageId>
       <odeBlockId>${blockId}</odeBlockId>
-      <odeBlockName>Block</odeBlockName>
-      <odeBlockOrder>${componentOrder++}</odeBlockOrder>
+      <blockName>${blockName}</blockName>
+      <iconName>${iconName}</iconName>
+      <odePagStructureOrder>${componentOrder++}</odePagStructureOrder>
       <odePagStructureProperties></odePagStructureProperties>
       <odeComponents>
 ${snippet}
