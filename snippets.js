@@ -140,8 +140,8 @@ export const SNIPPETS_DICT = {
           <odeBlockId>UUID-BLOQUE</odeBlockId>
           <odeIdeviceId>UUID-IDEVICE</odeIdeviceId>
           <odeIdeviceTypeName>progress-report</odeIdeviceTypeName>
-          <htmlView><![CDATA[<div class="informe-IDevice"><div class="informe-DataGame js-hidden">{"typeGame":"Progress Report","sessionIdevices":[]}</div></div>]]></htmlView>
-          <jsonProperties></jsonProperties>
+          <htmlView><![CDATA[<div class="informe-IDevice"><div class="informe-instructions"><p>{{INSTRUCTIONS}}</p></div><div class="informe-button" style="text-align:center;margin-top:10px;"><input type="button" value="Generar informe de progreso" class="feedbacktooglebutton"></div><div class="informe-DataGame js-hidden">{"typeGame":"Progress Report","sessionIdevices":[]}</div></div>]]></htmlView>
+          <jsonProperties><![CDATA[{"ideviceId":"UUID-IDEVICE","typeGame":"Progress Report","instructions":"<p>{{INSTRUCTIONS}}</p>"}]]></jsonProperties>
           <odeComponentsOrder>0</odeComponentsOrder>
           <odeComponentsProperties>
           </odeComponentsProperties>

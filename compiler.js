@@ -216,6 +216,7 @@ export async function compileExeProject(pagesConfig) {
             });
             
             // B) Marcadores HTML (Vista previa)
+            if (props.instructions) snippet = snippet.replaceAll('{{INSTRUCTIONS}}', props.instructions);
             if (props.textTextarea) snippet = snippet.replaceAll('{{CONTENT}}', props.textTextarea);
             if (props.history) snippet = snippet.replaceAll('{{HISTORY}}', props.history);
             if (props.activities && props.activities[0]) {
@@ -225,7 +226,8 @@ export async function compileExeProject(pagesConfig) {
             if (props.digHtml) snippet = snippet.replaceAll('{{DIGCOMP_CONTENT}}', props.digHtml);
 
             // C) Limpieza de marcadores no usados
-            snippet = snippet.replaceAll('{{CONTENT}}', '')
+            snippet = snippet.replaceAll('{{INSTRUCTIONS}}', '')
+                             .replaceAll('{{CONTENT}}', '')
                              .replaceAll('{{HISTORY}}', '')
                              .replaceAll('{{ACTIVITY}}', '')
                              .replaceAll('{{FEEDBACK}}', '')
