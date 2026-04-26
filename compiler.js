@@ -222,12 +222,16 @@ export async function compileExeProject(pagesConfig) {
                              .replaceAll('{{FEEDBACK}}', '')
                              .replaceAll('{{DIGCOMP_CONTENT}}', '');
 
-            // D) Codificación URI interactiva
+            // D) Codificación URI interactiva (Juegos)
             const uriEncodedTypes = ['checklist', 'guess', 'select-media-files', 'rubric'];
             if (uriEncodedTypes.includes(idev.type)) {
-                snippet = snippet.replace(/(<div class=".*?DataGame js-hidden">)(.*?)(<\/div>)/, (match, p1, p2, p3) => {
-                    return p1 + encodeURIComponent(JSON.stringify(props)) + p3;
-                });
+                // Buscamos cualquier div que termine en DataGame js-hidden
+                const dataGameRegex = /(<div class="[^"]*DataGame js-hidden"[^>]*>)(.*?)(<\/div>)/;
+                if (dataGameRegex.test(snippet)) {
+                    snippet = snippet.replace(dataGameRegex, (match, p1, p2, p3) => {
+                        return p1 + encodeURIComponent(JSON.stringify(props)) + p3;
+                    });
+                }
             }
 
             xml += `

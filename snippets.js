@@ -116,8 +116,8 @@ export const SNIPPETS_DICT = {
           <odeBlockId>UUID-BLOQUE</odeBlockId>
           <odeIdeviceId>UUID-IDEVICE</odeIdeviceId>
           <odeIdeviceTypeName>guess</odeIdeviceTypeName>
-          <htmlView><![CDATA[<div class="adivina-IDevice"><div class="adivina-instructions gameQP-instructions"><p>Adivina las palabras.</p></div><div class="adivina-DataGame js-hidden"></div></div>]]></htmlView>
-          <jsonProperties></jsonProperties>
+          <htmlView><![CDATA[<div class="adivina-IDevice"><div class="adivina-instructions gameQP-instructions"><p>Adivina las palabras.</p></div><div class="adivina-DataGame js-hidden" data-id="UUID-IDEVICE"></div></div>]]></htmlView>
+          <jsonProperties><![CDATA[{"ideviceId":"UUID-IDEVICE","typeGame":"Guess","instructions":"<p>Adivina las palabras.</p>","msgs":{"msgCorrect":"¡Correcto!","msgIncorrect":"¡Incorrecto!","msgLookAnswer":"Mira la respuesta","msgSubmit":"Comprobar"},"words":[]}]]></jsonProperties>
           <odeComponentsOrder>0</odeComponentsOrder>
           <odeComponentsProperties>
           </odeComponentsProperties>
