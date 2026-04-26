@@ -21,6 +21,16 @@
             <div class="badge">V4.0 - Standalone</div>
             <h1>eXeLearning <span>Compiler Tool</span></h1>
             <p class="subtitle">Traduce diseños de IA (JSON) a paquetes .elpx nativos al instante.</p>
+            
+            <div class="project-actions" style="margin-top: 1.5rem; display: flex; gap: 1rem; justify-content: center;">
+                <button id="btn-save-project" class="secondary-btn" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 0.6rem 1.2rem; border-radius: 12px; cursor: pointer; font-family: inherit; font-size: 0.9rem; display: flex; align-items: center; gap: 0.5rem; transition: all 0.3s ease;">
+                    <span>💾</span> Guardar Proyecto (JSON)
+                </button>
+                <button id="btn-load-project" class="secondary-btn" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 0.6rem 1.2rem; border-radius: 12px; cursor: pointer; font-family: inherit; font-size: 0.9rem; display: flex; align-items: center; gap: 0.5rem; transition: all 0.3s ease;">
+                    <span>📂</span> Cargar Proyecto (JSON)
+                </button>
+                <input type="file" id="input-load-project" style="display: none;" accept=".json">
+            </div>
         </header>
 
         <section class="glass-panel prompt-panel">

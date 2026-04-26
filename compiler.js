@@ -133,14 +133,16 @@ export async function compileExeProject(pagesConfig) {
                     feedback: q.feedback || ""
                 }));
 
-                let formHtml = "";
+                let formHtml = `<div class="exe-form-questions-static" style="padding: 10px; background: rgba(0,0,0,0.02); border-radius: 8px; margin-bottom: 20px;">`;
                 props.questionsData.forEach((q, i) => {
-                    formHtml += `<div class="exe-form-question" style="margin-bottom:1.5rem;">
-                        <p><strong>Pregunta ${i+1}:</strong> ${q.question}</p>
-                        <textarea style="width:100%; height:80px; border-radius:4px; border:1px solid #ccc; padding:8px;"></textarea>
+                    formHtml += `<div class="exe-form-question" style="margin-bottom:1.5rem; border-bottom: 1px solid #eee; padding-bottom: 1rem;">
+                        <p style="margin-bottom:0.5rem;"><strong>Pregunta ${i+1}:</strong> ${q.question}</p>
+                        <textarea placeholder="Escribe tu respuesta aquí..." style="width:100%; height:100px; border-radius:6px; border:1px solid #ddd; padding:10px; font-family:inherit; resize:vertical; background:white;"></textarea>
                     </div>`;
                 });
-                snippet = snippet.replace(/<div class="form-instructions">/g, `<div class="form-questions-list">${formHtml}</div><div class="form-instructions">`);
+                formHtml += `</div>`;
+                // Inyectamos al principio del contenedor principal del formulario
+                snippet = snippet.replace(/(<div id="frmMainContainer-[^"]*"[^>]*>)/i, `$1${formHtml}`);
             }
 
             if (idev.type === 'udl-content') {

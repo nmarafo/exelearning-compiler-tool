@@ -171,4 +171,51 @@ document.addEventListener('DOMContentLoaded', () => {
             btnCompile.disabled = false;
         }
     });
+
+    // 4. Gestión de Proyecto (Guardar/Cargar)
+    document.getElementById('btn-save-project').addEventListener('click', () => {
+        const projectData = {
+            phase1: phase1Input.value,
+            phase2: Array.from(sessionsContainer.querySelectorAll('textarea')).map(t => t.value),
+            phase3: phase3Input.value,
+            timestamp: new Date().toISOString()
+        };
+        
+        const blob = new Blob([JSON.stringify(projectData, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `proyecto_exelearning_${new Date().getTime()}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+    });
+
+    document.getElementById('btn-load-project').addEventListener('click', () => {
+        document.getElementById('input-load-project').click();
+    });
+
+    document.getElementById('input-load-project').addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            try {
+                const data = JSON.parse(e.target.result);
+                if (data.phase1 !== undefined) phase1Input.value = data.phase1;
+                if (data.phase3 !== undefined) phase3Input.value = data.phase3;
+                
+                if (data.phase2 && Array.isArray(data.phase2)) {
+                    const textareas = sessionsContainer.querySelectorAll('textarea');
+                    data.phase2.forEach((val, i) => {
+                        if (textareas[i]) textareas[i].value = val;
+                    });
+                }
+                alert("Proyecto cargado con éxito.");
+            } catch (err) {
+                alert("Error al cargar el proyecto: " + err.message);
+            }
+        };
+        reader.readAsText(file);
+    });
 });
