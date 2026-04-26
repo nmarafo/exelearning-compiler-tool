@@ -115,7 +115,11 @@ export async function compileExeProject(pagesConfig) {
             if (idev.type === 'digcompedu' && props.areas) {
                 let digHtml = "<ul>";
                 props.areas.forEach(a => {
-                    digHtml += `<li><strong>${a.area}:</strong> ${a.description}</li>`;
+                    if (typeof a === 'string') {
+                        digHtml += `<li>${a}</li>`;
+                    } else if (typeof a === 'object') {
+                        digHtml += `<li><strong>${a.area || ""}:</strong> ${a.description || ""}</li>`;
+                    }
                 });
                 digHtml += "</ul>";
                 if (props.justification) digHtml += `<p><em>${props.justification}</em></p>`;
