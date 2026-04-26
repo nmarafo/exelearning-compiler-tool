@@ -140,6 +140,29 @@ export async function compileExeProject(pagesConfig) {
                 snippet = snippet.replace(/<p>Audio<\/p>/g, udlAudio);
             }
 
+            if (idev.type === 'checklist' && (props.tasks || props.list)) {
+                const tasks = props.tasks || props.list || [];
+                let listHtml = "<ul>";
+                tasks.forEach(t => listHtml += `<li>${t}</li>`);
+                listHtml += "</ul>";
+                snippet = snippet.replace(/<p>Completa la lista de cotejo marcando las casillas.<\/p>/g, listHtml);
+            }
+
+            if (idev.type === 'rubric' && (props.rows || props.criteria)) {
+                const rows = props.rows || props.criteria || [];
+                let rubHtml = '<table border="1" style="width:100%; border-collapse:collapse;"><thead><tr><th>Categoría</th><th>Nivel 1</th><th>Nivel 2</th><th>Nivel 3</th><th>Nivel 4</th></tr></thead><tbody>';
+                rows.forEach(r => {
+                    const l1 = r.level1 || r.beginner_1 || "";
+                    const l2 = r.level2 || r.apprentice_2 || "";
+                    const l3 = r.level3 || r.advanced_3 || "";
+                    const l4 = r.level4 || r.expert_4 || "";
+                    rubHtml += `<tr><td><strong>${r.category || ""}</strong></td><td>${l1}</td><td>${l2}</td><td>${l3}</td><td>${l4}</td></tr>`;
+                });
+                rubHtml += '</tbody></table>';
+                // La rúbrica de eXe es compleja, pero inyectamos el HTML en un contenedor visible
+                snippet = snippet.replace(/<div class="exe-rubrics-DataGame js-hidden"><\/div>/g, `<div class="exe-rubrics-view">${rubHtml}</div><div class="exe-rubrics-DataGame js-hidden"></div>`);
+            }
+
             if (idev.type === 'image-gallery' && props.images) {
                 let galleryHtml = '<div class="exe-image-gallery" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:1rem;">';
                 props.images.forEach(img => {

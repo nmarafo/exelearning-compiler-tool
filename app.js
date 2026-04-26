@@ -1,33 +1,38 @@
 import { compileExeProject } from './compiler.js';
 
 const SHARED_RULES = `REGLAS TÉCNICAS:
-1. iDevice 'text': Usa "title", "main_text", "image" (URL directa. Si no hay en el doc, usa una de Unsplash relacionada o deja una descripción clara en "image_desc"), "duration" y "participants".
+1. iDevice 'text': Usa "title", "main_text", "image" (SOLO si hay URL en el listado adjunto, si no déjalo vacío ""), "duration" y "participants".
 2. iDevice 'udl-content': Usa "title", "main_text", "easy_reading" y "audio_script".
-3. iDevice 'interactive-video': Usa "title" y "url" (de YouTube).
+3. iDevice 'interactive-video': Usa "title" y "url" (URL de YouTube del listado).
 4. iDevice 'casestudy': Usa "title", "story", "activity" y "feedback".
-5. iDevice 'image-gallery': Usa "title", "images" (array de {url, caption}).
+5. iDevice 'image-gallery': Usa "title", "images" (array de {url, caption} solo con fuentes del listado).
 6. iDevice 'form': Usa "title", "questions" (array).
 7. iDevice 'guess': Usa "title", "term", "instructions", "hint" y "feedback".
-8. FORMATO: Devuelve ÚNICAMENTE un objeto JSON de página: { "page_name": "...", "idevices": [...] }`;
+8. iDevice 'checklist': Usa "title" y "tasks" (array de strings).
+9. iDevice 'rubric': Usa "title" y "rows" (array de {category, level1, level2, level3, level4}).
+10. FORMATO: Devuelve ÚNICAMENTE un objeto JSON de página: { "page_name": "...", "idevices": [...] }`;
 
 const PHASED_PROMPTS = {
     1: `Eres un Arquitecto eXeLearning. FASE 1: INICIO Y FUNDAMENTACIÓN.
-Genera el JSON para las páginas iniciales. REVISA los recursos multimedia adjuntos.
-- Si no hay imágenes en el doc, usa una URL de Unsplash (ej: https://source.unsplash.com/featured/?history,canary-islands) para la portada.
-OBLIGATORIO incluir: Portada (text), Justificación (text+digcompedu), Objetivos (udl-content).
+Genera el JSON para las páginas iniciales.
+- OBLIGATORIO: Usa solo imágenes y vídeos del listado de recursos multimedia adjunto. Si el listado de imágenes está vacío, el campo "image" DEBE ser "".
+- Incluye: Portada (text), Justificación (text+digcompedu), Objetivos (udl-content) y Descarga (download-source-file).
 
 ${SHARED_RULES}`,
 
     2: (num) => `Eres un Arquitecto eXeLearning. FASE 2: SECUENCIA (Sesión/Bloque nº${num}).
-Genera el JSON para la Sesión nº${num}. 
-INSTRUCCIONES VISUALES:
-- Usa iDevice 'text' con una imagen representativa. Si el listado de recursos no tiene imágenes, BUSCA o sugiere una URL de Unsplash relacionada con la temática de esta sesión específica.
-- Para 'interactive-video', usa OBLIGATORIAMENTE una URL del listado de vídeos de YouTube proporcionado que coincida con la sesión.
+Genera el JSON para la Sesión nº${num}.
+- OBLIGATORIO: Usa las URLs de YouTube del listado que coincidan con la temática.
+- No inventes URLs de imágenes. Si no hay en el listado, usa solo texto.
+- Usa iDevices variados según la SA (casestudy, guess, interactive-video, select-media-files).
 
 ${SHARED_RULES}`,
 
     3: `Eres un Arquitecto eXeLearning. FASE 3: CIERRE Y EVALUACIÓN.
-Genera el JSON final con Rúbrica, Checklist e Informe de progreso.
+Genera el JSON final de cierre.
+- OBLIGATORIO: Crea una 'rubric' profesional con 4 niveles de desempeño. Usa el campo "rows" con esta estructura: { "category": "...", "level1": "...", "level2": "...", "level3": "...", "level4": "..." }.
+- Crea un 'checklist' con las tareas clave de la SA.
+- Incluye Conclusiones (text) y el Informe de Progreso (progress-report).
 
 ${SHARED_RULES}`
 };
