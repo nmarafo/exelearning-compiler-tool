@@ -222,16 +222,26 @@ export async function compileExeProject(pagesConfig) {
                              .replaceAll('{{FEEDBACK}}', '')
                              .replaceAll('{{DIGCOMP_CONTENT}}', '');
 
-            // D) Codificación URI interactiva (Juegos)
+            // D) Codificación URI interactiva (Juegos) y Sincronización de jsonProperties
             const uriEncodedTypes = ['checklist', 'guess', 'select-media-files', 'rubric'];
             if (uriEncodedTypes.includes(idev.type)) {
-                // Buscamos cualquier div que termine en DataGame js-hidden
                 const dataGameRegex = /(<div class="[^"]*DataGame js-hidden"[^>]*>)(.*?)(<\/div>)/;
                 if (dataGameRegex.test(snippet)) {
                     snippet = snippet.replace(dataGameRegex, (match, p1, p2, p3) => {
                         return p1 + encodeURIComponent(JSON.stringify(props)) + p3;
                     });
                 }
+            }
+
+            // Sincronizar jsonProperties CDATA (Fundamental para que eXe vea los datos en el editor)
+            const jsonPropsRegex = /(<jsonProperties><!\[CDATA\[)(.*?)(\]\]><\/jsonProperties>)/;
+            if (jsonPropsRegex.test(snippet)) {
+                snippet = snippet.replace(jsonPropsRegex, (match, p1, p2, p3) => {
+                    // Mantenemos el ID original si existe en el snippet pero no en props
+                    const originalJson = JSON.parse(p2 || "{}");
+                    const mergedProps = { ...originalJson, ...props };
+                    return p1 + JSON.stringify(mergedProps) + p3;
+                });
             }
 
             xml += `
