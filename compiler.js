@@ -74,22 +74,60 @@ export async function compileExeProject(pagesConfig) {
                 blockName = 'Contenido DUA';
             }
 
-            // A) iDevices URI Encoded
-            const uriEncodedTypes = ['checklist', 'guess', 'select-media-files', 'rubric'];
-            if (uriEncodedTypes.includes(idev.type) && idev.content) {
-                snippet = snippet.replace(/(<div class=".*?DataGame js-hidden">)(.*?)(<\/div>)/, (match, p1, p2, p3) => {
-                    const encodedData = encodeURIComponent(JSON.stringify(idev.content));
-                    return p1 + encodedData + p3;
-                });
-            } 
-            // B) iDevices Regulares
-            else if (idev.content) {
+            // Normalización de datos (Mapeo de claves IA -> eXeLearning)
+            if (idev.content) {
+                const c = idev.content;
+                
+                // Texto y metadatos
+                if (c.content && !c.textTextarea) c.textTextarea = c.content;
+                if (c.duration) c.textInfoDurationInput = c.duration;
+                if (c.participants) c.textInfoParticipantsInput = c.participants;
+
+                // Caso práctico
+                if (idev.type === 'casestudy') {
+                    if (c.story) c.history = c.story;
+                    if (c.activity || c.feedback) {
+                        c.activities = [{
+                            activity: c.activity || "Actividad",
+                            feedback: c.feedback || "Retroalimentación",
+                            buttonCaption: c.buttonCaption || "Mostrar retroalimentación"
+                        }];
+                    }
+                }
+
+                // Formulario / Cuestionario
+                if (idev.type === 'form' && c.questions) {
+                    c.questionsData = c.questions.map(q => ({
+                        question: typeof q === 'string' ? q : (q.question || ""),
+                        type: "textarea",
+                        feedback: q.feedback || ""
+                    }));
+                }
+
+                // UDL / DUA
+                if (idev.type === 'udl-content' && c.content) {
+                    // Reemplazar el marcador en el snippet HTML
+                    snippet = snippet.replace(/<p>Contenido principal<\/p>/g, c.content);
+                }
+
+                // Galería de imágenes (Simulación en HTML)
+                if (idev.type === 'image-gallery' && c.images) {
+                    let galleryHtml = '<div class="exe-image-gallery">';
+                    c.images.forEach(img => {
+                        galleryHtml += `<figure><img src="${img.url}" alt="${img.caption}"><figcaption>${img.caption}</figcaption></figure>`;
+                    });
+                    galleryHtml += '</div>';
+                    snippet = snippet.replace(/<div class="imageGallery-body"><\/div>/g, `<div class="imageGallery-body">${galleryHtml}</div>`);
+                }
+            }
+
+            // Inyectar JSONProperties
+            if (idev.content) {
                 snippet = snippet.replace(/(<jsonProperties><!\[CDATA\[)(.*?)(\]\]><\/jsonProperties>)/, (match, p1, p2, p3) => {
                     if (!p2) return match;
                     try {
                         let obj = JSON.parse(p2);
                         Object.assign(obj, idev.content);
-                        // Asegurar que el ideviceId en el JSON sea el mismo que el estructural
                         if (obj.ideviceId) obj.ideviceId = ideviceId;
                         if (obj.id) obj.id = ideviceId;
                         return p1 + JSON.stringify(obj) + p3;
@@ -98,8 +136,21 @@ export async function compileExeProject(pagesConfig) {
                     }
                 });
                 
+                // Reemplazo de marcadores HTML comunes
                 if (idev.content.textTextarea) {
                     snippet = snippet.replace(/<p>Mi texto<\/p>/g, idev.content.textTextarea);
+                }
+                if (idev.content.history) {
+                    snippet = snippet.replace(/<p>Mi historia<\/p>/g, idev.content.history);
+                }
+
+                // Codificación URI para iDevices de juegos/interactivos
+                const uriEncodedTypes = ['checklist', 'guess', 'select-media-files', 'rubric'];
+                if (uriEncodedTypes.includes(idev.type)) {
+                    snippet = snippet.replace(/(<div class=".*?DataGame js-hidden">)(.*?)(<\/div>)/, (match, p1, p2, p3) => {
+                        const encodedData = encodeURIComponent(JSON.stringify(idev.content));
+                        return p1 + encodedData + p3;
+                    });
                 }
             }
 
