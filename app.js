@@ -43,19 +43,17 @@ ${SHARED_RULES}`
 
 document.addEventListener('DOMContentLoaded', () => {
     const btnCopy = document.getElementById('btn-copy-prompt');
-    const btnAdd = document.getElementById('btn-add-json');
     const btnCompile = document.getElementById('btn-compile');
-    const btnReset = document.getElementById('btn-reset');
-    const jsonInput = document.getElementById('json-input');
     const copyStatus = document.getElementById('copy-status');
     const errorDisplay = document.getElementById('error-display');
-    
-    const pageCountDisplay = document.getElementById('page-count');
-    const idevCountDisplay = document.getElementById('idev-count');
     const phaseBtns = document.querySelectorAll('.phase-btn');
+    
+    // Textareas por fases
+    const phase1Input = document.getElementById('json-phase-1');
+    const phase2Input = document.getElementById('json-phase-2');
+    const phase3Input = document.getElementById('json-phase-3');
 
     let currentPhase = "1";
-    let projectPages = [];
 
     // Selección de Fase
     phaseBtns.forEach(btn => {
@@ -77,32 +75,34 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Añadir JSON al Proyecto
-    btnAdd.addEventListener('click', () => {
-        errorDisplay.style.display = 'none';
-        const jsonText = jsonInput.value.trim();
-        
-        if (!jsonText) return;
-
-        try {
-            const newPages = JSON.parse(jsonText);
-            if (!Array.isArray(newPages)) throw new Error("El JSON debe ser un array de páginas.");
-            
-            projectPages = projectPages.concat(newPages);
-            jsonInput.value = '';
-            updateProjectStats();
-            
-        } catch (e) {
-            errorDisplay.textContent = "Error en el JSON: " + e.message;
-            errorDisplay.style.display = 'block';
-        }
-    });
-
-    // Compilar
+    // Compilar Proyecto Completo
     btnCompile.addEventListener('click', async () => {
-        if (projectPages.length === 0) return;
+        errorDisplay.style.display = 'none';
+        let projectPages = [];
 
         try {
+            // Procesar Fase 1
+            if (phase1Input.value.trim()) {
+                const p1 = JSON.parse(phase1Input.value);
+                if (Array.isArray(p1)) projectPages = projectPages.concat(p1);
+            }
+
+            // Procesar Fase 2
+            if (phase2Input.value.trim()) {
+                const p2 = JSON.parse(phase2Input.value);
+                if (Array.isArray(p2)) projectPages = projectPages.concat(p2);
+            }
+
+            // Procesar Fase 3
+            if (phase3Input.value.trim()) {
+                const p3 = JSON.parse(phase3Input.value);
+                if (Array.isArray(p3)) projectPages = projectPages.concat(p3);
+            }
+
+            if (projectPages.length === 0) {
+                throw new Error("Debes rellenar al menos un área de texto con un JSON válido.");
+            }
+
             btnCompile.disabled = true;
             btnCompile.innerHTML = '<span class="loader"></span> Generando...';
             
@@ -110,40 +110,18 @@ document.addEventListener('DOMContentLoaded', () => {
             const url = window.URL.createObjectURL(zipBlob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `proyecto_exe_completo_${Date.now()}.elpx`;
+            a.download = `situacion_aprendizaje_completa_${Date.now()}.elpx`;
             document.body.appendChild(a);
             a.click();
             window.URL.revokeObjectURL(url);
             
             btnCompile.disabled = false;
-            btnCompile.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg> Finalizar y Descargar .elpx';
+            btnCompile.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg> Generar Proyecto Completo .elpx';
             
         } catch (e) {
-            errorDisplay.textContent = "Error al compilar: " + e.message;
+            errorDisplay.textContent = "Error en los datos: " + e.message;
             errorDisplay.style.display = 'block';
             btnCompile.disabled = false;
         }
     });
-
-    // Reset
-    btnReset.addEventListener('click', () => {
-        if (confirm("¿Estás seguro de que quieres borrar todo el progreso del proyecto?")) {
-            projectPages = [];
-            updateProjectStats();
-            jsonInput.value = '';
-            errorDisplay.style.display = 'none';
-        }
-    });
-
-    function updateProjectStats() {
-        pageCountDisplay.textContent = projectPages.length;
-        
-        let idevCount = 0;
-        projectPages.forEach(p => {
-            if (p.idevices) idevCount += p.idevices.length;
-        });
-        idevCountDisplay.textContent = idevCount;
-        
-        btnCompile.disabled = projectPages.length === 0;
-    }
 });

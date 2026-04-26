@@ -52,29 +52,35 @@
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
                 </div>
                 <div>
-                    <h3>2. Construye tu Proyecto</h3>
-                    <p>Pega el JSON de cada fase y añádelo al proyecto global.</p>
+                    <h3>2. Pega tus JSON por Fases</h3>
+                    <p>Completa cada área con el contenido generado por la IA para cada fase.</p>
                 </div>
             </div>
 
-            <div class="project-stats" id="project-stats">
-                Páginas actuales: <span id="page-count">0</span> | iDevices: <span id="idev-count">0</span>
-            </div>
+            <div class="phased-inputs">
+                <div class="input-group">
+                    <label>Fase 1: Portada y Justificación</label>
+                    <textarea id="json-phase-1" class="phase-textarea" placeholder='[ { "page_name": "Portada", ... } ]'></textarea>
+                </div>
+                
+                <div class="input-group">
+                    <label>Fase 2: Secuencia Competencial (Sesiones)</label>
+                    <textarea id="json-phase-2" class="phase-textarea" placeholder='[ { "page_name": "Sesión 1", ... } ]'></textarea>
+                </div>
 
-            <textarea id="json-input" placeholder='Pega aquí el JSON generado por la IA...'></textarea>
+                <div class="input-group">
+                    <label>Fase 3: Cierre y Créditos</label>
+                    <textarea id="json-phase-3" class="phase-textarea" placeholder='[ { "page_name": "Evaluación", ... } ]'></textarea>
+                </div>
+            </div>
             
             <div class="button-group">
-                <button id="btn-add-json" class="action-button secondary">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                    Añadir al Proyecto
-                </button>
-                <button id="btn-compile" class="action-button primary" disabled>
+                <button id="btn-compile" class="action-button primary">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-                    Finalizar y Descargar .elpx
+                    Generar Proyecto Completo .elpx
                 </button>
             </div>
             
-            <button id="btn-reset" class="reset-link">Empezar proyecto de cero</button>
             <div id="error-display" class="error-msg"></div>
         </section>
 

@@ -253,11 +253,55 @@ textarea:focus {
     color: var(--primary);
 }
 
+.phased-inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.input-group label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--primary);
+    margin-left: 0.5rem;
+}
+
+.phase-textarea {
+    width: 100%;
+    height: 150px !important;
+    background: rgba(15, 23, 42, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 1rem;
+    padding: 1rem;
+    color: var(--text-main);
+    font-family: 'Monaco', 'Consolas', monospace;
+    font-size: 0.85rem;
+    line-height: 1.4;
+    resize: vertical;
+    transition: all 0.3s ease;
+}
+
+.phase-textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(0, 242, 254, 0.1);
+}
+
 .button-group {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
+    display: flex;
+    justify-content: center;
     margin-bottom: 1rem;
+}
+
+.button-group .action-button {
+    max-width: 400px;
 }
 
 .reset-link {
