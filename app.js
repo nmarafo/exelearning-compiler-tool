@@ -1,43 +1,33 @@
 import { compileExeProject } from './compiler.js';
 
 const SHARED_RULES = `REGLAS TÉCNICAS:
-1. iDevice 'text': Usa "title", "main_text", "image" (URL directa), "duration" y "participants".
+1. iDevice 'text': Usa "title", "main_text", "image" (URL directa. Si no hay en el doc, usa una de Unsplash relacionada o deja una descripción clara en "image_desc"), "duration" y "participants".
 2. iDevice 'udl-content': Usa "title", "main_text", "easy_reading" y "audio_script".
 3. iDevice 'interactive-video': Usa "title" y "url" (de YouTube).
 4. iDevice 'casestudy': Usa "title", "story", "activity" y "feedback".
 5. iDevice 'image-gallery': Usa "title", "images" (array de {url, caption}).
 6. iDevice 'form': Usa "title", "questions" (array).
-7. iDevice 'guess': Usa "title", "term", "instructions", "hint" (pista) y "feedback".
+7. iDevice 'guess': Usa "title", "term", "instructions", "hint" y "feedback".
 8. FORMATO: Devuelve ÚNICAMENTE un objeto JSON de página: { "page_name": "...", "idevices": [...] }`;
 
 const PHASED_PROMPTS = {
     1: `Eres un Arquitecto eXeLearning. FASE 1: INICIO Y FUNDAMENTACIÓN.
-Genera el JSON para las páginas iniciales basándote en la SA y el listado de recursos multimedia.
-OBLIGATORIO incluir estos iDevices si están en la SA:
-- 'text' (Portada): Usa una imagen si hay URL disponible, o deja el campo listo.
-- 'digcompedu': Detalla áreas y justificación.
-- 'udl-content': Con versiones normal, fácil y guion de audio.
-- 'download-source-file': Para archivos adjuntos.
-- 'image-gallery' (si hay imágenes).
-- 'casestudy' (si hay un caso práctico).
-- 'guess' (si hay un juego de adivinar).
+Genera el JSON para las páginas iniciales. REVISA los recursos multimedia adjuntos.
+- Si no hay imágenes en el doc, usa una URL de Unsplash (ej: https://source.unsplash.com/featured/?history,canary-islands) para la portada.
+OBLIGATORIO incluir: Portada (text), Justificación (text+digcompedu), Objetivos (udl-content).
 
 ${SHARED_RULES}`,
 
     2: (num) => `Eres un Arquitecto eXeLearning. FASE 2: SECUENCIA (Sesión/Bloque nº${num}).
-Genera el JSON para la Sesión nº${num}. REVISA el listado de vídeos de YouTube adjunto y usa la URL que mejor encaje con la temática de esta sesión.
-IDEVICES REQUERIDOS:
-- Todos los mencionados en la SA para esta sesión (ej: interactive-video, select-media-files, udl-content, etc.).
-- Para 'interactive-video', busca la URL en el listado de recursos multimedia.
+Genera el JSON para la Sesión nº${num}. 
+INSTRUCCIONES VISUALES:
+- Usa iDevice 'text' con una imagen representativa. Si el listado de recursos no tiene imágenes, BUSCA o sugiere una URL de Unsplash relacionada con la temática de esta sesión específica.
+- Para 'interactive-video', usa OBLIGATORIAMENTE una URL del listado de vídeos de YouTube proporcionado que coincida con la sesión.
 
 ${SHARED_RULES}`,
 
     3: `Eres un Arquitecto eXeLearning. FASE 3: CIERRE Y EVALUACIÓN.
-Genera el JSON final.
-- 'rubric': Crea una tabla detallada.
-- 'checklist': Lista de autoevaluación.
-- 'progress-report': Informe de progreso.
-- 'text': Conclusiones y créditos.
+Genera el JSON final con Rúbrica, Checklist e Informe de progreso.
 
 ${SHARED_RULES}`
 };
