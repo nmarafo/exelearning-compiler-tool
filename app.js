@@ -1,10 +1,10 @@
 import { compileExeProject } from './compiler.js';
 
 const SHARED_RULES = `REGLAS TÉCNICAS:
-1. iDevice 'text': Incluye "content", "duration" y "participants".
-2. iDevice 'casestudy': Usa "story", "activity" y "feedback".
-3. iDevice 'form': Usa "questions" (array de textos).
-4. iDevice 'image-gallery': Usa "images" (array con url y caption).
+1. iDevice 'text': Usa "title" (obligatorio), "content", "image" (URL directa y válida), "duration" y "participants".
+2. iDevice 'casestudy': Usa "title", "story", "activity" y "feedback".
+3. iDevice 'form': Usa "title", "questions" (array).
+4. iDevice 'image-gallery': Usa "title", "images" (array con url y caption).
 5. FORMATO: Devuelve ÚNICAMENTE un objeto JSON de página: { "page_name": "...", "idevices": [...] }`;
 
 const PHASED_PROMPTS = {

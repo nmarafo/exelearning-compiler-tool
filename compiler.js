@@ -153,6 +153,7 @@ export async function compileExeProject(pagesConfig) {
                     Object.assign(obj, props);
                     if (obj.ideviceId) obj.ideviceId = ideviceId;
                     if (obj.id) obj.id = ideviceId;
+                    if (props.title) obj.title = props.title; // Asegurar título en el JSON
                     return p1 + JSON.stringify(obj) + p3;
                 } catch (e) {
                     return match;
@@ -187,7 +188,7 @@ export async function compileExeProject(pagesConfig) {
     <odePagStructure>
       <odePageId>${pageId}</odePageId>
       <odeBlockId>${blockId}</odeBlockId>
-      <blockName>${blockName}</blockName>
+      <blockName>${props.title || blockName}</blockName>
       <iconName>${iconName}</iconName>
       <odePagStructureOrder>${componentOrder++}</odePagStructureOrder>
       <odePagStructureProperties></odePagStructureProperties>
