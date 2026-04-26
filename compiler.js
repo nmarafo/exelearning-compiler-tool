@@ -170,7 +170,12 @@ export async function compileExeProject(pagesConfig) {
                     msgCorrect: props.feedback || "¡Correcto!",
                     msgIncorrect: "¡Sigue intentándolo!",
                     msgLookAnswer: "Mira la respuesta",
-                    msgSubmit: "Comprobar"
+                    msgSubmit: "Comprobar",
+                    msgAdivina: "Adivina las palabras:",
+                    msgProxima: "Siguiente",
+                    msgRetro: "Retroalimentación",
+                    msgPuntos: "Puntos:",
+                    msgTiempo: "Tiempo:"
                 };
                 props.words = [{
                     word: props.term || "",
@@ -225,7 +230,8 @@ export async function compileExeProject(pagesConfig) {
             // D) Codificación URI interactiva (Juegos) y Sincronización de jsonProperties
             const uriEncodedTypes = ['checklist', 'guess', 'select-media-files', 'rubric'];
             if (uriEncodedTypes.includes(idev.type)) {
-                const dataGameRegex = /(<div class="[^"]*DataGame js-hidden"[^>]*>)(.*?)(<\/div>)/;
+                // Regex robusto para capturar el div DataGame js-hidden
+                const dataGameRegex = /(<div[^>]*class="[^"]*DataGame js-hidden"[^>]*>)(.*?)(<\/div>)/i;
                 if (dataGameRegex.test(snippet)) {
                     snippet = snippet.replace(dataGameRegex, (match, p1, p2, p3) => {
                         return p1 + encodeURIComponent(JSON.stringify(props)) + p3;
