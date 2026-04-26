@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>eXeLearning Compiler Tool | De JSON a .elpx</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+</head>
+<body>
+    <div class="background-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+
+    <main class="app-container">
+        <header class="hero-section">
+            <div class="badge">V4.0 - Standalone</div>
+            <h1>eXeLearning <span>Compiler Tool</span></h1>
+            <p class="subtitle">Traduce diseños de IA (JSON) a paquetes .elpx nativos al instante.</p>
+        </header>
+
+        <section class="glass-panel prompt-panel">
+            <div class="panel-header">
+                <div class="icon-box">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
+                </div>
+                <div>
+                    <h3>1. Prepara tu IA</h3>
+                    <p>Copia este prompt y pégalo en ChatGPT, Gemini o Claude para obtener el JSON correcto.</p>
+                </div>
+            </div>
+            <button id="btn-copy-prompt" class="action-button secondary">
+                Copiar Prompt Maestro
+            </button>
+            <div id="copy-status" class="status-msg">¡Copiado al portapapeles!</div>
+        </section>
+
+        <section class="glass-panel input-panel">
+            <div class="panel-header">
+                <div class="icon-box primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                </div>
+                <div>
+                    <h3>2. Pega el JSON</h3>
+                    <p>Introduce el código JSON generado por la IA a continuación.</p>
+                </div>
+            </div>
+            <textarea id="json-input" placeholder='[ { "page_name": "Inicio", "idevices": [...] } ]'></textarea>
+            
+            <button id="btn-compile" class="action-button primary">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+                Generar y Descargar .elpx
+            </button>
+            <div id="error-display" class="error-msg"></div>
+        </section>
+
+        <footer class="footer">
+            <p>nmarafo &copy; 2026 | Desarrollado con Antigravity AI</p>
+        </footer>
+    </main>
+
+    <script type="module" src="app.js"></script>
+</body>
+</html>
