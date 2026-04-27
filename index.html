@@ -40,50 +40,27 @@
                 </div>
                 <div class="header-flex">
                     <div class="header-text">
-                        <h3>1. Flujo por Fases (NotebookLM)</h3>
-                        <p>Selecciona una fase para obtener el prompt específico.</p>
+                        <h3>1. Obtener Prompt Maestro</h3>
+                        <p>Configura el número de sesiones y copia el prompt para NotebookLM.</p>
                     </div>
                     <button id="btn-show-instructions" class="primary-btn">💡 Instrucciones NotebookLM</button>
                 </div>
             </div>
             
-            <div class="phase-selector">
-                <button class="phase-btn active" data-phase="1">Fase 1: Portada</button>
-                <button class="phase-btn" data-phase="2">Fase 2: Secuencia</button>
-                <button class="phase-btn" data-phase="3">Fase 3: Cierre</button>
-            </div>
-
             <div class="prompt-area">
-                <div id="prompt-options-2" class="js-hidden">
-                    <label>Indica el número de sesión (1-4):</label>
-                    <input type="number" id="prompt-session-number" min="1" max="4" value="1">
+                <div class="prompt-controls" style="margin-bottom: 1rem; display: flex; align-items: center; gap: 1rem;">
+                    <label>Número de sesiones de desarrollo:</label>
+                    <input type="number" id="num-sessions" min="1" max="10" value="4" style="width: 70px; padding: 0.5rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.2); color: white;">
                 </div>
                 <div class="prompt-content" id="prompt-display">
-                    Selecciona una fase para ver el prompt...
+                    Presiona el botón para generar el prompt maestro...
                 </div>
                 <div class="prompt-actions">
                     <button id="btn-copy-prompt" class="primary-btn">
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                        Copiar Prompt Fase
+                        Copiar Prompt Maestro
                     </button>
-                </div>
-            </div>
-
-            <div class="mega-prompt-section" style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1);">
-                <div style="display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;">
-                    <div style="flex: 1; min-width: 250px;">
-                        <h4 style="color: var(--primary); margin-bottom: 0.3rem;">🚀 Mega-Prompt Unificado</h4>
-                        <p style="font-size: 0.85rem; color: var(--text-muted);">Genera un solo prompt con las 3 fases y todas las sesiones.</p>
-                    </div>
-                    <div style="display: flex; align-items: center; gap: 1rem;">
-                        <div class="session-selector">
-                            <label style="font-size: 0.8rem; opacity: 0.8;">Nº Sesiones:</label>
-                            <input type="number" id="mega-session-count" min="1" max="4" value="4" style="width: 50px; background: rgba(0,0,0,0.3); border: 1px solid var(--primary); color: white; border-radius: 6px; padding: 4px;">
-                        </div>
-                        <button id="btn-copy-mega-prompt" class="primary-btn" style="background: linear-gradient(135deg, #00f2fe, #4facfe);">
-                            <span>🔥</span> Copiar Mega-Prompt Completo
-                        </button>
-                    </div>
+                    <span id="copy-status" class="status-msg">¡Prompt Maestro copiado!</span>
                 </div>
             </div>
         </section>
@@ -95,26 +72,14 @@
                 </div>
                 <div>
                     <h3>2. Compilador de Estructura</h3>
-                    <p>Pega aquí los JSON generados por NotebookLM.</p>
+                    <p>Pega aquí el JSON completo generado por NotebookLM.</p>
                 </div>
             </div>
 
             <div class="editor-tabs">
                 <div class="phase-editor-item">
-                    <label>Fase 1 (Portada y Justificación)</label>
-                    <textarea id="json-input-1" class="phase-textarea" placeholder='[ { "page_name": "Portada", "idevices": [...] } ]'></textarea>
-                </div>
-                
-                <div class="phase-editor-item">
-                    <label>Fase 2 (Sesiones de Desarrollo)</label>
-                    <div class="sessions-grid" id="sessions-container">
-                    </div>
-                    <button id="btn-add-session" class="secondary-btn add-btn">➕ Añadir Sesión (S2, S3, S4...)</button>
-                </div>
-
-                <div class="phase-editor-item">
-                    <label>Fase 3 (Cierre y Evaluación)</label>
-                    <textarea id="json-input-3" class="phase-textarea" placeholder='[ { "page_name": "Evaluación", "idevices": [...] } ]'></textarea>
+                    <label>JSON de la Situación de Aprendizaje (Array de páginas)</label>
+                    <textarea id="json-input-master" class="phase-textarea" style="height: 400px !important;" placeholder='[ { "page_name": "Portada", ... }, { "page_name": "Sesión 1", ... }, ... ]'></textarea>
                 </div>
             </div>
 
@@ -122,7 +87,7 @@
                 <div id="error-display" class="error-msg"></div>
                 <button id="btn-compile" class="compile-btn">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-                    Generar Proyecto Completo .elpx
+                    Generar Proyecto .elpx
                 </button>
             </div>
         </section>
