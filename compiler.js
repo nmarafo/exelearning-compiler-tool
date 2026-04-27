@@ -225,6 +225,8 @@ export async function compileExeProject(pagesConfig) {
             }
 
             if (idev.type === 'interactive-video' && props.url) {
+                props.videoURL = props.url;
+                props.videoType = "youtube";
                 snippet = snippet.replace(/https:\/\/www\.youtube\.com\/watch\?v=Jm9qT8yqZzw/g, props.url);
             }
 
