@@ -123,7 +123,8 @@
         </footer>
     </main>
 
-    <div id="modal-instructions" class="modal">
+    <!-- Modal de Instrucciones -->
+    <div id="modal-instructions" class="modal" style="display: none;">
         <div class="modal-content glass-panel">
             <span class="close-modal" id="close-modal">&times;</span>
             <h2 class="modal-title">Guía de Uso con NotebookLM</h2>
@@ -165,8 +166,6 @@ Añade también un listado de urls de imágenes (terminadas en .jpg o .png), as�
         </div>
     </div>
 
-    <script src="snippets.js"></script>
-    <script src="compiler.js"></script>
-    <script src="app.js"></script>
+    <script type="module" src="app.js"></script>
 </body>
 </html>
