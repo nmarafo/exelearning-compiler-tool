@@ -132,16 +132,17 @@
             <div class="instruction-step">
                 <h4>1. Configuración de NotebookLM</h4>
                 <p>Pon en los ajustes el siguiente prompt personalizado y en la longitud de respuesta <strong>“Más larga”</strong>:</p>
-                <div class="code-block">
-                    “Eres un Arquitecto de Contenido Educativo especializado en eXeLearning v4 y la Guía de Estilo REA (Recursos Educativos Abiertos).<br><br>
-                    Tu tarea es generar un archivo JSON estricto que represente una Situación de Aprendizaje (SA) completa y profesional.”
+                <div class="code-container" style="position: relative;">
+                    <div class="code-block" id="prompt-config">“Eres un Arquitecto de Contenido Educativo especializado en eXeLearning v4 y la Guía de Estilo REA (Recursos Educativos Abiertos).<br><br>Tu tarea es generar un archivo JSON estricto que represente una Situación de Aprendizaje (SA) completa y profesional.”</div>
+                    <button class="secondary-btn btn-copy-modal" data-target="prompt-config" style="position: absolute; top: 10px; right: 10px; padding: 4px 8px; font-size: 0.75rem;">Copiar</button>
                 </div>
             </div>
 
             <div class="instruction-step">
                 <h4>2. Generación de la SA (Deep Research)</h4>
                 <p>Copia y pega el siguiente prompt en el Deep Research para generar la SA:</p>
-                <div class="code-block">”Actúa como un experto en diseño pedagógico digital y tecnopedagogía. Diseña una Situación de Aprendizaje de 4 sesiones de 55 minutos cada una sobre [AQUÍ TU TEMÁTICA].
+                <div class="code-container" style="position: relative;">
+                    <div class="code-block" id="prompt-research">”Actúa como un experto en diseño pedagógico digital y tecnopedagogía. Diseña una Situación de Aprendizaje de 4 sesiones de 55 minutos cada una sobre [AQUÍ TU TEMÁTICA].
 
 Para cada sesión, especifica: objetivo, acciones del docente, acciones del alumno y tipos de agrupamiento.
 
@@ -176,6 +177,8 @@ https://commons.wikimedia.org/wiki/Special:FilePath/AQUÍ_EL_NOMBRE_EXACTO_DEL_A
 Ejemplo obligatorio: Si el archivo se llama Le_Canarien.jpg, la única URL válida que debes devolverme es: https://commons.wikimedia.org/wiki/Special:FilePath/Le_Canarien.jpg
 
 Para los vídeos de YouTube, utiliza tu capacidad de navegación para extraer la URL real y funcional (ej. https://www.youtube.com/watch?v=...) asegurando que el vídeo está activo y es pertinente.”</div>
+                    <button class="secondary-btn btn-copy-modal" data-target="prompt-research" style="position: absolute; top: 10px; right: 10px; padding: 4px 8px; font-size: 0.75rem;">Copiar</button>
+                </div>
             </div>
         </div>
     </div>

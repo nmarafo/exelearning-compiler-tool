@@ -231,4 +231,22 @@ document.addEventListener('DOMContentLoaded', () => {
     window.onclick = (event) => {
         if (event.target == modal) modal.style.display = "none";
     };
+
+    // 6. Copia de Prompts en Modal
+    document.querySelectorAll('.btn-copy-modal').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const targetId = btn.getAttribute('data-target');
+            const textToCopy = document.getElementById(targetId).innerText;
+            
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                const originalText = btn.innerText;
+                btn.innerText = "¡Copiado!";
+                btn.classList.add('success');
+                setTimeout(() => {
+                    btn.innerText = originalText;
+                    btn.classList.remove('success');
+                }, 2000);
+            });
+        });
+    });
 });
