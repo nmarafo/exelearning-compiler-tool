@@ -45,7 +45,7 @@ export const SNIPPETS_DICT = {
           <odeIdeviceId>UUID-IDEVICE</odeIdeviceId>
           <odeIdeviceTypeName>download-source-file</odeIdeviceTypeName>
           <htmlView><![CDATA[<div class="exe-download-package-instructions"><p class="exe-download-package-link"><a download="exe-package:elp-name" href="exe-package:elp" style="background-color:#107275;color:#ffffff;">Descargar el archivo .elpx</a></p></div>]]></htmlView>
-          <jsonProperties></jsonProperties>
+          <jsonProperties><![CDATA[{"ideviceId":"UUID-IDEVICE"}]]></jsonProperties>
           <odeComponentsOrder>0</odeComponentsOrder>
           <odeComponentsProperties>
           </odeComponentsProperties>
@@ -57,7 +57,7 @@ export const SNIPPETS_DICT = {
           <odeIdeviceId>UUID-IDEVICE</odeIdeviceId>
           <odeIdeviceTypeName>external-website</odeIdeviceTypeName>
           <htmlView><![CDATA[<div id="iframeWebsiteIdevice"><iframe src="https://exelearning.net" width="600" height="300" style="width:100%;"></iframe></div>]]></htmlView>
-          <jsonProperties></jsonProperties>
+          <jsonProperties><![CDATA[{"ideviceId":"UUID-IDEVICE"}]]></jsonProperties>
           <odeComponentsOrder>0</odeComponentsOrder>
           <odeComponentsProperties>
           </odeComponentsProperties>
@@ -81,7 +81,7 @@ export const SNIPPETS_DICT = {
           <odeIdeviceId>UUID-IDEVICE</odeIdeviceId>
           <odeIdeviceTypeName>udl-content</odeIdeviceTypeName>
           <htmlView><![CDATA[<div class="exe-udlContent exe-udlContent-engagement"><section class="exe-udlContent-block"><div class="exe-udlContent-content"><div class="exe-udlContent-content-main"><p>Contenido principal</p></div><article class="exe-udlContent-content-simplified js-hidden"><header class='exe-udlContent-alt-content-title'><h2>Lectura facilitada</h2></header><p>Lectura facilitada</p><button class="exe-udlContent-alt-content-hide">Cerrar</button></article><article class="exe-udlContent-content-audio js-hidden"><header class='exe-udlContent-alt-content-title'><h2>Audio</h2></header><p>Audio</p><button class="exe-udlContent-alt-content-hide">Cerrar</button></article><article class="exe-udlContent-content-visual js-hidden"><header class='exe-udlContent-alt-content-title'><h2>Apoyo visual</h2></header><p>Apoyo visual</p><button class="exe-udlContent-alt-content-hide">Cerrar</button></article></div></section></div>]]></htmlView>
-          <jsonProperties></jsonProperties>
+          <jsonProperties><![CDATA[{"ideviceId":"UUID-IDEVICE"}]]></jsonProperties>
           <odeComponentsOrder>0</odeComponentsOrder>
           <odeComponentsProperties>
           </odeComponentsProperties>
@@ -93,7 +93,7 @@ export const SNIPPETS_DICT = {
           <odeIdeviceId>UUID-IDEVICE</odeIdeviceId>
           <odeIdeviceTypeName>checklist</odeIdeviceTypeName>
           <htmlView><![CDATA[<div class="listacotejo-IDevice"><div class="listacotejo-instructions CTJ-instructions"><p>Completa la lista de cotejo marcando las casillas.</p></div><div class="listacotejo-DataGame js-hidden"></div></div>]]></htmlView>
-          <jsonProperties></jsonProperties>
+          <jsonProperties><![CDATA[{"ideviceId":"UUID-IDEVICE"}]]></jsonProperties>
           <odeComponentsOrder>0</odeComponentsOrder>
           <odeComponentsProperties>
           </odeComponentsProperties>
@@ -129,7 +129,7 @@ export const SNIPPETS_DICT = {
           <odeIdeviceId>UUID-IDEVICE</odeIdeviceId>
           <odeIdeviceTypeName>interactive-video</odeIdeviceTypeName>
           <htmlView><![CDATA[<div class="exe-interactive-video"><p id="exe-interactive-video-file" class="js-hidden"><a href="https://www.youtube.com/watch?v=Jm9qT8yqZzw">youtube</a></p><script id="exe-interactive-video-contents" type="application/json">{"ideviceID":"UUID-IDEVICE","slides":[],"i18n":{}}</script></div>]]></htmlView>
-          <jsonProperties></jsonProperties>
+          <jsonProperties><![CDATA[{"ideviceId":"UUID-IDEVICE"}]]></jsonProperties>
           <odeComponentsOrder>0</odeComponentsOrder>
           <odeComponentsProperties>
           </odeComponentsProperties>
@@ -153,7 +153,7 @@ export const SNIPPETS_DICT = {
           <odeIdeviceId>UUID-IDEVICE</odeIdeviceId>
           <odeIdeviceTypeName>select-media-files</odeIdeviceTypeName>
           <htmlView><![CDATA[<div class="seleccionamedias-IDevice"><div class="seleccionamedias-instructions gameQP-instructions"><p>Selecciona las tarjetas correctas.</p></div><div class="seleccionamedias-DataGame js-hidden"></div></div>]]></htmlView>
-          <jsonProperties></jsonProperties>
+          <jsonProperties><![CDATA[{"ideviceId":"UUID-IDEVICE"}]]></jsonProperties>
           <odeComponentsOrder>0</odeComponentsOrder>
           <odeComponentsProperties>
           </odeComponentsProperties>
@@ -165,7 +165,7 @@ export const SNIPPETS_DICT = {
           <odeIdeviceId>UUID-IDEVICE</odeIdeviceId>
           <odeIdeviceTypeName>rubric</odeIdeviceTypeName>
           <htmlView><![CDATA[<div class="rubric-IDevice"><div class="rubric"><div class="exe-rubrics-DataGame js-hidden"></div></div></div>]]></htmlView>
-          <jsonProperties></jsonProperties>
+          <jsonProperties><![CDATA[{"ideviceId":"UUID-IDEVICE"}]]></jsonProperties>
           <odeComponentsOrder>0</odeComponentsOrder>
           <odeComponentsProperties>
           </odeComponentsProperties>
@@ -177,7 +177,7 @@ export const SNIPPETS_DICT = {
           <odeIdeviceId>UUID-IDEVICE</odeIdeviceId>
           <odeIdeviceTypeName>quick-questions-multiple-choice</odeIdeviceTypeName>
           <htmlView><![CDATA[<div class="quick-questions-multiple-choice-IDevice"><div class="quick-questions-multiple-choice-DataGame js-hidden"></div></div>]]></htmlView>
-          <jsonProperties></jsonProperties>
+          <jsonProperties><![CDATA[{"ideviceId":"UUID-IDEVICE"}]]></jsonProperties>
           <odeComponentsOrder>0</odeComponentsOrder>
           <odeComponentsProperties>
           </odeComponentsProperties>
@@ -189,7 +189,7 @@ export const SNIPPETS_DICT = {
           <odeIdeviceId>UUID-IDEVICE</odeIdeviceId>
           <odeIdeviceTypeName>trueorfalse</odeIdeviceTypeName>
           <htmlView><![CDATA[<div class="true-false-IDevice"><div class="true-false-DataGame js-hidden"></div></div>]]></htmlView>
-          <jsonProperties></jsonProperties>
+          <jsonProperties><![CDATA[{"ideviceId":"UUID-IDEVICE"}]]></jsonProperties>
           <odeComponentsOrder>0</odeComponentsOrder>
           <odeComponentsProperties>
           </odeComponentsProperties>

@@ -14,14 +14,18 @@ export async function compileExeProject(pagesConfig) {
     // Construir la estructura content.xml
     const PROJECT_ID = uuidv4().replace(/-/g, '').substring(0, 20).toUpperCase();
     
+    const PROJECT_VERSION_ID = uuidv4().replace(/-/g, '').substring(0, 20).toUpperCase();
+    const MODIFIED_TIMESTAMP = Date.now();
+
     let xml = `<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE ode SYSTEM "content.dtd">
 <ode xmlns="http://www.intef.es/xsd/ode" version="2.0">
 <userPreferences>
-  <userPreference><key>theme</key><value>intef</value></userPreference>
+  <userPreference><key>theme</key><value>base</value></userPreference>
 </userPreferences>
 <odeResources>
   <odeResource><key>odeId</key><value>${PROJECT_ID}</value></odeResource>
+  <odeResource><key>odeVersionId</key><value>${PROJECT_VERSION_ID}</value></odeResource>
   <odeResource><key>exe_version</key><value>3.0</value></odeResource>
 </odeResources>
 <odeProperties>
@@ -29,6 +33,16 @@ export async function compileExeProject(pagesConfig) {
   <odeProperty><key>pp_lang</key><value>es</value></odeProperty>
   <odeProperty><key>pp_license</key><value>creative commons: attribution - share alike 4.0</value></odeProperty>
   <odeProperty><key>pp_licenseUrl</key><value>https://creativecommons.org/licenses/by-sa/4.0/</value></odeProperty>
+  <odeProperty><key>pp_theme</key><value>base</value></odeProperty>
+  <odeProperty><key>pp_exelearning_version</key><value>v4.0.0-rc3</value></odeProperty>
+  <odeProperty><key>pp_modified</key><value>${MODIFIED_TIMESTAMP}</value></odeProperty>
+  <odeProperty><key>pp_addExeLink</key><value>true</value></odeProperty>
+  <odeProperty><key>pp_addPagination</key><value>false</value></odeProperty>
+  <odeProperty><key>pp_addSearchBox</key><value>false</value></odeProperty>
+  <odeProperty><key>pp_addAccessibilityToolbar</key><value>false</value></odeProperty>
+  <odeProperty><key>pp_addMathJax</key><value>false</value></odeProperty>
+  <odeProperty><key>exportSource</key><value>true</value></odeProperty>
+  <odeProperty><key>pp_globalFont</key><value>default</value></odeProperty>
 </odeProperties>
 <odeNavStructures>`;
 
@@ -295,6 +309,11 @@ ${snippet}
     xml += `
 </odeNavStructures>
 </ode>`;
+
+    // Corrección crítica RC3: Asegurar que los caracteres & se conviertan en &amp;
+    // Evitamos tocar los & que ya son parte de entidades como &amp; o &quot;
+    // O mejor, aplicamos una sustitución selectiva que no rompa el XML
+    xml = xml.replace(/&(?!(amp|lt|gt|quot|apos);)/g, "&amp;");
 
     jszip.file("content.xml", xml);
     jszip.file("content.dtd", "<!ELEMENT ode ANY>"); 
