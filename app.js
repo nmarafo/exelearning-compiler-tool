@@ -206,9 +206,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (data.phase3 !== undefined) phase3Input.value = data.phase3;
                 
                 if (data.phase2 && Array.isArray(data.phase2)) {
-                    const textareas = sessionsContainer.querySelectorAll('textarea');
+                    // Limpiamos las sesiones actuales
+                    sessionsContainer.innerHTML = "";
+                    
                     data.phase2.forEach((val, i) => {
-                        if (textareas[i]) textareas[i].value = val;
+                        const sNum = i + 1;
+                        const sessionDiv = document.createElement('div');
+                        sessionDiv.className = 'session-item glass-panel';
+                        sessionDiv.innerHTML = `
+                            <div class="panel-header">
+                                <div class="icon-box s-icon">S${sNum}</div>
+                                <div>
+                                    <h4>Sesión ${sNum}: Desarrollo</h4>
+                                    <p>Pega aquí el JSON de la Sesión ${sNum}.</p>
+                                </div>
+                            </div>
+                            <textarea id="json-s${sNum}" placeholder='[ { "page_name": "Sesión ${sNum}...", "idevices": [...] } ]'>${val}</textarea>
+                        `;
+                        sessionsContainer.appendChild(sessionDiv);
                     });
                 }
                 alert("Proyecto cargado con éxito.");
