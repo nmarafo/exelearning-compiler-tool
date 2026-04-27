@@ -49,42 +49,37 @@ document.addEventListener('DOMContentLoaded', () => {
     const promptSessionNumber = document.getElementById('prompt-session-number');
 
     // Inputs fijos
-    const phase1Input = document.getElementById('json-phase-1');
-    const phase3Input = document.getElementById('json-phase-3');
+    const phase1Input = document.getElementById('json-input-1');
+    const phase3Input = document.getElementById('json-input-3');
 
     // Configuración dinámica Fase 2
-    const sessionCountInput = document.getElementById('session-count');
+    const btnAddSession = document.getElementById('btn-add-session');
     const sessionsContainer = document.getElementById('sessions-container');
 
-    let currentPhase = "1";
-
-    // Función para renderizar textareas de sesiones
-    function renderSessionInputs() {
-        const count = parseInt(sessionCountInput.value) || 1;
-        const currentData = {};
-        
-        // Guardar datos actuales para no perderlos al re-renderizar
-        sessionsContainer.querySelectorAll('textarea').forEach(tx => {
-            currentData[tx.id] = tx.value;
-        });
-
-        sessionsContainer.innerHTML = '';
-        for (let i = 1; i <= count; i++) {
-            const id = `json-phase-2-${i}`;
-            const group = document.createElement('div');
-            group.className = 'input-group';
-            group.innerHTML = `
-                <label>Sesión/Actividad/Bloque ${i}</label>
-                <textarea id="${id}" class="phase-textarea" placeholder='Pega aquí el JSON de la Sesión ${i}...'>${currentData[id] || ''}</textarea>
-            `;
-            sessionsContainer.appendChild(group);
+    btnAddSession.addEventListener('click', () => {
+        const currentSessions = sessionsContainer.querySelectorAll('.session-item').length;
+        if (currentSessions >= 4) {
+            alert("Máximo 4 sesiones permitidas.");
+            return;
         }
-    }
+        
+        const sNum = currentSessions + 1;
+        const sessionDiv = document.createElement('div');
+        sessionDiv.className = 'session-item glass-panel';
+        sessionDiv.innerHTML = `
+            <div class="panel-header">
+                <div class="icon-box s-icon">S${sNum}</div>
+                <div>
+                    <h4>Sesión ${sNum}: Desarrollo</h4>
+                    <p>Pega aquí el JSON de la Sesión ${sNum}.</p>
+                </div>
+            </div>
+            <textarea id="json-s${sNum}" placeholder='[ { "page_name": "Sesión ${sNum}...", "idevices": [...] } ]'></textarea>
+        `;
+        sessionsContainer.appendChild(sessionDiv);
+    });
 
-    // Inicializar y escuchar cambios
-    renderSessionInputs();
-    sessionCountInput.addEventListener('change', renderSessionInputs);
-    sessionCountInput.addEventListener('keyup', renderSessionInputs);
+    let currentPhase = "1";
 
     // Selección de Fase
     phaseBtns.forEach(btn => {
