@@ -28,7 +28,10 @@ Este compilador está actualizado y validado para ser **completamente operativo 
 
 ## 📄 Licencia
 
-Este proyecto es Open Source y se distribuye bajo la misma filosofía que eXeLearning.
+Este proyecto se distribuye bajo la licencia **Apache 2.0 con reconocimiento a la autoría**. 
+
+> [!NOTE]
+> eXeLearning Open Source se distribuye bajo la licencia **AGPL-3.0**. Este compilador es una herramienta independiente que genera contenidos compatibles con dicho estándar.
 
 ---
 Creado por [Norberto Martín Afonso](https://github.com/nmarafo).
