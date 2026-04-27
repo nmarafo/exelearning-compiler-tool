@@ -161,7 +161,21 @@ Metacognición y Seguimiento Final: Termina la Situación de Aprendizaje integra
 
 Entrégame la propuesta estructurada cronológicamente (Sesión 1 a 4 por ejemplo), detallando en cada paso el 'iDevice seleccionado' y el 'Contenido literal a inyectar'.
 
-Añade también un listado de urls de imágenes (terminadas en .jpg o .png), así como de urls de vídeos de youtube que ayuden a ilustrar la SA”</div>
+Añade también un listado de urls de imágenes (terminadas en .jpg o .png), así como de urls de vídeos de youtube que ayuden a ilustrar la SA
+
+CRÍTICO - REGLA ESTRICTA PARA URLs DE IMÁGENES (PREPARACIÓN PARA JSON):
+Dado que tu respuesta será inyectada en un JSON, los enlaces de imágenes rotos son inaceptables. PROHIBIDO generar URLs que apunten al servidor upload.wikimedia.org intentando adivinar las subcarpetas numéricas (ej. /3/31/), ya que esto produce alucinaciones y enlaces rotos.
+
+Para garantizar que las URLs funcionen siempre, debes utilizar exclusivamente el sistema de redirección nativa de Wikimedia. Sigue estos dos pasos para cada imagen:
+
+1. Busca en internet para confirmar el nombre exacto del archivo (incluyendo mayúsculas, minúsculas, guiones bajos y la extensión .jpg o .png).
+
+2. Construye y devuélveme la URL utilizando estrictamente la siguiente plantilla:
+https://commons.wikimedia.org/wiki/Special:FilePath/AQUÍ_EL_NOMBRE_EXACTO_DEL_ARCHIVO
+
+Ejemplo obligatorio: Si el archivo se llama Le_Canarien.jpg, la única URL válida que debes devolverme es: https://commons.wikimedia.org/wiki/Special:FilePath/Le_Canarien.jpg
+
+Para los vídeos de YouTube, utiliza tu capacidad de navegación para extraer la URL real y funcional (ej. https://www.youtube.com/watch?v=...) asegurando que el vídeo está activo y es pertinente.”</div>
             </div>
         </div>
     </div>
