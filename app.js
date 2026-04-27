@@ -248,5 +248,62 @@ document.addEventListener('DOMContentLoaded', () => {
                 }, 2000);
             });
         });
+    // 6. Mega-Prompt Unificado
+    const btnCopyMega = document.getElementById('btn-copy-mega-prompt');
+    const megaSessionCount = document.getElementById('mega-session-count');
+
+    btnCopyMega.addEventListener('click', () => {
+        const numSessions = megaSessionCount.value || 4;
+        
+        let sessionsPrompt = "";
+        for (let i = 1; i <= numSessions; i++) {
+            sessionsPrompt += `- Sesión ${i}: Desarrollo competencial usando iDevices variados (casestudy, guess, interactive-video, etc).\n`;
+        }
+
+        const megaPrompt = `Eres un Arquitecto de Contenido Educativo experto en eXeLearning v4.
+Tu tarea es diseñar una Situación de Aprendizaje (SA) completa de ${numSessions} sesiones sobre [AQUÍ TU TEMÁTICA].
+
+REGLAS TÉCNICAS ESTRICTAS:
+1. iDevice 'text': Usa "title", "main_text", "image", "duration" y "participants".
+2. iDevice 'udl-content': Usa "title", "main_text", "easy_reading" y "audio_script".
+3. iDevice 'interactive-video': Usa "title" y "url" (YouTube).
+4. iDevice 'casestudy': Usa "title", "story", "activity" y "feedback".
+5. iDevice 'image-gallery': Usa "title", "images" (array de {url, caption}).
+6. iDevice 'form': Usa "title", "questions" (array de strings).
+7. iDevice 'guess': Usa "title", "term", "instructions", "hint" y "feedback".
+8. iDevice 'checklist': Usa "title" y "tasks" (array de strings).
+9. iDevice 'rubric': Usa "title" y "rows" (array de {category, level1, level2, level3, level4}).
+10. iDevice 'digcompedu': Se inyecta automáticamente si el JSON de justificación lo indica.
+
+REGLA DE URLs (WIKIMEDIA/YOUTUBE):
+- PROHIBIDO alucinar carpetas /3/31/. Usa siempre: https://commons.wikimedia.org/wiki/Special:FilePath/NOMBRE_ARCHIVO.jpg
+- Asegura que los vídeos de YouTube sean reales y funcionales.
+
+ESTRUCTURA DEL PROYECTO (Entrégame cada bloque en un JSON independiente listo para copiar):
+
+BLOQUE 1 (Fase 1: Inicio):
+- Portada (text)
+- Justificación (text + digcompedu)
+- Objetivos (udl-content)
+- Descarga (download-source-file)
+
+BLOQUE 2 (Fase 2: Desarrollo - ${numSessions} Sesiones):
+${sessionsPrompt}
+
+BLOQUE 3 (Fase 3: Cierre y Evaluación):
+- Conclusiones (text)
+- Rúbrica (rubric) con 4 niveles.
+- Lista de cotejo (checklist).
+- Informe de Progreso (progress-report).
+
+ENTREGA: Devuelve los JSONs estructurados de forma que pueda copiarlos y pegarlos en mi compilador por separado. No incluyas texto explicativo innecesario, solo los bloques de código JSON.`;
+
+        navigator.clipboard.writeText(megaPrompt).then(() => {
+            const originalText = btnCopyMega.innerHTML;
+            btnCopyMega.innerHTML = "<span>✅</span> ¡Mega-Prompt Copiado!";
+            setTimeout(() => {
+                btnCopyMega.innerHTML = originalText;
+            }, 3000);
+        });
     });
 });
