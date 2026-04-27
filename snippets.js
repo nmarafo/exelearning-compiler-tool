@@ -129,7 +129,7 @@ export const SNIPPETS_DICT = {
           <odeIdeviceId>UUID-IDEVICE</odeIdeviceId>
           <odeIdeviceTypeName>interactive-video</odeIdeviceTypeName>
           <htmlView><![CDATA[<div class="exe-interactive-video"><p id="exe-interactive-video-file" class="js-hidden"><a href="https://www.youtube.com/watch?v=Jm9qT8yqZzw">youtube</a></p><script id="exe-interactive-video-contents" type="application/json">{"ideviceID":"UUID-IDEVICE","slides":[],"i18n":{}}</script></div>]]></htmlView>
-          <jsonProperties><![CDATA[{"ideviceId":"UUID-IDEVICE"}]]></jsonProperties>
+          <jsonProperties><![CDATA[{"ideviceId":"UUID-IDEVICE","url":"https://www.youtube.com/watch?v=Jm9qT8yqZzw","slides":[],"i18n":{}}]]></jsonProperties>
           <odeComponentsOrder>0</odeComponentsOrder>
           <odeComponentsProperties>
           </odeComponentsProperties>

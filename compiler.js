@@ -224,6 +224,10 @@ export async function compileExeProject(pagesConfig) {
                 snippet = snippet.replace(/<div class="imageGallery-body"><\/div>/g, `<div class="imageGallery-body">${galleryHtml}</div>`);
             }
 
+            if (idev.type === 'interactive-video' && props.url) {
+                snippet = snippet.replace(/https:\/\/www\.youtube\.com\/watch\?v=Jm9qT8yqZzw/g, props.url);
+            }
+
             // 4. Inyección en el XML
             // A) JSONProperties (Estado interno)
             snippet = snippet.replace(/(<jsonProperties><!\[CDATA\[)(.*?)(\]\]><\/jsonProperties>)/, (match, p1, p2, p3) => {
