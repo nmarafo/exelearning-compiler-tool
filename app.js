@@ -27,17 +27,6 @@ REGLAS CRÍTICAS:
 ${SHARED_RULES}`;
 
 document.addEventListener('DOMContentLoaded', () => {
-    const btnCopy = document.getElementById('btn-copy-prompt');
-    const btnCompile = document.getElementById('btn-compile');
-    const copyStatus = document.getElementById('copy-status');
-    const errorDisplay = document.getElementById('error-display');
-    const phaseBtns = document.querySelectorAll('.phase-btn');
-    
-    // Controles de Prompt
-    const promptExtraControls = document.getElementById('prompt-extra-controls');
-    const promptSessionNumber = document.getElementById('prompt-session-number');
-
-    // Inputs fijos
     // Referencias UI
     const numSessionsInput = document.getElementById('num-sessions');
     const btnCopyPrompt = document.getElementById('btn-copy-prompt');
@@ -78,41 +67,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Compilar Proyecto Completo
-    btnCompile.addEventListener('click', async () => {
-        errorDisplay.style.display = 'none';
-        let projectPages = [];
-
-        try {
-            if (phase1Input.value.trim()) {
-                const p1 = JSON.parse(phase1Input.value);
-                if (Array.isArray(p1)) projectPages = projectPages.concat(p1);
-                else projectPages.push(p1);
-            }
-
-            const sessionInputs = sessionsContainer.querySelectorAll('textarea');
-            sessionInputs.forEach(input => {
-                if (input.value.trim()) {
-                    const p = JSON.parse(input.value);
-                    if (Array.isArray(p)) projectPages = projectPages.concat(p);
-                    else projectPages.push(p);
-                }
-            });
-
-            if (phase3Input.value.trim()) {
-                const p3 = JSON.parse(phase3Input.value);
-                if (Array.isArray(p3)) projectPages = projectPages.concat(p3);
-                else projectPages.push(p3);
-            }
-
-            if (projectPages.length === 0) {
-                throw new Error("Debes rellenar al menos un área de texto con un JSON válido.");
-            }
-
     // 2. Compilación
     if (btnCompile) {
         btnCompile.addEventListener('click', async () => {
-            errorDisplay.style.display = 'none';
+            if (errorDisplay) errorDisplay.style.display = 'none';
             
             try {
                 const rawJson = jsonInputMaster.value.trim();
@@ -124,6 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 btnCompile.disabled = true;
+                const originalText = btnCompile.innerHTML;
                 btnCompile.innerHTML = '<span class="loader"></span> Generando...';
                 
                 const zipBlob = await compileExeProject(data);
@@ -136,11 +95,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 window.URL.revokeObjectURL(url);
                 
                 btnCompile.disabled = false;
-                btnCompile.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg> Generar Proyecto .elpx';
+                btnCompile.innerHTML = originalText;
                 
             } catch (e) {
-                errorDisplay.textContent = "Error: " + e.message;
-                errorDisplay.style.display = 'block';
+                if (errorDisplay) {
+                    errorDisplay.textContent = "Error: " + e.message;
+                    errorDisplay.style.display = 'block';
+                }
                 btnCompile.disabled = false;
             }
         });
