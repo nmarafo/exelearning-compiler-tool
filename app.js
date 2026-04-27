@@ -233,4 +233,15 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         reader.readAsText(file);
     });
+
+    // 5. Modal de Instrucciones
+    const modal = document.getElementById('modal-instructions');
+    const btnShowModal = document.getElementById('btn-show-instructions');
+    const closeModal = document.getElementById('close-modal');
+
+    btnShowModal.onclick = () => modal.style.display = "flex";
+    closeModal.onclick = () => modal.style.display = "none";
+    window.onclick = (event) => {
+        if (event.target == modal) modal.style.display = "none";
+    };
 });

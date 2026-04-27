@@ -38,9 +38,12 @@
                 <div class="icon-box">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
                 </div>
-                <div>
-                    <h3>1. Flujo por Fases (IA)</h3>
-                    <p>Selecciona una fase para obtener el prompt específico y evitar que la IA se quede corta.</p>
+                <div style="flex: 1; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h3>1. Flujo por Fases (NotebookLM)</h3>
+                        <p>Selecciona una fase para obtener el prompt específico.</p>
+                    </div>
+                    <button id="btn-show-instructions" class="secondary-btn" style="background: var(--primary-color); border: none; padding: 0.5rem 1rem;">💡 Instrucciones NotebookLM</button>
                 </div>
             </div>
             
@@ -50,59 +53,72 @@
                 <button class="phase-btn" data-phase="3">Fase 3: Cierre</button>
             </div>
 
-            <div id="prompt-extra-controls" class="prompt-extra-controls js-hidden">
-                <span>Generar para la Sesión/Bloque/Actividad nº:</span>
-                <input type="number" id="prompt-session-number" value="1" min="1" max="10">
+            <div class="prompt-area">
+                <div id="prompt-options-2" style="display:none; margin-bottom: 1rem;">
+                    <label style="font-size: 0.85rem; color: var(--text-secondary);">Indica el número de sesión (1-4):</label>
+                    <input type="number" id="prompt-session-number" min="1" max="4" value="1" style="width: 60px; padding: 4px 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.2); color: white;">
+                </div>
+                <div class="prompt-content" id="prompt-display">
+                    Selecciona una fase para ver el prompt...
+                </div>
+                <div class="prompt-actions">
+                    <button id="btn-copy-prompt" class="primary-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                        Copiar Prompt
+                    </button>
+                    <span id="copy-status" class="status-msg">¡Copiado al portapapeles!</span>
+                </div>
             </div>
-
-            <button id="btn-copy-prompt" class="action-button secondary">
-                Copiar Prompt de la Fase
-            </button>
-            <div id="copy-status" class="status-msg">¡Prompt copiado!</div>
         </section>
 
-        <section class="glass-panel input-panel">
+        <section class="glass-panel editor-panel">
             <div class="panel-header">
-                <div class="icon-box primary">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                <div class="icon-box">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
                 </div>
                 <div>
-                    <h3>2. Pega tus JSON por Fases</h3>
-                    <p>Completa cada área con el contenido generado por la IA para cada fase.</p>
+                    <h3>2. Compilador de Estructura</h3>
+                    <p>Pega aquí los JSON generados por NotebookLM.</p>
                 </div>
             </div>
 
-            <div class="phased-inputs">
-                <div class="input-group">
-                    <label>Fase 1: Portada y Justificación</label>
-                    <textarea id="json-phase-1" class="phase-textarea" placeholder='[ { "page_name": "Portada", ... } ]'></textarea>
+            <!-- Editor por Fases -->
+            <div class="editor-tabs">
+                <div class="phase-editor-item">
+                    <label>Fase 1 (Portada y Justificación)</label>
+                    <textarea id="json-input-1" placeholder='[ { "page_name": "Portada", "idevices": [...] } ]'></textarea>
                 </div>
                 
-                <div class="input-group phase-2-config">
-                    <label>Fase 2: Secuencia Competencial</label>
-                    <div class="session-counter">
-                        <span>Número de Sesiones/Actividades/Bloques:</span>
-                        <input type="number" id="session-count" value="1" min="1" max="10">
-                    </div>
-                    <div id="sessions-container" class="phased-inputs-dynamic">
-                        <!-- Se generarán dinámicamente -->
+                <div class="phase-editor-item">
+                    <label>Fase 2 (Sesiones de Desarrollo)</label>
+                    <div class="sessions-grid" id="sessions-container">
+                        <!-- Aquí se inyectan las sesiones -->
+                        <div class="session-item glass-panel">
+                            <div class="panel-header">
+                                <div class="icon-box s-icon">S1</div>
+                                <div>
+                                    <h4>Sesión 1: Desarrollo</h4>
+                                    <p>Pega aquí el JSON de la Sesión 1.</p>
+                                </div>
+                            </div>
+                            <textarea id="json-s1" placeholder='[ { "page_name": "Sesión 1...", "idevices": [...] } ]'></textarea>
+                        </div>
                     </div>
                 </div>
 
-                <div class="input-group">
-                    <label>Fase 3: Cierre y Créditos</label>
-                    <textarea id="json-phase-3" class="phase-textarea" placeholder='[ { "page_name": "Evaluación", ... } ]'></textarea>
+                <div class="phase-editor-item">
+                    <label>Fase 3 (Cierre y Evaluación)</label>
+                    <textarea id="json-input-3" placeholder='[ { "page_name": "Evaluación", "idevices": [...] } ]'></textarea>
                 </div>
             </div>
-            
-            <div class="button-group">
-                <button id="btn-compile" class="action-button primary">
+
+            <div class="compiler-footer">
+                <div id="error-display" class="error-msg"></div>
+                <button id="btn-compile" class="compile-btn">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
                     Generar Proyecto Completo .elpx
                 </button>
             </div>
-            
-            <div id="error-display" class="error-msg"></div>
         </section>
 
         <footer class="footer">
@@ -118,6 +134,51 @@
         </footer>
     </main>
 
-    <script type="module" src="app.js"></script>
+    <!-- Modal de Instrucciones -->
+    <div id="modal-instructions" class="modal" style="display:none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.8); backdrop-filter: blur(5px); justify-content: center; align-items: center;">
+        <div class="modal-content glass-panel" style="background: rgba(20, 20, 30, 0.95); width: 90%; max-width: 800px; max-height: 85vh; overflow-y: auto; padding: 2.5rem; border-radius: 24px; position: relative; border: 1px solid rgba(255,255,255,0.1);">
+            <span class="close-modal" id="close-modal" style="position: absolute; top: 1.5rem; right: 1.5rem; font-size: 2rem; cursor: pointer; color: var(--text-secondary);">&times;</span>
+            <h2 style="margin-bottom: 1.5rem; color: var(--primary-color);">Guía de Uso con NotebookLM</h2>
+            
+            <div class="instruction-step" style="margin-bottom: 2rem; border-left: 3px solid var(--primary-color); padding-left: 1.5rem;">
+                <h4 style="margin-bottom: 0.5rem; color: white;">1. Configuración de NotebookLM</h4>
+                <p style="font-size: 0.95rem; color: var(--text-secondary); line-height: 1.6;">Pon en los ajustes el siguiente prompt personalizado y en la longitud de respuesta <strong>“Más larga”</strong>:</p>
+                <div class="code-block" style="background: rgba(0,0,0,0.3); padding: 1rem; border-radius: 8px; font-family: monospace; font-size: 0.85rem; margin-top: 0.8rem; color: #a5d6ff; border: 1px solid rgba(255,255,255,0.05);">
+                    “Eres un Arquitecto de Contenido Educativo especializado en eXeLearning v4 y la Guía de Estilo REA (Recursos Educativos Abiertos).<br><br>
+                    Tu tarea es generar un archivo JSON estricto que represente una Situación de Aprendizaje (SA) completa y profesional.”
+                </div>
+            </div>
+
+            <div class="instruction-step" style="margin-bottom: 1rem; border-left: 3px solid var(--secondary-color); padding-left: 1.5rem;">
+                <h4 style="margin-bottom: 0.5rem; color: white;">2. Generación de la SA (Deep Research)</h4>
+                <p style="font-size: 0.95rem; color: var(--text-secondary); line-height: 1.6;">Copia y pega el siguiente prompt en el Deep Research para generar la SA:</p>
+                <div class="code-block" style="background: rgba(0,0,0,0.3); padding: 1rem; border-radius: 8px; font-family: monospace; font-size: 0.8rem; margin-top: 0.8rem; color: #a5d6ff; border: 1px solid rgba(255,255,255,0.05); white-space: pre-wrap;">”Actúa como un experto en diseño pedagógico digital y tecnopedagogía. Diseña una Situación de Aprendizaje de 4 sesiones de 55 minutos cada una sobre [AQUÍ TU TEMÁTICA].
+
+Para cada sesión, especifica: objetivo, acciones del docente, acciones del alumno y tipos de agrupamiento.
+
+CRÍTICO: Toda la secuencia debe diseñarse para ser inyectada en eXeLearning v4.0. Para cada tarea, indícame exactamente qué iDevice utilizar de la siguiente lista y redacta el contenido literal (textos, preguntas, JSON, retroalimentaciones) que deberé introducir:
+
+Utiliza estratégicamente las siguientes herramientas a lo largo de las 4 sesiones:
+
+Presentación y Competencias: Inicia la secuencia justificando las competencias digitales que se trabajarán utilizando el iDevice DigCompEdu (digcompedu). Utiliza el iDevice Texto (text) para introducciones formales. Si hay material adjunto (PDFs, plantillas), indica que se use Descargar Archivo (download-source-file).
+
+Exposición Accesible y Enriquecida: Redacta la teoría usando el Contenido DUA (udl-content) (con texto principal, y versiones en 'Lectura facilitada' o 'Audio'). Apóyate visualmente con una Galería de Imágenes (image-gallery) o integra recursos de terceros (como simuladores o artículos) mediante Sitio Web Externo (external-website).
+
+Práctica Activa y Gamificada: Crea dinámicas usando Caso Práctico (casestudy) (redactando historia y solución). Introduce retos gamificados con Adivina el término (guess) y Selecciona Multimedia (select-media-files) (proporcionando los términos y opciones). Mantén la atención con un Vídeo Interactivo (interactive-video) (sugiriendo la URL y los cortes de interacción).
+
+Baterías de Preguntas (Test y Evaluación Formativa): Usa variedad en los cuestionarios: redacta ítems para Verdadero o falso (trueorfalse), preguntas rápidas simples (quick-questions), de opción múltiple (quick-questions-multiple-choice), o basadas en un clip (quick-questions-video). Si necesitas una evaluación más exhaustiva, diséñala para el iDevice Formulario (form).
+
+Metacognición y Seguimiento Final: Termina la Situación de Aprendizaje integrando un Informe de Progreso (progress-report) para que el alumno vea su estado. Diséñame además una Lista de Cotejo (checklist) con 5 tareas clave y una Rúbrica Integradora (rubric) completa (con 4 categorías y 4 niveles de desempeño listos para introducir en eXeLearning).
+
+Entrégame la propuesta estructurada cronológicamente (Sesión 1 a 4 por ejemplo), detallando en cada paso el 'iDevice seleccionado' y el 'Contenido literal a inyectar'.
+
+Añade también un listado de urls de imágenes (terminadas en .jpg o .png), así como de urls de vídeos de youtube que ayuden a ilustrar la SA”</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="snippets.js"></script>
+    <script src="compiler.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
