@@ -56,7 +56,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnAddSession = document.getElementById('btn-add-session');
     const sessionsContainer = document.getElementById('sessions-container');
 
-    btnAddSession.addEventListener('click', () => {
+    btnAddSession.addEventListener('click', () => addSession());
+
+    function addSession(val = "") {
         const currentSessions = sessionsContainer.querySelectorAll('.session-item').length;
         if (currentSessions >= 4) {
             alert("Máximo 4 sesiones permitidas.");
@@ -74,10 +76,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     <p>Pega aquí el JSON de la Sesión ${sNum}.</p>
                 </div>
             </div>
-            <textarea id="json-s${sNum}" placeholder='[ { "page_name": "Sesión ${sNum}...", "idevices": [...] } ]'></textarea>
+            <textarea id="json-s${sNum}" class="phase-textarea" placeholder='[ { "page_name": "Sesión ${sNum}...", "idevices": [...] } ]'>${val}</textarea>
         `;
         sessionsContainer.appendChild(sessionDiv);
-    });
+    }
+
+    // Inicializar con la primera sesión
+    addSession();
 
     let currentPhase = "1";
 
@@ -204,21 +209,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     // Limpiamos las sesiones actuales
                     sessionsContainer.innerHTML = "";
                     
-                    data.phase2.forEach((val, i) => {
-                        const sNum = i + 1;
-                        const sessionDiv = document.createElement('div');
-                        sessionDiv.className = 'session-item glass-panel';
-                        sessionDiv.innerHTML = `
-                            <div class="panel-header">
-                                <div class="icon-box s-icon">S${sNum}</div>
-                                <div>
-                                    <h4>Sesión ${sNum}: Desarrollo</h4>
-                                    <p>Pega aquí el JSON de la Sesión ${sNum}.</p>
-                                </div>
-                            </div>
-                            <textarea id="json-s${sNum}" placeholder='[ { "page_name": "Sesión ${sNum}...", "idevices": [...] } ]'>${val}</textarea>
-                        `;
-                        sessionsContainer.appendChild(sessionDiv);
+                    data.phase2.forEach((val) => {
+                        addSession(val);
                     });
                 }
                 alert("Proyecto cargado con éxito.");
