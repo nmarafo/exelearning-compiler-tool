@@ -317,10 +317,10 @@ export async function compileExeProject(pagesConfig) {
 
             // Fallback for snippets that don't use placeholders but have the text
             if (idev.type === 'select-media-files' && props.instructions) {
-                snippet = snippet.replace(/<p>Selecciona las tarjetas correctas\.?<\/p>/, props.instructions);
+                snippet = snippet.replace(/<p>Selecciona las tarjetas correctas\.?<\/p>/i, props.instructions);
             }
             if (idev.type === 'guess' && props.instructions) {
-                snippet = snippet.replace(/<p>Adivina las palabras\.?<\/p>/, props.instructions);
+                snippet = snippet.replace(/<p>Adivina las palabras\.?<\/p>/i, props.instructions);
             }
 
             // D) Sincronizar el contenido procesado de vuelta a jsonProperties
