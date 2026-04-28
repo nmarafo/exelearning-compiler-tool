@@ -116,7 +116,7 @@ export const SNIPPETS_DICT = {
           <odeBlockId>UUID-BLOQUE</odeBlockId>
           <odeIdeviceId>UUID-IDEVICE</odeIdeviceId>
           <odeIdeviceTypeName>guess</odeIdeviceTypeName>
-          <htmlView><![CDATA[<div class="adivina-IDevice"><div class="adivina-instructions gameQP-instructions"><p>Adivina las palabras.</p></div><div id="adivina-DataGame-UUID-IDEVICE" class="adivina-DataGame js-hidden" data-id="UUID-IDEVICE"></div><script type="text/javascript">$exe.adivina.init("UUID-IDEVICE")</script></div>]]></htmlView>
+          <htmlView><![CDATA[<div class="adivina-IDevice"><div class="game-evaluation-ids js-hidden" data-id="UUID-IDEVICE" data-evaluationb="false" data-evaluationid="UUID-EVALUACION"></div><div class="adivina-feedback-game"></div><div class="adivina-instructions"><p>Adivina las palabras.</p></div><div class="adivina-DataGame js-hidden"></div></div>]]></htmlView>
           <jsonProperties><![CDATA[{"ideviceId":"UUID-IDEVICE","typeGame":"Guess","instructions":"<p>Adivina las palabras.</p>","msgs":{"msgCorrect":"¡Correcto!","msgIncorrect":"¡Incorrecto!","msgLookAnswer":"Mira la respuesta","msgSubmit":"Comprobar"},"words":[]}]]></jsonProperties>
           <odeComponentsOrder>0</odeComponentsOrder>
           <odeComponentsProperties>
@@ -147,12 +147,24 @@ export const SNIPPETS_DICT = {
           </odeComponentsProperties>
         </odeComponent>`,
 
+    complete: `<odeComponent>
+          <odePageId>UUID-PAGINA</odePageId>
+          <odeBlockId>UUID-BLOQUE</odeBlockId>
+          <odeIdeviceId>UUID-IDEVICE</odeIdeviceId>
+          <odeIdeviceTypeName>complete</odeIdeviceTypeName>
+          <htmlView><![CDATA[<div class="completa-IDevice"><div class="game-evaluation-ids js-hidden" data-id="UUID-IDEVICE" data-evaluationb="false" data-evaluationid="UUID-EVALUACION"></div><div class="completa-feedback-game"></div><div class="completa-instructions"><p>Lee el texto y completa las palabras que faltan.</p></div><div class="completa-DataGame js-hidden"></div><div class="completa-text-game js-hidden">{{CONTENT}}</div></div>]]></htmlView>
+          <jsonProperties><![CDATA[{"ideviceId":"UUID-IDEVICE"}]]></jsonProperties>
+          <odeComponentsOrder>0</odeComponentsOrder>
+          <odeComponentsProperties>
+          </odeComponentsProperties>
+        </odeComponent>`,
+
     'select-media-files': `<odeComponent>
           <odePageId>UUID-PAGINA</odePageId>
           <odeBlockId>UUID-BLOQUE</odeBlockId>
           <odeIdeviceId>UUID-IDEVICE</odeIdeviceId>
           <odeIdeviceTypeName>select-media-files</odeIdeviceTypeName>
-          <htmlView><![CDATA[<div class="seleccionamedias-IDevice"><div class="seleccionamedias-instructions gameQP-instructions"><p>Selecciona las tarjetas correctas.</p></div><div class="seleccionamedias-DataGame js-hidden"></div></div>]]></htmlView>
+          <htmlView><![CDATA[<div class="seleccionamedias-IDevice"><div class="game-evaluation-ids js-hidden" data-id="UUID-IDEVICE" data-evaluationb="false" data-evaluationid="UUID-EVALUACION"></div><div class="seleccionamedias-feedback-game"></div><div class="seleccionamedias-instructions"><p>Selecciona las tarjetas correctas.</p></div><div class="seleccionamedias-DataGame js-hidden"></div></div>]]></htmlView>
           <jsonProperties><![CDATA[{"ideviceId":"UUID-IDEVICE"}]]></jsonProperties>
           <odeComponentsOrder>0</odeComponentsOrder>
           <odeComponentsProperties>

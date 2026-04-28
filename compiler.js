@@ -7,6 +7,24 @@ function uuidv4() {
     });
 }
 
+/**
+ * Encriptación XOR utilizada por eXeLearning para los iDevices de juegos (Quiddity/Nodex).
+ * Clave: 146 (0x92)
+ */
+function exeEncrypt(str) {
+    if (!str || str === 'undefined' || str === 'null') str = '';
+    try {
+        const key = 146;
+        let ostr = '';
+        for (let i = 0; i < str.length; i++) {
+            ostr += String.fromCharCode(str.charCodeAt(i) ^ key);
+        }
+        return escape(ostr);
+    } catch (ex) {
+        return '';
+    }
+}
+
 export async function compileExeProject(pagesConfig) {
     const snippetsDict = SNIPPETS_DICT;
     const jszip = new JSZip();
@@ -264,14 +282,17 @@ export async function compileExeProject(pagesConfig) {
                              .replaceAll('{{FEEDBACK}}', '')
                              .replaceAll('{{DIGCOMP_CONTENT}}', '');
 
-            // D) Codificación URI interactiva (Juegos) y Sincronización de jsonProperties
-            const uriEncodedTypes = ['checklist', 'guess', 'select-media-files', 'rubric'];
+            // D) Codificación XOR interactiva (Juegos) y Sincronización de jsonProperties
+            const uriEncodedTypes = ['checklist', 'guess', 'select-media-files', 'rubric', 'complete', 'trueorfalse', 'quick-questions-multiple-choice'];
             if (uriEncodedTypes.includes(idev.type)) {
-                // Regex robusto para capturar el div DataGame js-hidden
+                // Regex robusto para capturar el div DataGame js-hidden (independientemente del prefijo de clase)
                 const dataGameRegex = /(<div[^>]*class="[^"]*DataGame js-hidden"[^>]*>)(.*?)(<\/div>)/i;
                 if (dataGameRegex.test(snippet)) {
                     snippet = snippet.replace(dataGameRegex, (match, p1, p2, p3) => {
-                        return p1 + encodeURIComponent(JSON.stringify(props)) + p3;
+                        const jsonStr = JSON.stringify(props);
+                        // v4.0.0-rc3 (Nodex) requiere encriptación XOR 146 para los juegos
+                        const encryptedData = exeEncrypt(jsonStr);
+                        return p1 + encryptedData + p3;
                     });
                 }
             }
