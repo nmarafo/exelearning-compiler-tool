@@ -15,12 +15,15 @@ function exeEncrypt(str) {
     if (!str || str === 'undefined' || str === 'null') str = '';
     try {
         const key = 146;
+        // eXeLearning v4 expects XORed UTF-8 bytes, fully URL-escaped
+        const utf8Str = unescape(encodeURIComponent(str));
         let ostr = '';
-        for (let i = 0; i < str.length; i++) {
-            ostr += String.fromCharCode(str.charCodeAt(i) ^ key);
+        for (let i = 0; i < utf8Str.length; i++) {
+            const xorByte = utf8Str.charCodeAt(i) ^ key;
+            // Use hex escaping for all bytes to ensure consistency with eXe's export
+            ostr += '%' + xorByte.toString(16).toUpperCase().padStart(2, '0');
         }
-        // eXeLearning v4 Quasar/Nodex expects escape() style (non-UTF8) for DataGame
-        return escape(ostr);
+        return ostr;
     } catch (ex) {
         return '';
     }
@@ -281,10 +284,10 @@ export async function compileExeProject(pagesConfig) {
                     if (p2 && p2.trim() !== "") originalJson = JSON.parse(p2);
                 } catch (e) {}
                 mergedProps = { ...originalJson, ...props };
+                mergedProps.id = ideviceId;
                 mergedProps.ideviceId = ideviceId;
                 mergedProps.evaluationID = evalId;
                 mergedProps.evaluation = props.evaluation || false;
-                if (mergedProps.id) mergedProps.id = ideviceId;
                 if (props.title) mergedProps.title = props.title;
                 return p1 + JSON.stringify(mergedProps) + p3;
             });
@@ -338,11 +341,14 @@ export async function compileExeProject(pagesConfig) {
             // E) Codificación XOR interactiva (Juegos v4.0.0-rc3)
             const uriEncodedTypes = ['checklist', 'guess', 'select-media-files', 'rubric', 'complete', 'trueorfalse', 'quick-questions-multiple-choice'];
             if (uriEncodedTypes.includes(idev.type)) {
-                const dataGameRegex = /(<div[^>]*class="[^"]*DataGame js-hidden"[^>]*>)(.*?)(<\/div>)/i;
+                // More robust regex to find the DataGame div regardless of specific class prefix or extra attributes
+                const dataGameRegex = /(<div[^>]*class="[^"]*DataGame[^"]*"[^>]*>)(.*?)(<\/div>)/i;
                 if (dataGameRegex.test(snippet)) {
                     snippet = snippet.replace(dataGameRegex, (match, p1, p2, p3) => {
                         const encryptedData = exeEncrypt(JSON.stringify(mergedProps));
-                        return p1 + encryptedData + p3;
+                        // Remove potential data-id or other attributes that might conflict during runtime init
+                        const cleanTag = p1.replace(/\s(data-id|id)="[^"]*"/g, '');
+                        return cleanTag + encryptedData + p3;
                     });
                 }
             }
