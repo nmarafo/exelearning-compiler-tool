@@ -337,7 +337,7 @@ export async function compileExeProject(pagesConfig) {
                 const categories = (idev.criteria || []).map(c => c.name);
                 const descriptions = (idev.criteria || []).map(c => {
                     return (c.levels || []).map((l, lIdx) => ({
-                        weight: l.score.toString(),
+                        weight: (l.score || (4 - lIdx)).toString(),
                         text: l.description
                     }));
                 });
@@ -348,6 +348,14 @@ export async function compileExeProject(pagesConfig) {
                     descriptions: descriptions
                 };
                 props.instructions = `<p>${idev.instructions || "Completa la siguiente rúbrica"}</p>`;
+                props["visible-info"] = false;
+                props.author = "CEDEC";
+                props["author-url"] = "http://cedec.intef.es/";
+                props.license = "CC-BY-SA";
+                props.weighted = 100;
+                props.isScorm = 0;
+                props.textButtonScorm = "Guardar la puntuación";
+                props.repeatActivity = true;
                 props.i18n = {
                     rubric: "Rúbrica", activity: "Actividad", name: "Nombre", date: "Fecha",
                     score: "Puntuación", notes: "Notas", download: "Descargar",
