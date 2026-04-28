@@ -110,6 +110,42 @@ export async function compileExeProject(pagesConfig) {
             let props = { ...idev };
             if (idev.content && typeof idev.content === 'object') Object.assign(props, idev.content);
 
+            // Mensajes comunes para juegos (Nodex v4.0)
+            const COMMON_GAME_MSGS = {
+                msgHappen: "Pasar", msgReply: "Responder", msgSubmit: "Enviar",
+                msgEnterCode: "Introduce el código de acceso", msgErrorCode: "El código de acceso no es correcto",
+                msgGameOver: "¡Fin de la partida!", msgIndicateWord: "Proporciona una palabra o expresión",
+                msgClue: "¡Genial! La pista es:", msgYouHas: "Tiene %1 aciertos y %2 fallos",
+                msgCodeAccess: "Código de acceso", msgPlayAgain: "Jugar otra vez",
+                msgRequiredAccessKey: "Es necesario el código de acceso",
+                msgInformationLooking: "¡Genial! La información que estaba buscando",
+                msgPlayStart: "Pulsa aquí para jugar", msgErrors: "Errores", msgMoveOne: "Pasar",
+                msgHits: "Aciertos", msgScore: "Puntuación", msgWeight: "Peso", msgMinimize: "Minimizar",
+                msgMaximize: "Maximizar", msgTime: "Límite de tiempo (mm:ss)", msgLive: "Vida",
+                msgFullScreen: "Pantalla Completa", msgExitFullScreen: "Salir del modo pantalla completa",
+                msgNumQuestions: "Número de preguntas", msgNoImage: "Pregunta sin imágenes", msgCool: "¡Bien!",
+                msgLoseT: "Ha perdido 330 puntos", msgLoseLive: "Ha perdido una vida",
+                msgLostLives: "¡Ha perdido todas sus vidas!", mgsAllQuestions: "¡Completadas las preguntas!",
+                msgSuccesses: "¡Correcto! | ¡Excelente! | ¡Genial! | ¡Muy bien! | ¡Perfecto!",
+                msgFailures: "¡No era eso! | ¡Incorrecto! | ¡No es correcto! | ¡Lo sentimos! | ¡Error!",
+                msgTryAgain: "Necesitas al menos %s% de respuestas correctas para obtener la información. Inténtalo de nuevo.",
+                msgWrote: "Escribe la palabra correcta y pulsa en Responder. Si dudas, pulsa en Seguir.",
+                msgNotNetwork: "A este juego solo se puede jugar con conexión a internet.",
+                msgEndGameScore: "Comience la partida antes de guardar la puntuación.",
+                msgScoreScorm: "La puntuación no se puede guardar porque esta página no forma parte de un paquete SCORM.",
+                msgQuestion: "Pregunta", msgAnswer: "Responder", msgOnlySaveScore: "¡Solo puede guardar la puntuación una vez!",
+                msgOnlySave: "Solo puede guardar una vez", msgInformation: "Información", msgYouScore: "Su puntuación",
+                msgAuthor: "Autoría", msgOnlySaveAuto: "Su puntuación se guardará después de cada pregunta. Solo puede jugar una vez.",
+                msgSaveAuto: "Su puntuación se guardará automáticamente después de cada pregunta.",
+                msgSeveralScore: "Puede guardar la puntuación tantas veces como quiera",
+                msgYouLastScore: "La última puntuación guardada es", msgActityComply: "Ya ha realizado esta actividad.",
+                msgPlaySeveralTimes: "Puede realizar esta actividad cuantas veces quiera", msgClose: "Cerrar",
+                msgLoading: "Cargando. Espere, por favor...", msgPoints: "puntos", msgAudio: "Audio",
+                msgCorrect: "Correcto", msgIncorrect: "Incorrecto", msgUncompletedActivity: "Actividad no completada",
+                msgSuccessfulActivity: "Actividad superada. Puntuación: %s",
+                msgUnsuccessfulActivity: "Actividad no superada. Puntuación: %s"
+            };
+
             // Ajustes específicos por tipo de iDevice
             if (idev.type === 'text' && props.summary) {
                 const summaryHtml = `<div class="exe-summary" style="background:#f0f9ff; padding:1rem; border-radius:0.5rem; margin-bottom:1rem; border:1px solid #bae6fd;"><strong>Resumen:</strong> ${props.summary}</div>`;
@@ -131,23 +167,30 @@ export async function compileExeProject(pagesConfig) {
             }
 
             if (idev.type === 'guess') {
-                props.words = [{
+                props.typeGame = "Adivina";
+                props.version = 2;
+                props.wordsGame = [{
                     word: props.term || "",
-                    hint: props.hint || "",
-                    feedback: props.feedback || ""
+                    definition: props.hint || "",
+                    msgHit: props.feedback || "¡Correcto!",
+                    msgError: "¡Incorrecto!",
+                    type: 0, time: 0, x: 0, y: 0, author: "", alt: "", url: "", audio: "",
+                    percentageShow: 35
                 }];
-                // Mensajes estándar para que el juego no aparezca con textos vacíos
-                props.msgs = {
-                    msgCorrect: "¡Correcto!",
-                    msgIncorrect: "¡Incorrecto!",
-                    msgLookAnswer: "Mira la respuesta",
-                    msgSubmit: "Comprobar",
-                    msgAdivina: "Adivina las palabras:",
-                    msgProxima: "Siguiente",
-                    msgRetro: "Retroalimentación",
-                    msgPuntos: "Puntos:",
-                    msgTiempo: "Tiempo:"
-                };
+                props.msgs = { ...COMMON_GAME_MSGS, msgTypeGame: "Adivina" };
+                // Parámetros por defecto para evitar errores de Nodex
+                props.showMinimize = false;
+                props.optionsRamdon = false;
+                props.showSolution = true;
+                props.useLives = true;
+                props.numberLives = 3;
+            }
+
+            if (idev.type === 'complete') {
+                props.typeGame = "Completa";
+                props.msgs = { ...COMMON_GAME_MSGS, msgTypeGame: "Completa" };
+                props.showSolution = true;
+                props.timeShowSolution = 3;
             }
 
             if (idev.type === 'interactive-video') {

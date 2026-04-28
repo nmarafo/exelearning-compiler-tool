@@ -116,7 +116,7 @@ export const SNIPPETS_DICT = {
           <odeBlockId>UUID-BLOQUE</odeBlockId>
           <odeIdeviceId>UUID-IDEVICE</odeIdeviceId>
           <odeIdeviceTypeName>guess</odeIdeviceTypeName>
-          <htmlView><![CDATA[<div class="adivina-IDevice"><div class="game-evaluation-ids js-hidden" data-id="UUID-IDEVICE" data-evaluationb="false" data-evaluationid="UUID-EVALUACION"></div><div class="adivina-feedback-game"></div><div class="adivina-instructions"><p>{{INSTRUCTIONS}}</p></div><div id="adivina-DataGame-UUID-IDEVICE" class="adivina-DataGame js-hidden" data-id="UUID-IDEVICE"></div></div>]]></htmlView>
+          <htmlView><![CDATA[<div class="adivina-IDevice"><div class="game-evaluation-ids js-hidden" data-id="UUID-IDEVICE" data-evaluationb="false" data-evaluationid="UUID-EVALUACION"></div><div class="adivina-version js-hidden">2</div><div class="adivina-feedback-game"></div><div class="adivina-instructions gameQP-instructions"><p>{{INSTRUCTIONS}}</p></div><div class="adivina-DataGame js-hidden"></div><div class="adivina-bns js-hidden">Su navegador no es compatible con esta herramienta.</div></div>]]></htmlView>
           <jsonProperties><![CDATA[{"ideviceId":"UUID-IDEVICE","typeGame":"Guess","instructions":"<p>Adivina las palabras.</p>","msgs":{"msgCorrect":"¡Correcto!","msgIncorrect":"¡Incorrecto!","msgLookAnswer":"Mira la respuesta","msgSubmit":"Comprobar"},"words":[]}]]></jsonProperties>
           <odeComponentsOrder>0</odeComponentsOrder>
           <odeComponentsProperties>
@@ -152,7 +152,7 @@ export const SNIPPETS_DICT = {
           <odeBlockId>UUID-BLOQUE</odeBlockId>
           <odeIdeviceId>UUID-IDEVICE</odeIdeviceId>
           <odeIdeviceTypeName>complete</odeIdeviceTypeName>
-          <htmlView><![CDATA[<div class="completa-IDevice"><div class="game-evaluation-ids js-hidden" data-id="UUID-IDEVICE" data-evaluationb="false" data-evaluationid="UUID-EVALUACION"></div><div class="completa-feedback-game"></div><div class="completa-instructions"><p>Lee el texto y completa las palabras que faltan.</p></div><div id="completa-DataGame-UUID-IDEVICE" class="completa-DataGame js-hidden" data-id="UUID-IDEVICE"></div><div class="completa-text-game js-hidden">{{CONTENT}}</div></div>]]></htmlView>
+          <htmlView><![CDATA[<div class="completa-IDevice"><div class="game-evaluation-ids js-hidden" data-id="UUID-IDEVICE" data-evaluationb="false" data-evaluationid="UUID-EVALUACION"></div><div class="completa-feedback-game"></div><div class="completa-instructions"><p>Lee el texto y completa las palabras que faltan.</p></div><div id="completa-DataGame-UUID-IDEVICE" class="completa-DataGame js-hidden" data-id="UUID-IDEVICE"></div><div class="completa-text-game js-hidden">{{CONTENT}}</div><div class="cmpt-bns js-hidden">Su navegador no es compatible con esta herramienta.</div></div>]]></htmlView>
           <jsonProperties><![CDATA[{"ideviceId":"UUID-IDEVICE"}]]></jsonProperties>
           <odeComponentsOrder>0</odeComponentsOrder>
           <odeComponentsProperties>
