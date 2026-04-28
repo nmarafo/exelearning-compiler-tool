@@ -164,7 +164,7 @@ export const SNIPPETS_DICT = {
           <odeBlockId>UUID-BLOQUE</odeBlockId>
           <odeIdeviceId>UUID-IDEVICE</odeIdeviceId>
           <odeIdeviceTypeName>select-media-files</odeIdeviceTypeName>
-          <htmlView><![CDATA[<div class="seleccionamedias-IDevice"><div class="game-evaluation-ids js-hidden" data-id="UUID-IDEVICE" data-evaluationb="false" data-evaluationid="UUID-EVALUACION"></div><div class="seleccionamedias-feedback-game"></div><div class="seleccionamedias-instructions"><p>Selecciona las tarjetas correctas.</p></div><div id="seleccionamedias-DataGame-UUID-IDEVICE" class="seleccionamedias-DataGame js-hidden" data-id="UUID-IDEVICE"></div><div class="seleccionamedias-bns js-hidden">Su navegador no es compatible con esta herramienta.</div></div>]]></htmlView>
+          <htmlView><![CDATA[<div class="seleccionamedias-IDevice"><div class="game-evaluation-ids js-hidden" data-id="UUID-IDEVICE" data-evaluationb="false" data-evaluationid="UUID-EVALUACION"></div><div class="seleccionamedias-feedback-game"></div><div class="seleccionamedias-instructions gameQP-instructions"><p>Selecciona las tarjetas correctas.</p></div><div id="seleccionamedias-DataGame-UUID-IDEVICE" class="seleccionamedias-DataGame js-hidden" data-id="UUID-IDEVICE"></div><div class="seleccionamedias-bns js-hidden">Su navegador no es compatible con esta herramienta.</div></div>]]></htmlView>
           <jsonProperties><![CDATA[{"ideviceId":"UUID-IDEVICE"}]]></jsonProperties>
           <odeComponentsOrder>0</odeComponentsOrder>
           <odeComponentsProperties>

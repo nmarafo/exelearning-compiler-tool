@@ -169,6 +169,16 @@ export async function compileExeProject(pagesConfig) {
             if (idev.type === 'select-media-files') {
                 props.typeGame = "SeleccionaMedias";
                 props.version = 1.5;
+                props.author = "";
+                props.instructions = `<p>${props.instructions || "Selecciona las tarjetas correctas"}</p>`;
+                props.itinerary = {
+                    showClue: false,
+                    clueGame: "",
+                    percentageClue: 40,
+                    showCodeAccess: false,
+                    codeAccess: "",
+                    messageCodeAccess: ""
+                };
                 props.phrasesGame = [{
                     cards: (props.options || []).map((opt, idx) => ({
                         id: Date.now() + idx,
@@ -184,11 +194,12 @@ export async function compileExeProject(pagesConfig) {
                     })),
                     msgError: "",
                     msgHit: "",
-                    definition: props.instructions || "Selecciona las opciones correctas",
+                    definition: "Enunciado",
                     audioDefinition: "",
                     audioHit: "",
                     audioError: "",
-                    url: "", alt: "", author: ""
+                    url: (props.options && props.options[0]) ? props.options[0].url : "", 
+                    alt: "", author: ""
                 }];
                 props.msgs = {
                     ...COMMON_GAME_MSGS,
@@ -207,6 +218,9 @@ export async function compileExeProject(pagesConfig) {
                 props.showSolution = true;
                 props.timeShowSolution = 4;
                 props.numberMaxCards = "30";
+                props.repeatActivity = true;
+                props.weighted = 100;
+                props.isScorm = 0;
             }
 
             if (idev.type === 'guess') {
