@@ -171,6 +171,14 @@ export async function compileExeProject(pagesConfig) {
                 }];
             }
 
+            // Inyectar placeholders adicionales para Rúbrica
+            if (idev.type === 'rubric') {
+                const instructions = idev.instructions || "Completa la siguiente rúbrica";
+                props.instructions = instructions;
+                props.instructionsData = encodeURIComponent(`<p>${instructions}</p>`);
+                props.rubricTitle = idev.title || "Rúbrica";
+            }
+
             if (idev.type === 'select-media-files') {
                 props.typeGame = "SeleccionaMedias";
                 props.version = 1.5;
@@ -323,24 +331,39 @@ export async function compileExeProject(pagesConfig) {
 
             if (idev.type === 'rubric') {
                 props.typeGame = "Rubric";
-                const headers = ["Nivel 1", "Nivel 2", "Nivel 3", "Nivel 4"];
-                const rows = (idev.criteria || []).map((c, idx) => ({
-                    criterion: c.name,
-                    levels: (c.levels || []).map(l => l.description)
-                }));
-                props.rubric = {
-                    header: headers,
-                    rows: rows,
-                    weighted: true
+                props.version = 2;
+                props.id = `idevice-${idevId}`;
+                const scores = ["4 Excelente", "3 Satisfactorio", "2 Mejorable", "1 Insuficiente"];
+                const categories = (idev.criteria || []).map(c => c.name);
+                const descriptions = (idev.criteria || []).map(c => {
+                    return (c.levels || []).map((l, lIdx) => ({
+                        weight: l.score.toString(),
+                        text: l.description
+                    }));
+                });
+                props.table = {
+                    title: idev.title || "Rúbrica",
+                    categories: categories,
+                    scores: scores,
+                    descriptions: descriptions
                 };
-                props.msgs = {
-                    msgCriterion: "Criterio",
-                    msgLevel: "Nivel",
-                    msgScore: "Puntuación",
-                    msgTotal: "Total",
-                    msgSave: "Guardar",
-                    msgRubric: "Rúbrica",
-                    msgWeight: "Peso"
+                props.instructions = `<p>${idev.instructions || "Completa la siguiente rúbrica"}</p>`;
+                props.i18n = {
+                    rubric: "Rúbrica", activity: "Actividad", name: "Nombre", date: "Fecha",
+                    score: "Puntuación", notes: "Notas", download: "Descargar",
+                    msgDelete: "¿Seguro que desea borrar todos los campos del formulario?",
+                    reset: "Reiniciar", print: "Imprimir", apply: "Aplicar", newWindow: "Ventana nueva",
+                    msgEndGameScore: "Completa la rúbrica antes de guardar tu puntuación.",
+                    msgScoreScorm: "La puntuación no se puede guardar porque esta página no forma parte de un paquete SCORM.",
+                    msgOnlySaveScore: "¡Solo puede guardar la puntuación una vez!",
+                    msgYouScore: "Su puntuación",
+                    msgOnlySaveAuto: "Tu puntuación se guardará después de cada cambio. Solo puedes completarla una vez.",
+                    msgSaveAuto: "Tu puntuación se guardará automáticamente después de cada cambio.",
+                    msgSeveralScore: "Puede guardar la puntuación tantas veces como quiera",
+                    msgYouLastScore: "La última puntuación guardada es",
+                    msgActityComply: "Ya ha realizado esta actividad.",
+                    msgPlaySeveralTimes: "Puede realizar esta actividad cuantas veces quiera",
+                    msgScore: "Puntuación", msgWeight: "Peso"
                 };
             }
 
@@ -411,7 +434,9 @@ export async function compileExeProject(pagesConfig) {
                 '{{VIDEO_URL}}': props.videoURL || "",
                 '{{VIDEO_TYPE}}': props.videoType || "youtube",
                 '{{ACTIVITY}}': (props.activities && props.activities[0]) ? props.activities[0].activity : "",
-                '{{FEEDBACK}}': (props.activities && props.activities[0]) ? props.activities[0].feedback : ""
+                '{{FEEDBACK}}': (props.activities && props.activities[0]) ? props.activities[0].feedback : "",
+                '{{TITLE}}': props.rubricTitle || "",
+                '{{INSTRUCTIONS_DATA}}': props.instructionsData || ""
             };
 
             for (const [key, val] of Object.entries(placeholders)) {
@@ -448,7 +473,7 @@ export async function compileExeProject(pagesConfig) {
                 const dataGameRegex = /(<div[^>]*class="[^"]*DataGame[^"]*"[^>]*>)(.*?)(<\/div>)/i;
                 if (dataGameRegex.test(snippet)) {
                     snippet = snippet.replace(dataGameRegex, (match, p1, p2, p3) => {
-                        const encryptedData = exeEncrypt(JSON.stringify(mergedProps));
+                        const encryptedData = (idev.type === 'rubric') ? encodeURIComponent(JSON.stringify(mergedProps)) : exeEncrypt(JSON.stringify(mergedProps));
                         // Remove potential data-id or other attributes that might conflict during runtime init
                         const cleanTag = p1.replace(/\s(data-id|id)="[^"]*"/g, '');
                         return cleanTag + encryptedData + p3;
