@@ -263,6 +263,63 @@ export async function compileExeProject(pagesConfig) {
                     showCodeAccess: false, codeAccess: "", messageCodeAccess: ""
                 };
             }
+            
+            if (idev.type === 'form') {
+                props.repeatActivity = true;
+                props.isScorm = 0;
+                props.textButtonScorm = "Guardar la puntuación";
+                props.weighted = 100;
+                props.questionsRandom = false;
+                props.percentageQuestions = "100";
+                props.time = "0";
+                props.eXeFormInstructions = `<p>${idev.instructions || "Responde a las preguntas del cuestionario"}</p>`;
+                props.questionsData = (idev.questions || []).map((q, idx) => ({
+                    id: Date.now() + idx + "-" + Math.random().toString(36).substr(2, 5).toUpperCase(),
+                    activityType: "true-false",
+                    baseText: q.startsWith("<p>") ? q : `<p>${q}</p>`,
+                    feedbackRight: "",
+                    feedbackWrong: "",
+                    suggestion: "",
+                    wrongAnswersValue: "",
+                    selectionType: "single",
+                    answers: [],
+                    answer: "0",
+                    capitalization: false,
+                    strict: false,
+                    order: idx,
+                    customScore: 1,
+                    time: 0
+                }));
+                props.passRate = Math.floor((props.questionsData || []).length / 2);
+                props.addBtnAnswers = true;
+                props.eXeIdeviceTextAfter = "";
+                props.showSlider = false;
+                props.msgs = {
+                    msgScoreScorm: "La puntuación no se puede guardar porque esta página no forma parte de un paquete SCORM.",
+                    msgYouScore: "Tu puntuación es", msgScore: "Puntuación", msgWeight: "Peso",
+                    msgYouLastScore: "La última puntuación guardada es", msgOnlySaveScore: "¡Solo puede guardar la puntuación una vez!",
+                    msgOnlySave: "Solo puede guardar una vez", msgOnlySaveAuto: "Su puntuación se guardará después de cada pregunta. Solo puede jugar una vez.",
+                    msgSaveAuto: "Su puntuación se guardará automáticamente después de cada pregunta.",
+                    msgSeveralScore: "Puede guardar la puntuación tantas veces como quiera",
+                    msgPlaySeveralTimes: "Puede realizar esta actividad cuantas veces quiera",
+                    msgActityComply: "Ya ha realizado esta actividad.",
+                    msgUncompletedActivity: "Actividad no completada",
+                    msgSuccessfulActivity: "Actividad superada. Puntuación: %s",
+                    msgUnsuccessfulActivity: "Actividad no superada. Puntuación: %s",
+                    msgTypeGame: "Formulario", msgStartGame: "Pulsa aquí para empezar",
+                    msgTime: "Tiempo por pregunta", msgSaveScore: "Guardar la puntuación",
+                    msgResult: "Resultado", msgCheck: "Comprobar", msgReset: "Reiniciar",
+                    msgShowAnswers: "Mostrar respuestas", msgTestResultPass: "¡Felicidades! Has pasado la prueba",
+                    msgTestResultNotPass: "Lo siento. Has fallado la prueba",
+                    msgTrueFalseHelp: "Di si la afirmación es verdadera o falsa",
+                    msgDropdownHelp: "Elige la respuesta correcta entre las opciones propuestas",
+                    msgFillHelp: "Rellena los espacios en blanco con la palabra apropiada",
+                    msgSingleSelectionHelp: "Opción múltiple con solo una respuesta correcta",
+                    msgMultipleSelectionHelp: "Opción múltiple con varias respuestas correctas",
+                    msgPlayStart: "Pulsa aquí para empezar", msgTrue: "Verdadero", msgFalse: "Falso",
+                    msgNext: "Siguiente", msgPrevious: "Anterior", msgSuggestion: "Sugerencia"
+                };
+            }
 
             if (idev.type === 'complete') {
                 props.typeGame = "Completa";

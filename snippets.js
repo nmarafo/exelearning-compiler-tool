@@ -104,7 +104,46 @@ export const SNIPPETS_DICT = {
           <odeBlockId>UUID-BLOQUE</odeBlockId>
           <odeIdeviceId>UUID-IDEVICE</odeIdeviceId>
           <odeIdeviceTypeName>form</odeIdeviceTypeName>
-          <htmlView><![CDATA[<div class="exe-form-container"><div class="game-evaluation-ids js-hidden" data-id="UUID-IDEVICE" data-evaluationb="false" data-evaluationid="UUID-EVALUACION"></div><div id="frmMainContainer-UUID-IDEVICE" class="form-IDevice" data-id="UUID-IDEVICE"><div class="form-instructions"><p>Responde a las preguntas.</p></div></div></div>]]></htmlView>
+          <htmlView><![CDATA[<div class="exe-form-container">
+  <div class="game-evaluation-ids js-hidden" data-id="UUID-IDEVICE" data-evaluationb="false" data-evaluationid="UUID-EVALUACION"></div>
+            <div id="frmMainContainer-UUID-IDEVICE" class="form-IDevice" data-id="UUID-IDEVICE">
+                <div class="form-Data js-hidden">{}</div>
+                <div class="form-instructions"><p>{{INSTRUCTIONS}}</p></div>
+                <div class="FRMP-GameScoreBoard" style="display:none;">
+                    <div>
+                        <strong><span class="sr-av">Tiempo por pregunta:</span></strong>
+                        <span id="frmPTime-UUID-IDEVICE">00:00</span>
+                    </div>
+                </div>
+                <div class="FRMP-StartGame" id="frmStartGameDiv-UUID-IDEVICE" style="display:none;">
+                      <button  id="frmStartGame-UUID-IDEVICE" type="button" class="btn btn-primary">Pulsa aquí para empezar</button>
+                </div>
+                <div class="form-body" id="frmBody-UUID-IDEVICE" style="display:block;">
+                    <div class="FRMP-Questions">
+                        <div id="form-questions-UUID-IDEVICE" > </div>
+                        <div id="frmCover-UUID-IDEVICE" class="FRMP-Cover"> </div>
+                    </div>
+                    <div id="resultsContainer-UUID-IDEVICE" class="form-results-container inline">
+                        <div id="form-score-UUID-IDEVICE" class="score-text">Puntuación.</div>
+                        <div id="form-result-test-UUID-IDEVICE" class="score-text phrase-score"></div>
+                    </div>
+                    <div class="form-buttons-container inline">
+                        <input id="form-button-check-UUID-IDEVICE" class="btn btn-primary" type="button" value="Comprobar"
+                            data-id="UUID-IDEVICE" data-pass-rate="" />
+                        <input id="form-button-reset-UUID-IDEVICE" type="button" value="Reiniciar"
+                            data-id="UUID-IDEVICE" class="btn btn-primary"  style="display:none" />
+                        <input id="form-button-show-answers-UUID-IDEVICE" class="btn btn-primary" type="button" value="Mostrar respuestas"
+                            data-id="UUID-IDEVICE" style="display: " />
+                    </div>
+                </div>
+                <div class="Games-BottonContainer">
+                    <div class="Games-GetScore">
+                        <input id="frmPSendScore-UUID-IDEVICE" type="button" value="Guardar la puntuación" class="feedbackbutton Games-SendScore" style="display:none"/> <span class="Games-RepeatActivity"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="questionsMedia" style="display:none"></div>
+</div>]]></htmlView>
           <jsonProperties><![CDATA[{"ideviceId":"UUID-IDEVICE","evaluation":false,"evaluationID":"UUID-EVALUACION","eXeFormInstructions":"<p>Responde a las preguntas.</p>","questionsData":[]}]]></jsonProperties>
           <odeComponentsOrder>0</odeComponentsOrder>
           <odeComponentsProperties>
