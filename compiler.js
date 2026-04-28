@@ -321,6 +321,29 @@ export async function compileExeProject(pagesConfig) {
                 };
             }
 
+            if (idev.type === 'checklist') {
+                props.typeGame = "Cotejo";
+                props.levels = [
+                    { type: "0", nivel: "0", item: "PA", points: "" },
+                    { type: "0", nivel: "1", item: "A", points: "" }
+                ];
+                props.footer = "Esta <a href=https://es.wikipedia.org/wiki/Lista_de_comprobaci%C3%B3n>lista de cotejo</a> se encuentra bajo una licencia</br><a href=http://creativecommons.org/licenses/by-sa/4.0>Creative Commons Reconocimiento-Compartir igual 4.0 International License</a>";
+                props.useScore = false;
+                props.questionsData = (idev.tasks || []).map((t, idx) => ({
+                    id: Date.now() + idx + "-" + Math.random().toString(36).substr(2, 5).toUpperCase(),
+                    task: t,
+                    order: idx
+                }));
+                props.msgs = {
+                    msgComplit: "Completadas", msgDone: "Hecho", msgInProgress: "En proceso",
+                    msgUnrealized: "Sin completar", msgtaskNumber: "Número de tareas",
+                    msgName: "Nombre", msgDate: "Fecha", msgSave: "Descargar",
+                    msgList: "lista_de_cotejo", msgScore: "Puntuación", msgWeight: "Peso",
+                    msgPoints: "puntos", msgPoint: "punto", msgReboot: "Reiniciar",
+                    msgDelete: "¿Seguro que desea borrar todos los campos del formulario?"
+                };
+            }
+
             if (idev.type === 'complete') {
                 props.typeGame = "Completa";
                 props.msgs = { ...COMMON_GAME_MSGS, msgTypeGame: "Completa" };

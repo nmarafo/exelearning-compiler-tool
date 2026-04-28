@@ -92,7 +92,13 @@ export const SNIPPETS_DICT = {
           <odeBlockId>UUID-BLOQUE</odeBlockId>
           <odeIdeviceId>UUID-IDEVICE</odeIdeviceId>
           <odeIdeviceTypeName>checklist</odeIdeviceTypeName>
-          <htmlView><![CDATA[<div class="listacotejo-IDevice"><div class="game-evaluation-ids js-hidden" data-id="UUID-IDEVICE" data-evaluationb="false" data-evaluationid="UUID-EVALUACION"></div><div class="listacotejo-feedback-game"></div><div class="listacotejo-instructions CTJ-instructions"><p>Completa la lista de cotejo marcando las casillas.</p></div><div id="listacotejo-DataGame-UUID-IDEVICE" class="listacotejo-DataGame js-hidden" data-id="UUID-IDEVICE"></div></div>]]></htmlView>
+          <htmlView><![CDATA[<div class="listacotejo-IDevice">
+  <div class="game-evaluation-ids js-hidden" data-id="UUID-IDEVICE" data-evaluationb="false" data-evaluationid="UUID-EVALUACION"></div>
+  <div class="listacotejo-feedback-game"></div>
+  <div class="listacotejo-instructions CTJ-instructions"><p>{{INSTRUCTIONS}}</p></div>
+  <div id="listacotejo-DataGame-UUID-IDEVICE" class="listacotejo-DataGame js-hidden" data-id="UUID-IDEVICE"></div>
+  <div class="listacotejo-bns js-hidden">Su navegador no es compatible con esta herramienta.</div>
+</div>]]></htmlView>
           <jsonProperties><![CDATA[{"ideviceId":"UUID-IDEVICE"}]]></jsonProperties>
           <odeComponentsOrder>0</odeComponentsOrder>
           <odeComponentsProperties>
