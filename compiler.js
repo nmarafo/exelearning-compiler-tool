@@ -332,7 +332,7 @@ export async function compileExeProject(pagesConfig) {
             if (idev.type === 'rubric') {
                 props.typeGame = "Rubric";
                 props.version = 2;
-                props.id = `idevice-${idevId}`;
+                props.id = ideviceId;
                 const scores = ["4 Excelente", "3 Satisfactorio", "2 Mejorable", "1 Insuficiente"];
                 const categories = (idev.criteria || []).map(c => c.name);
                 const descriptions = (idev.criteria || []).map(c => {
