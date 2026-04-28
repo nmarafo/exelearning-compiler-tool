@@ -19,6 +19,7 @@ function exeEncrypt(str) {
         for (let i = 0; i < str.length; i++) {
             ostr += String.fromCharCode(str.charCodeAt(i) ^ key);
         }
+        // eXeLearning v4 Quasar/Nodex expects escape() style (non-UTF8) for DataGame
         return escape(ostr);
     } catch (ex) {
         return '';
@@ -181,7 +182,7 @@ export async function compileExeProject(pagesConfig) {
                 };
                 props.phrasesGame = [{
                     cards: (props.options || []).map((opt, idx) => ({
-                        id: Date.now() + idx,
+                        id: Date.now() + idx + Math.floor(Math.random() * 10000),
                         type: 2,
                         author: "",
                         alt: opt.description || "",
@@ -194,7 +195,7 @@ export async function compileExeProject(pagesConfig) {
                     })),
                     msgError: "",
                     msgHit: "",
-                    definition: "Enunciado",
+                    definition: props.title || props.instructions || "Enunciado",
                     audioDefinition: "",
                     audioHit: "",
                     audioError: "",
