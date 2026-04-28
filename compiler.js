@@ -106,129 +106,14 @@ export async function compileExeProject(pagesConfig) {
                 blockName = 'Contenido DUA';
             }
 
-            // 3. Normalización de datos (Mapeo de claves IA -> eXeLearning)
-            // Extraemos todas las propiedades a un objeto plano 'props'
+            // 3. Normalización y Mapeo de datos (IA -> eXeLearning)
             let props = { ...idev };
-            if (idev.content && typeof idev.content === 'object') {
-                Object.assign(props, idev.content);
-            }
-            
-            // Caso especial: si 'content' es una cadena, la movemos a la propiedad de texto
-            if (typeof idev.content === 'string' && !props.textTextarea) {
-                props.textTextarea = idev.content;
-            }
+            if (idev.content && typeof idev.content === 'object') Object.assign(props, idev.content);
 
-            // Procesamiento específico por tipo
-            if (idev.type === 'text') {
-                let fullHtml = "";
-                if (props.image) fullHtml += `<p style="text-align:center;"><img src="${props.image}" alt="Imagen" style="max-width:100%; height:auto;"></p>`;
-                if (props.summary) fullHtml += `<div class="exe-summary" style="background:#f0f9ff; padding:1rem; border-radius:0.5rem; margin-bottom:1rem; border:1px solid #bae6fd;"><strong>Resumen:</strong> ${props.summary}</div>`;
-                
-                const mainText = props.content || props.main_text || props.textTextarea || "";
-                fullHtml += `<div class="exe-text-content">${mainText}</div>`;
-                
-                props.textTextarea = `<div class="exe-text-activity">${fullHtml}</div>`;
-            }
-            
-            if (props.duration) props.textInfoDurationInput = props.duration;
-            if (props.participants) props.textInfoParticipantsInput = props.participants;
-
-            if (idev.type === 'casestudy') {
-                if (props.story || props.history) props.history = props.story || props.history;
-                if (props.activity || props.feedback) {
-                    props.activities = [{
-                        activity: props.activity || "Actividad",
-                        feedback: props.feedback || "Retroalimentación",
-                        buttonCaption: props.buttonCaption || "Mostrar retroalimentación"
-                    }];
-                }
-            }
-
-            if (idev.type === 'digcompedu' && props.areas) {
-                let digHtml = "<ul>";
-                props.areas.forEach(a => {
-                    if (typeof a === 'string') {
-                        digHtml += `<li>${a}</li>`;
-                    } else if (typeof a === 'object') {
-                        digHtml += `<li><strong>${a.area || ""}:</strong> ${a.description || ""}</li>`;
-                    }
-                });
-                digHtml += "</ul>";
-                if (props.justification) digHtml += `<p><em>${props.justification}</em></p>`;
-                props.digHtml = `<div class="digcompeduIdeviceContent"><h3>Resumen DigCompEdu</h3>${digHtml}</div>`;
-            }
-
-            if (idev.type === 'form' && props.questions) {
-                props.questionsData = props.questions.map(q => ({
-                    question: typeof q === 'string' ? q : (q.question || ""),
-                    type: "textarea",
-                    feedback: q.feedback || ""
-                }));
-
-                let formHtml = `<div class="exe-form-questions-static" style="padding: 10px; background: rgba(0,0,0,0.02); border-radius: 8px; margin-bottom: 20px;">`;
-                props.questionsData.forEach((q, i) => {
-                    formHtml += `<div class="exe-form-question" style="margin-bottom:1.5rem; border-bottom: 1px solid #eee; padding-bottom: 1rem;">
-                        <p style="margin-bottom:0.5rem;"><strong>Pregunta ${i+1}:</strong> ${q.question}</p>
-                        <textarea placeholder="Escribe tu respuesta aquí..." style="width:100%; height:100px; border-radius:6px; border:1px solid #ddd; padding:10px; font-family:inherit; resize:vertical; background:white;"></textarea>
-                    </div>`;
-                });
-                formHtml += `</div>`;
-                // Inyectamos al principio del contenedor principal del formulario
-                snippet = snippet.replace(/(<div id="frmMainContainer-[^"]*"[^>]*>)/i, `$1${formHtml}`);
-            }
-
-            if (idev.type === 'udl-content') {
-                const udlMain = props.main_text || props.content || props.textTextarea || "";
-                const udlEasy = props.easy_reading || props.simplified || "";
-                const udlAudio = props.audio_script || props.audio || "";
-                
-                snippet = snippet.replace(/<p>Contenido principal<\/p>/g, udlMain);
-                snippet = snippet.replace(/<p>Lectura facilitada<\/p>/g, udlEasy);
-                snippet = snippet.replace(/<p>Audio<\/p>/g, udlAudio);
-            }
-
-            if (idev.type === 'checklist' && (props.tasks || props.list)) {
-                const tasks = props.tasks || props.list || [];
-                let listHtml = "<ul>";
-                tasks.forEach(t => listHtml += `<li>${t}</li>`);
-                listHtml += "</ul>";
-                snippet = snippet.replace(/<p>Completa la lista de cotejo marcando las casillas.<\/p>/g, listHtml);
-            }
-
-            if (idev.type === 'rubric' && (props.rows || props.criteria)) {
-                const rows = props.rows || props.criteria || [];
-                let rubHtml = '<table border="1" style="width:100%; border-collapse:collapse;"><thead><tr><th>Categoría</th><th>Nivel 1</th><th>Nivel 2</th><th>Nivel 3</th><th>Nivel 4</th></tr></thead><tbody>';
-                rows.forEach(r => {
-                    const l1 = r.level1 || r.beginner_1 || "";
-                    const l2 = r.level2 || r.apprentice_2 || "";
-                    const l3 = r.level3 || r.advanced_3 || "";
-                    const l4 = r.level4 || r.expert_4 || "";
-                    rubHtml += `<tr><td><strong>${r.category || ""}</strong></td><td>${l1}</td><td>${l2}</td><td>${l3}</td><td>${l4}</td></tr>`;
-                });
-                rubHtml += '</tbody></table>';
-                // La rúbrica de eXe es compleja, pero inyectamos el HTML en un contenedor visible
-                snippet = snippet.replace(/<div class="exe-rubrics-DataGame js-hidden"><\/div>/g, `<div class="exe-rubrics-view">${rubHtml}</div><div class="exe-rubrics-DataGame js-hidden"></div>`);
-            }
-
-            if (idev.type === 'guess') {
-                props.title = props.title || "Adivina";
-                props.instructions = props.instructions || "";
-                props.msgs = {
-                    msgCorrect: props.feedback || "¡Correcto!",
-                    msgIncorrect: "¡Sigue intentándolo!",
-                    msgLookAnswer: "Mira la respuesta",
-                    msgSubmit: "Comprobar",
-                    msgAdivina: "Adivina las palabras:",
-                    msgProxima: "Siguiente",
-                    msgRetro: "Retroalimentación",
-                    msgPuntos: "Puntos:",
-                    msgTiempo: "Tiempo:"
-                };
-                props.words = [{
-                    word: props.term || "",
-                    hint: props.hint || "",
-                    feedback: props.feedback || ""
-                }];
+            // Ajustes específicos por tipo de iDevice
+            if (idev.type === 'text' && props.summary) {
+                const summaryHtml = `<div class="exe-summary" style="background:#f0f9ff; padding:1rem; border-radius:0.5rem; margin-bottom:1rem; border:1px solid #bae6fd;"><strong>Resumen:</strong> ${props.summary}</div>`;
+                props.main_text = summaryHtml + (props.main_text || "");
             }
 
             if (idev.type === 'udl-content') {
@@ -240,18 +125,29 @@ export async function compileExeProject(pagesConfig) {
             if (idev.type === 'casestudy') {
                 props.textTextarea = props.story || props.main_text || "";
                 props.activities = [{
-                    activity: props.activity || "",
-                    feedback: props.feedback || ""
+                    activity: props.activity || "Actividad",
+                    feedback: props.feedback || "Retroalimentación"
                 }];
             }
 
-            if (idev.type === 'image-gallery' && props.images) {
-                let galleryHtml = '<div class="exe-image-gallery" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:1rem;">';
-                props.images.forEach(img => {
-                    galleryHtml += `<figure style="margin:0;"><img src="${img.url}" alt="${img.caption}" style="width:100%; border-radius:8px;"><figcaption style="font-size:0.8rem; margin-top:0.5rem; text-align:center;">${img.caption}</figcaption></figure>`;
-                });
-                galleryHtml += '</div>';
-                snippet = snippet.replace(/<div class="imageGallery-body"><\/div>/g, `<div class="imageGallery-body">${galleryHtml}</div>`);
+            if (idev.type === 'guess') {
+                props.words = [{
+                    word: props.term || "",
+                    hint: props.hint || "",
+                    feedback: props.feedback || ""
+                }];
+                // Mensajes estándar para que el juego no aparezca con textos vacíos
+                props.msgs = {
+                    msgCorrect: "¡Correcto!",
+                    msgIncorrect: "¡Incorrecto!",
+                    msgLookAnswer: "Mira la respuesta",
+                    msgSubmit: "Comprobar",
+                    msgAdivina: "Adivina las palabras:",
+                    msgProxima: "Siguiente",
+                    msgRetro: "Retroalimentación",
+                    msgPuntos: "Puntos:",
+                    msgTiempo: "Tiempo:"
+                };
             }
 
             if (idev.type === 'interactive-video') {
@@ -259,76 +155,74 @@ export async function compileExeProject(pagesConfig) {
                 props.videoType = "youtube";
             }
 
-            // 4. Inyección en el XML
-            // Primero, sincronizamos jsonProperties para tener el objeto completo con valores por defecto
+            // A) Sincronización de jsonProperties (Metadatos del editor)
             let mergedProps = { ...props };
             snippet = snippet.replace(/(<jsonProperties><!\[CDATA\[)(.*?)(\]\]><\/jsonProperties>)/, (match, p1, p2, p3) => {
                 let originalJson = {};
                 try {
-                    if (p2 && p2.trim() !== "") {
-                        originalJson = JSON.parse(p2);
-                    }
-                } catch (e) {
-                    console.warn("Error parseando jsonProperties original:", e);
-                }
+                    if (p2 && p2.trim() !== "") originalJson = JSON.parse(p2);
+                } catch (e) {}
                 mergedProps = { ...originalJson, ...props };
-                if (mergedProps.ideviceId) mergedProps.ideviceId = ideviceId;
+                mergedProps.ideviceId = ideviceId;
                 if (mergedProps.id) mergedProps.id = ideviceId;
                 if (props.title) mergedProps.title = props.title;
                 return p1 + JSON.stringify(mergedProps) + p3;
             });
 
-            // B) Marcadores HTML (Vista previa y contenido)
-            if (props.instructions) snippet = snippet.replaceAll('{{INSTRUCTIONS}}', props.instructions);
-            
-            // Mapeo general de contenido
-            const contentValue = props.main_text || props.textTextarea || props.story || props.content || "";
-            snippet = snippet.replaceAll('{{CONTENT}}', contentValue);
-            
-            if (props.easy_reading || props.easyReadingTextarea) snippet = snippet.replaceAll('{{UDL_EASY}}', props.easy_reading || props.easyReadingTextarea);
-            if (props.audio_script || props.audioScriptTextarea) snippet = snippet.replaceAll('{{UDL_AUDIO}}', props.audio_script || props.audioScriptTextarea);
-            
-            if (props.videoURL) snippet = snippet.replaceAll('{{VIDEO_URL}}', props.videoURL);
-            if (props.videoType) snippet = snippet.replaceAll('{{VIDEO_TYPE}}', props.videoType);
-
-            if (props.activities && props.activities[0]) {
-                snippet = snippet.replaceAll('{{ACTIVITY}}', props.activities[0].activity);
-                snippet = snippet.replaceAll('{{FEEDBACK}}', props.activities[0].feedback);
+            // B) Construcción de contenido final con IMAGEN
+            let finalMainContent = props.main_text || props.textTextarea || props.story || props.content || "";
+            if (props.image && !finalMainContent.includes(props.image)) {
+                const imgHtml = `<p style="text-align:center;"><img src="${props.image}" alt="Imagen" style="max-width:100%; height:auto; border-radius:8px;"></p>`;
+                finalMainContent = imgHtml + finalMainContent;
             }
-            
-            // C) Limpieza de marcadores no usados
-            snippet = snippet.replaceAll('{{INSTRUCTIONS}}', '')
-                             .replaceAll('{{CONTENT}}', '')
-                             .replaceAll('{{UDL_EASY}}', '')
-                             .replaceAll('{{UDL_AUDIO}}', '')
-                             .replaceAll('{{VIDEO_URL}}', '')
-                             .replaceAll('{{VIDEO_TYPE}}', '')
-                             .replaceAll('{{ACTIVITY}}', '')
-                             .replaceAll('{{FEEDBACK}}', '');
 
-            // D) Codificación XOR interactiva (Juegos)
+            // C) Reemplazo de marcadores en el htmlView (Vista del alumno)
+            const placeholders = {
+                '{{INSTRUCTIONS}}': props.instructions || mergedProps.instructions || "Lee y responde:",
+                '{{CONTENT}}': finalMainContent,
+                '{{UDL_EASY}}': props.easy_reading || props.easyReadingTextarea || "",
+                '{{UDL_AUDIO}}': props.audio_script || props.audioScriptTextarea || "",
+                '{{VIDEO_URL}}': props.videoURL || "",
+                '{{VIDEO_TYPE}}': props.videoType || "youtube",
+                '{{ACTIVITY}}': (props.activities && props.activities[0]) ? props.activities[0].activity : "",
+                '{{FEEDBACK}}': (props.activities && props.activities[0]) ? props.activities[0].feedback : ""
+            };
+
+            for (const [key, val] of Object.entries(placeholders)) {
+                snippet = snippet.replaceAll(key, val);
+            }
+
+            // D) Sincronizar el contenido procesado de vuelta a jsonProperties
+            // Esto asegura que el editor de eXe vea las imágenes y el texto final
+            snippet = snippet.replace(/(<jsonProperties><!\[CDATA\[)(.*?)(\]\]><\/jsonProperties>)/, (match, p1, p2, p3) => {
+                try {
+                    let obj = JSON.parse(p2);
+                    if (obj.textTextarea && obj.textTextarea.includes('{{CONTENT}}')) {
+                        obj.textTextarea = obj.textTextarea.replace('{{CONTENT}}', finalMainContent);
+                    } else if (obj.history && obj.history.includes('{{CONTENT}}')) {
+                        obj.history = obj.history.replace('{{CONTENT}}', finalMainContent);
+                    }
+                    mergedProps = obj; // Actualizamos mergedProps para el XOR
+                    return p1 + JSON.stringify(obj) + p3;
+                } catch (e) { return match; }
+            });
+
+            // E) Codificación XOR interactiva (Juegos v4.0.0-rc3)
             const uriEncodedTypes = ['checklist', 'guess', 'select-media-files', 'rubric', 'complete', 'trueorfalse', 'quick-questions-multiple-choice'];
             if (uriEncodedTypes.includes(idev.type)) {
-                // Regex robusto para capturar el div DataGame js-hidden (independientemente del prefijo de clase)
                 const dataGameRegex = /(<div[^>]*class="[^"]*DataGame js-hidden"[^>]*>)(.*?)(<\/div>)/i;
                 if (dataGameRegex.test(snippet)) {
                     snippet = snippet.replace(dataGameRegex, (match, p1, p2, p3) => {
-                        // v4.0.0-rc3 (Nodex) requiere encriptación XOR 146 para los juegos
-                        // IMPORTANTE: Usamos mergedProps para que incluya typeGame y otros campos obligatorios
                         const encryptedData = exeEncrypt(JSON.stringify(mergedProps));
                         return p1 + encryptedData + p3;
                     });
                 }
             }
             
-            // E) Caso especial: script de video interactivo (Nodex usa un JSON plano aquí también)
+            // F) Script de video interactivo
             if (idev.type === 'interactive-video') {
                 snippet = snippet.replace(/(<script id="exe-interactive-video-contents" type="application\/json">)(.*?)(<\/script>)/, (match, p1, p2, p3) => {
-                    const videoData = {
-                        ideviceID: ideviceId,
-                        slides: [],
-                        i18n: {}
-                    };
+                    const videoData = { ideviceID: ideviceId, slides: [], i18n: {} };
                     return p1 + JSON.stringify(videoData) + p3;
                 });
             }
