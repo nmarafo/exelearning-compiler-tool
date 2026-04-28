@@ -229,8 +229,20 @@ export async function compileExeProject(pagesConfig) {
                     hint: props.hint || "",
                     feedback: props.feedback || ""
                 }];
-                // Asegurar que las instrucciones se vean en la vista previa
-                snippet = snippet.replace(/<p>Adivina las palabras.<\/p>/g, props.instructions);
+            }
+
+            if (idev.type === 'udl-content') {
+                props.textTextarea = props.main_text || "";
+                props.easyReadingTextarea = props.easy_reading || "";
+                props.audioScriptTextarea = props.audio_script || "";
+            }
+
+            if (idev.type === 'casestudy') {
+                props.textTextarea = props.story || props.main_text || "";
+                props.activities = [{
+                    activity: props.activity || "",
+                    feedback: props.feedback || ""
+                }];
             }
 
             if (idev.type === 'image-gallery' && props.images) {
@@ -242,75 +254,82 @@ export async function compileExeProject(pagesConfig) {
                 snippet = snippet.replace(/<div class="imageGallery-body"><\/div>/g, `<div class="imageGallery-body">${galleryHtml}</div>`);
             }
 
-            if (idev.type === 'interactive-video' && props.url) {
-                props.videoURL = props.url;
+            if (idev.type === 'interactive-video') {
+                props.videoURL = props.url || "";
                 props.videoType = "youtube";
-                snippet = snippet.replace(/https:\/\/www\.youtube\.com\/watch\?v=Jm9qT8yqZzw/g, props.url);
             }
 
             // 4. Inyección en el XML
-            // A) JSONProperties (Estado interno)
+            // Primero, sincronizamos jsonProperties para tener el objeto completo con valores por defecto
+            let mergedProps = { ...props };
             snippet = snippet.replace(/(<jsonProperties><!\[CDATA\[)(.*?)(\]\]><\/jsonProperties>)/, (match, p1, p2, p3) => {
-                if (!p2) return match;
+                let originalJson = {};
                 try {
-                    let obj = JSON.parse(p2);
-                    Object.assign(obj, props);
-                    if (obj.ideviceId) obj.ideviceId = ideviceId;
-                    if (obj.id) obj.id = ideviceId;
-                    if (props.title) obj.title = props.title; // Asegurar título en el JSON
-                    return p1 + JSON.stringify(obj) + p3;
+                    if (p2 && p2.trim() !== "") {
+                        originalJson = JSON.parse(p2);
+                    }
                 } catch (e) {
-                    return match;
+                    console.warn("Error parseando jsonProperties original:", e);
                 }
+                mergedProps = { ...originalJson, ...props };
+                if (mergedProps.ideviceId) mergedProps.ideviceId = ideviceId;
+                if (mergedProps.id) mergedProps.id = ideviceId;
+                if (props.title) mergedProps.title = props.title;
+                return p1 + JSON.stringify(mergedProps) + p3;
             });
-            
-            // B) Marcadores HTML (Vista previa)
+
+            // B) Marcadores HTML (Vista previa y contenido)
             if (props.instructions) snippet = snippet.replaceAll('{{INSTRUCTIONS}}', props.instructions);
-            if (props.textTextarea) snippet = snippet.replaceAll('{{CONTENT}}', props.textTextarea);
-            if (props.history) snippet = snippet.replaceAll('{{HISTORY}}', props.history);
+            
+            // Mapeo general de contenido
+            const contentValue = props.main_text || props.textTextarea || props.story || props.content || "";
+            snippet = snippet.replaceAll('{{CONTENT}}', contentValue);
+            
+            if (props.easy_reading || props.easyReadingTextarea) snippet = snippet.replaceAll('{{UDL_EASY}}', props.easy_reading || props.easyReadingTextarea);
+            if (props.audio_script || props.audioScriptTextarea) snippet = snippet.replaceAll('{{UDL_AUDIO}}', props.audio_script || props.audioScriptTextarea);
+            
+            if (props.videoURL) snippet = snippet.replaceAll('{{VIDEO_URL}}', props.videoURL);
+            if (props.videoType) snippet = snippet.replaceAll('{{VIDEO_TYPE}}', props.videoType);
+
             if (props.activities && props.activities[0]) {
                 snippet = snippet.replaceAll('{{ACTIVITY}}', props.activities[0].activity);
                 snippet = snippet.replaceAll('{{FEEDBACK}}', props.activities[0].feedback);
             }
-            if (props.digHtml) snippet = snippet.replaceAll('{{DIGCOMP_CONTENT}}', props.digHtml);
-
+            
             // C) Limpieza de marcadores no usados
             snippet = snippet.replaceAll('{{INSTRUCTIONS}}', '')
                              .replaceAll('{{CONTENT}}', '')
-                             .replaceAll('{{HISTORY}}', '')
+                             .replaceAll('{{UDL_EASY}}', '')
+                             .replaceAll('{{UDL_AUDIO}}', '')
+                             .replaceAll('{{VIDEO_URL}}', '')
+                             .replaceAll('{{VIDEO_TYPE}}', '')
                              .replaceAll('{{ACTIVITY}}', '')
-                             .replaceAll('{{FEEDBACK}}', '')
-                             .replaceAll('{{DIGCOMP_CONTENT}}', '');
+                             .replaceAll('{{FEEDBACK}}', '');
 
-            // D) Codificación XOR interactiva (Juegos) y Sincronización de jsonProperties
+            // D) Codificación XOR interactiva (Juegos)
             const uriEncodedTypes = ['checklist', 'guess', 'select-media-files', 'rubric', 'complete', 'trueorfalse', 'quick-questions-multiple-choice'];
             if (uriEncodedTypes.includes(idev.type)) {
                 // Regex robusto para capturar el div DataGame js-hidden (independientemente del prefijo de clase)
                 const dataGameRegex = /(<div[^>]*class="[^"]*DataGame js-hidden"[^>]*>)(.*?)(<\/div>)/i;
                 if (dataGameRegex.test(snippet)) {
                     snippet = snippet.replace(dataGameRegex, (match, p1, p2, p3) => {
-                        const jsonStr = JSON.stringify(props);
                         // v4.0.0-rc3 (Nodex) requiere encriptación XOR 146 para los juegos
-                        const encryptedData = exeEncrypt(jsonStr);
+                        // IMPORTANTE: Usamos mergedProps para que incluya typeGame y otros campos obligatorios
+                        const encryptedData = exeEncrypt(JSON.stringify(mergedProps));
                         return p1 + encryptedData + p3;
                     });
                 }
             }
-
-            // Sincronizar jsonProperties CDATA (Fundamental para que eXe vea los datos en el editor)
-            const jsonPropsRegex = /(<jsonProperties><!\[CDATA\[)(.*?)(\]\]><\/jsonProperties>)/;
-            if (jsonPropsRegex.test(snippet)) {
-                snippet = snippet.replace(jsonPropsRegex, (match, p1, p2, p3) => {
-                    let originalJson = {};
-                    try {
-                        if (p2 && p2.trim() !== "") {
-                            originalJson = JSON.parse(p2);
-                        }
-                    } catch (e) {
-                        console.warn("Error parseando jsonProperties original, se usará objeto vacío:", e);
-                    }
-                    const mergedProps = { ...originalJson, ...props };
-                    return p1 + JSON.stringify(mergedProps) + p3;
+            
+            // E) Caso especial: script de video interactivo (Nodex usa un JSON plano aquí también)
+            if (idev.type === 'interactive-video') {
+                snippet = snippet.replace(/(<script id="exe-interactive-video-contents" type="application\/json">)(.*?)(<\/script>)/, (match, p1, p2, p3) => {
+                    const videoData = {
+                        ideviceID: ideviceId,
+                        slides: [],
+                        i18n: {}
+                    };
+                    return p1 + JSON.stringify(videoData) + p3;
                 });
             }
 

@@ -20,8 +20,8 @@ export const SNIPPETS_DICT = {
           <odeBlockId>UUID-BLOQUE</odeBlockId>
           <odeIdeviceId>UUID-IDEVICE</odeIdeviceId>
           <odeIdeviceTypeName>casestudy</odeIdeviceTypeName>
-          <htmlView><![CDATA[<div class="exe-casestudy-container"><div class="caseStudyContent"><div class="CSP-History mb-3">{{HISTORY}}</div><div class="CSP-Activities mb-3"><div class="CSP-Activity mb-3">{{ACTIVITY}}</div><div class="iDevice_buttons feedback-button js-required"><input type="button" class="CSP-FeedbackBtn feedbacktooglebutton" value="Mostrar retroalimentación"></div><div class="CSP-FeedbackText feedback js-feedback js-hidden" style="display: none;">{{FEEDBACK}}</div></div></div></div>]]></htmlView>
-          <jsonProperties><![CDATA[{"id":"UUID-IDEVICE","typeGame":"Case study","history":"{{HISTORY}}","textInfoDurationInput":"","textInfoDurationTextInput":"Duración","textInfoParticipantsInput":"","textInfoParticipantsTextInput":"Agrupamiento","activities":[{"activity":"{{ACTIVITY}}","feedback":"{{FEEDBACK}}","buttonCaption":"Mostrar retroalimentación"}]}]]></jsonProperties>
+          <htmlView><![CDATA[<div class="exe-casestudy-container"><div class="caseStudyContent"><div class="CSP-History mb-3">{{CONTENT}}</div><div class="CSP-Activities mb-3"><div class="CSP-Activity mb-3">{{ACTIVITY}}</div><div class="iDevice_buttons feedback-button js-required"><input type="button" class="CSP-FeedbackBtn feedbacktooglebutton" value="Mostrar retroalimentación"></div><div class="CSP-FeedbackText feedback js-feedback js-hidden" style="display: none;">{{FEEDBACK}}</div></div></div></div>]]></htmlView>
+          <jsonProperties><![CDATA[{"id":"UUID-IDEVICE","typeGame":"Case study","history":"{{CONTENT}}","textInfoDurationInput":"","textInfoDurationTextInput":"Duración","textInfoParticipantsInput":"","textInfoParticipantsTextInput":"Agrupamiento","activities":[{"activity":"{{ACTIVITY}}","feedback":"{{FEEDBACK}}","buttonCaption":"Mostrar retroalimentación"}]}]]></jsonProperties>
           <odeComponentsOrder>0</odeComponentsOrder>
           <odeComponentsProperties>
           </odeComponentsProperties>
@@ -32,8 +32,8 @@ export const SNIPPETS_DICT = {
           <odeBlockId>UUID-BLOQUE</odeBlockId>
           <odeIdeviceId>UUID-IDEVICE</odeIdeviceId>
           <odeIdeviceTypeName>digcompedu</odeIdeviceTypeName>
-          <htmlView><![CDATA[<div class="digcompedu-container"><div class="digcompeduIdeviceContent">{{DIGCOMP_CONTENT}}</div></div>]]></htmlView>
-          <jsonProperties><![CDATA[{"id":"UUID-IDEVICE","typeGame":"DigCompEdu","content":"{{DIGCOMP_CONTENT}}"}]]></jsonProperties>
+          <htmlView><![CDATA[<div class="digcompedu-container"><div class="digcompeduIdeviceContent">{{CONTENT}}</div></div>]]></htmlView>
+          <jsonProperties><![CDATA[{"id":"UUID-IDEVICE","typeGame":"DigCompEdu","content":"{{CONTENT}}"}]]></jsonProperties>
           <odeComponentsOrder>0</odeComponentsOrder>
           <odeComponentsProperties>
           </odeComponentsProperties>
@@ -80,7 +80,7 @@ export const SNIPPETS_DICT = {
           <odeBlockId>UUID-BLOQUE</odeBlockId>
           <odeIdeviceId>UUID-IDEVICE</odeIdeviceId>
           <odeIdeviceTypeName>udl-content</odeIdeviceTypeName>
-          <htmlView><![CDATA[<div class="exe-udlContent exe-udlContent-engagement"><section class="exe-udlContent-block"><div class="exe-udlContent-content"><div class="exe-udlContent-content-main"><p>Contenido principal</p></div><article class="exe-udlContent-content-simplified js-hidden"><header class='exe-udlContent-alt-content-title'><h2>Lectura facilitada</h2></header><p>Lectura facilitada</p><button class="exe-udlContent-alt-content-hide">Cerrar</button></article><article class="exe-udlContent-content-audio js-hidden"><header class='exe-udlContent-alt-content-title'><h2>Audio</h2></header><p>Audio</p><button class="exe-udlContent-alt-content-hide">Cerrar</button></article><article class="exe-udlContent-content-visual js-hidden"><header class='exe-udlContent-alt-content-title'><h2>Apoyo visual</h2></header><p>Apoyo visual</p><button class="exe-udlContent-alt-content-hide">Cerrar</button></article></div></section></div>]]></htmlView>
+          <htmlView><![CDATA[<div class="exe-udlContent exe-udlContent-engagement"><section class="exe-udlContent-block"><div class="exe-udlContent-content"><div class="exe-udlContent-content-main">{{CONTENT}}</div><article class="exe-udlContent-content-simplified js-hidden"><header class='exe-udlContent-alt-content-title'><h2>Lectura facilitada</h2></header>{{UDL_EASY}}<button class="exe-udlContent-alt-content-hide">Cerrar</button></article><article class="exe-udlContent-content-audio js-hidden"><header class='exe-udlContent-alt-content-title'><h2>Audio</h2></header>{{UDL_AUDIO}}<button class="exe-udlContent-alt-content-hide">Cerrar</button></article></div></section></div>]]></htmlView>
           <jsonProperties><![CDATA[{"ideviceId":"UUID-IDEVICE"}]]></jsonProperties>
           <odeComponentsOrder>0</odeComponentsOrder>
           <odeComponentsProperties>
@@ -116,7 +116,7 @@ export const SNIPPETS_DICT = {
           <odeBlockId>UUID-BLOQUE</odeBlockId>
           <odeIdeviceId>UUID-IDEVICE</odeIdeviceId>
           <odeIdeviceTypeName>guess</odeIdeviceTypeName>
-          <htmlView><![CDATA[<div class="adivina-IDevice"><div class="game-evaluation-ids js-hidden" data-id="UUID-IDEVICE" data-evaluationb="false" data-evaluationid="UUID-EVALUACION"></div><div class="adivina-feedback-game"></div><div class="adivina-instructions"><p>Adivina las palabras.</p></div><div class="adivina-DataGame js-hidden"></div></div>]]></htmlView>
+          <htmlView><![CDATA[<div class="adivina-IDevice"><div class="game-evaluation-ids js-hidden" data-id="UUID-IDEVICE" data-evaluationb="false" data-evaluationid="UUID-EVALUACION"></div><div class="adivina-feedback-game"></div><div class="adivina-instructions"><p>{{INSTRUCTIONS}}</p></div><div class="adivina-DataGame js-hidden"></div></div>]]></htmlView>
           <jsonProperties><![CDATA[{"ideviceId":"UUID-IDEVICE","typeGame":"Guess","instructions":"<p>Adivina las palabras.</p>","msgs":{"msgCorrect":"¡Correcto!","msgIncorrect":"¡Incorrecto!","msgLookAnswer":"Mira la respuesta","msgSubmit":"Comprobar"},"words":[]}]]></jsonProperties>
           <odeComponentsOrder>0</odeComponentsOrder>
           <odeComponentsProperties>
@@ -128,8 +128,8 @@ export const SNIPPETS_DICT = {
           <odeBlockId>UUID-BLOQUE</odeBlockId>
           <odeIdeviceId>UUID-IDEVICE</odeIdeviceId>
           <odeIdeviceTypeName>interactive-video</odeIdeviceTypeName>
-          <htmlView><![CDATA[<div class="exe-interactive-video"><p id="exe-interactive-video-file" class="js-hidden"><a href="https://www.youtube.com/watch?v=Jm9qT8yqZzw">youtube</a></p><script id="exe-interactive-video-contents" type="application/json">{"ideviceID":"UUID-IDEVICE","slides":[],"i18n":{}}</script></div>]]></htmlView>
-          <jsonProperties><![CDATA[{"ideviceId":"UUID-IDEVICE","videoURL":"https://www.youtube.com/watch?v=Jm9qT8yqZzw","videoType":"youtube","activityToSave":{"slides":[],"i18n":{}},"ask":true}]]></jsonProperties>
+          <htmlView><![CDATA[<div class="exe-interactive-video"><p id="exe-interactive-video-file" class="js-hidden"><a href="{{VIDEO_URL}}">{{VIDEO_TYPE}}</a></p><script id="exe-interactive-video-contents" type="application/json">{"ideviceID":"UUID-IDEVICE","slides":[],"i18n":{}}</script></div>]]></htmlView>
+          <jsonProperties><![CDATA[{"ideviceId":"UUID-IDEVICE","videoURL":"{{VIDEO_URL}}","videoType":"{{VIDEO_TYPE}}","activityToSave":{"slides":[],"i18n":{}},"ask":true}]]></jsonProperties>
           <odeComponentsOrder>0</odeComponentsOrder>
           <odeComponentsProperties>
           </odeComponentsProperties>
