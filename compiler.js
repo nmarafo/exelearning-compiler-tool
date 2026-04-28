@@ -144,7 +144,8 @@ export async function compileExeProject(pagesConfig) {
                 msgLoading: "Cargando. Espere, por favor...", msgPoints: "puntos", msgAudio: "Audio",
                 msgCorrect: "Correcto", msgIncorrect: "Incorrecto", msgUncompletedActivity: "Actividad no completada",
                 msgSuccessfulActivity: "Actividad superada. Puntuación: %s",
-                msgUnsuccessfulActivity: "Actividad no superada. Puntuación: %s"
+                msgUnsuccessfulActivity: "Actividad no superada. Puntuación: %s",
+                msgSaveScore: "Guardar la puntuación", msgLookAnswer: "Mira la respuesta"
             };
 
             // Ajustes específicos por tipo de iDevice
@@ -215,6 +216,8 @@ export async function compileExeProject(pagesConfig) {
                     msgAllOK: "¡Genial! Todo correcto ¡A por otra!",
                     msgAgain: "Inténtalo de nuevo"
                 };
+                props.textFeedBack = props.feedback || "";
+                props.feedBack = !!props.feedback;
                 props.showMinimize = false;
                 props.showSolution = true;
                 props.timeShowSolution = 4;
@@ -222,6 +225,16 @@ export async function compileExeProject(pagesConfig) {
                 props.repeatActivity = true;
                 props.weighted = 100;
                 props.isScorm = 0;
+                props.textButtonScorm = "Guardar la puntuación";
+                props.textFeedBack = "";
+                props.textAfter = "";
+                props.feedBack = false;
+                props.percentajeFB = 100;
+                props.customMessages = false;
+                props.percentajeQuestions = 100;
+                props.time = 0;
+                props.attempsNumber = 1;
+                props.modeTable = false;
             }
 
             if (idev.type === 'guess') {
@@ -242,6 +255,10 @@ export async function compileExeProject(pagesConfig) {
                 props.showSolution = true;
                 props.useLives = true;
                 props.numberLives = 3;
+                props.itinerary = {
+                    showClue: false, clueGame: "", percentageClue: 40,
+                    showCodeAccess: false, codeAccess: "", messageCodeAccess: ""
+                };
             }
 
             if (idev.type === 'complete') {
@@ -265,6 +282,8 @@ export async function compileExeProject(pagesConfig) {
                 } catch (e) {}
                 mergedProps = { ...originalJson, ...props };
                 mergedProps.ideviceId = ideviceId;
+                mergedProps.evaluationID = evalId;
+                mergedProps.evaluation = props.evaluation || false;
                 if (mergedProps.id) mergedProps.id = ideviceId;
                 if (props.title) mergedProps.title = props.title;
                 return p1 + JSON.stringify(mergedProps) + p3;
@@ -291,6 +310,14 @@ export async function compileExeProject(pagesConfig) {
 
             for (const [key, val] of Object.entries(placeholders)) {
                 snippet = snippet.replaceAll(key, val);
+            }
+
+            // Fallback for snippets that don't use placeholders but have the text
+            if (idev.type === 'select-media-files' && props.instructions) {
+                snippet = snippet.replace(/<p>Selecciona las tarjetas correctas\.?<\/p>/, props.instructions);
+            }
+            if (idev.type === 'guess' && props.instructions) {
+                snippet = snippet.replace(/<p>Adivina las palabras\.?<\/p>/, props.instructions);
             }
 
             // D) Sincronizar el contenido procesado de vuelta a jsonProperties
