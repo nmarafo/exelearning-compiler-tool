@@ -166,6 +166,49 @@ export async function compileExeProject(pagesConfig) {
                 }];
             }
 
+            if (idev.type === 'select-media-files') {
+                props.typeGame = "SeleccionaMedias";
+                props.version = 1.5;
+                props.phrasesGame = [{
+                    cards: (props.options || []).map((opt, idx) => ({
+                        id: Date.now() + idx,
+                        type: 2,
+                        author: "",
+                        alt: opt.description || "",
+                        url: opt.url || "",
+                        audio: "",
+                        eText: "",
+                        color: "#000000",
+                        backcolor: "#ffffff",
+                        state: !!opt.is_correct
+                    })),
+                    msgError: "",
+                    msgHit: "",
+                    definition: props.instructions || "Selecciona las opciones correctas",
+                    audioDefinition: "",
+                    audioHit: "",
+                    audioError: "",
+                    url: "", alt: "", author: ""
+                }];
+                props.msgs = {
+                    ...COMMON_GAME_MSGS,
+                    msgChangeMode: "Cambiar modo de visualización",
+                    msgTypeGame: "Selecciona (multimedia)",
+                    msgTimeOver: "El tiempo ha finalizado",
+                    mgsAllPhrases: "¡Has completado todas las actividades!",
+                    msgNumbersAttemps: "Número de actividades pendientes",
+                    msgActivities: "Actividades",
+                    msgCheck: "Comprobar",
+                    msgContinue: "Continuar",
+                    msgAllOK: "¡Genial! Todo correcto ¡A por otra!",
+                    msgAgain: "Inténtalo de nuevo"
+                };
+                props.showMinimize = false;
+                props.showSolution = true;
+                props.timeShowSolution = 4;
+                props.numberMaxCards = "30";
+            }
+
             if (idev.type === 'guess') {
                 props.typeGame = "Adivina";
                 props.version = 2;
