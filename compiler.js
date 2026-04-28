@@ -321,6 +321,29 @@ export async function compileExeProject(pagesConfig) {
                 };
             }
 
+            if (idev.type === 'rubric') {
+                props.typeGame = "Rubric";
+                const headers = ["Nivel 1", "Nivel 2", "Nivel 3", "Nivel 4"];
+                const rows = (idev.criteria || []).map((c, idx) => ({
+                    criterion: c.name,
+                    levels: (c.levels || []).map(l => l.description)
+                }));
+                props.rubric = {
+                    header: headers,
+                    rows: rows,
+                    weighted: true
+                };
+                props.msgs = {
+                    msgCriterion: "Criterio",
+                    msgLevel: "Nivel",
+                    msgScore: "Puntuación",
+                    msgTotal: "Total",
+                    msgSave: "Guardar",
+                    msgRubric: "Rúbrica",
+                    msgWeight: "Peso"
+                };
+            }
+
             if (idev.type === 'checklist') {
                 props.typeGame = "Cotejo";
                 props.levels = [
