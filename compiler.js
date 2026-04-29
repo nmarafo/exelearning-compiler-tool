@@ -163,6 +163,7 @@ export async function compileExeProject(pagesConfig) {
             if (idev.type === 'progress-report') {
                 props.typeGame = "Progress Report";
                 props.instructions = idev.description || "";
+                props.evaluationID = ideviceId; // Este es el "Identificador" en la UI
                 props.id = ideviceId;
                 props.typeshow = 0;
                 props.showDate = true;
@@ -550,6 +551,14 @@ export async function compileExeProject(pagesConfig) {
                         // Remove potential data-id or other attributes that might conflict during runtime init
                         const cleanTag = p1.replace(/\s(data-id|id)="[^"]*"/g, '');
                         return cleanTag + encryptedData + p3;
+                    });
+                }
+
+                // Sincronizar jsonProperties para que el editor de eXe muestre los valores correctos
+                const jsonPropertiesRegex = /(<jsonProperties[^>]*><!\[CDATA\[)(.*?)(\]\]><\/jsonProperties>)/i;
+                if (jsonPropertiesRegex.test(snippet)) {
+                    snippet = snippet.replace(jsonPropertiesRegex, (match, p1, p2, p3) => {
+                        return p1 + JSON.stringify(mergedProps) + p3;
                     });
                 }
             }
