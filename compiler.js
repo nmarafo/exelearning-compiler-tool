@@ -334,13 +334,27 @@ export async function compileExeProject(pagesConfig) {
                 props.version = 2;
                 props.id = ideviceId;
                 const scores = ["4 Excelente", "3 Satisfactorio", "2 Mejorable", "1 Insuficiente"];
-                const categories = (idev.criteria || []).map(c => c.name);
-                const descriptions = (idev.criteria || []).map(c => {
-                    return (c.levels || []).map((l, lIdx) => ({
-                        weight: (l.score || (4 - lIdx)).toString(),
-                        text: l.description
-                    }));
-                });
+                let categories = [];
+                let descriptions = [];
+
+                if (idev.rows && Array.isArray(idev.rows)) {
+                    categories = idev.rows.map(r => r.category || r.criterion || "");
+                    descriptions = idev.rows.map(r => [
+                        { weight: "4", text: r.level4 || "" },
+                        { weight: "3", text: r.level3 || "" },
+                        { weight: "2", text: r.level2 || "" },
+                        { weight: "1", text: r.level1 || "" }
+                    ]);
+                } else {
+                    categories = (idev.criteria || []).map(c => c.name);
+                    descriptions = (idev.criteria || []).map(c => {
+                        return (c.levels || []).map((l, lIdx) => ({
+                            weight: (l.score || (4 - lIdx)).toString(),
+                            text: l.description
+                        }));
+                    });
+                }
+
                 props.table = {
                     title: idev.title || "Rúbrica",
                     categories: categories,
