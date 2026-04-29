@@ -160,10 +160,31 @@ export async function compileExeProject(pagesConfig) {
                 props.main_text = summaryHtml + (props.main_text || "");
             }
 
-            if (idev.type === 'udl-content') {
-                props.textTextarea = props.main_text || "";
-                props.easyReadingTextarea = props.easy_reading || "";
-                props.audioScriptTextarea = props.audio_script || "";
+            if (idev.type === 'progress-report') {
+                props.typeGame = "Progress Report";
+                props.instructions = idev.description || "";
+                props.msgs = {
+                    msgSummary: "Resumen de las actividades",
+                    msgNoCompletedActivities: "No has completado ninguna de las actividades sugeridas para ser evaluado.",
+                    msgNoPendientes: "Número de actividades pendientes: %s.",
+                    msgCompletedActivities: "La siguiente tabla recoge los resultados que has obtenido en las actividades evaluables propuestas en este recurso educativo que ya has completado.",
+                    msgAverageScore: "Nota media", msgReboot: "Reiniciar",
+                    msgReload: "Edita este iDevice para actualizar su contenido.",
+                    mssActivitiesNumber: "Nº de actividades: %s", msgActivitiesCompleted: "Completadas: %s",
+                    msgAverageScore1: "Nota media: %s", msgAverageScoreCompleted: "Nota media de las actividades completadas: %s",
+                    msgDelete: "Esto eliminará las puntuaciones almacenadas de todas las actividades ¿Estás seguro de que deseas continuar?",
+                    msgSections: "Secciones del recurso educativo", msgSave: "Guardar", msgReport: "informe_de_progreso",
+                    msgReportTitle: "Informe de progreso", msgType: "Tipo", msgSeeActivity: "Ir a la actividad",
+                    mgsSections: "Secciones del recurso educativo", msgName: "Nombre", msgDate: "Fecha",
+                    msgNotCompleted: "Sin completar", msgNotData: "Error al recuperar los datos",
+                    msgScoredActivities: "Actividades calificadas",
+                    msgInEXE: "En modo de vista previa, visita este informe de progreso para ver el estado de todas las actividades calificadas asociadas.",
+                    msgInEXE2: "Este mensaje solo se mostrará en modo de edición.",
+                    msgUncompletedActivity: "Actividad no completada", msgUnsuccessfulActivity: "Actividad no exitosa",
+                    msgSuccessfulActivity: "Actividad exitosa",
+                    msgLocalMode: "Los resultados de las actividades no se pueden mostrar dentro de la aplicación.",
+                    msgDownload: "Descargar el informe de progreso"
+                };
             }
 
             if (idev.type === 'casestudy') {
@@ -467,7 +488,8 @@ export async function compileExeProject(pagesConfig) {
                 '{{ACTIVITY}}': (props.activities && props.activities[0]) ? props.activities[0].activity : "",
                 '{{FEEDBACK}}': (props.activities && props.activities[0]) ? props.activities[0].feedback : "",
                 '{{TITLE}}': props.rubricTitle || "",
-                '{{INSTRUCTIONS_DATA}}': props.instructionsData || ""
+                '{{INSTRUCTIONS_DATA}}': props.instructionsData || "",
+                '{{INSTRUCTIONS}}': props.instructions || ""
             };
 
             for (const [key, val] of Object.entries(placeholders)) {
