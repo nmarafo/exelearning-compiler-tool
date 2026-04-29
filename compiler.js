@@ -361,6 +361,12 @@ export async function compileExeProject(pagesConfig) {
                     scores: scores,
                     descriptions: descriptions
                 };
+                // Duplicar en la raíz (Requerido por motor CEDEC v4)
+                props.title = props.table.title;
+                props.categories = categories;
+                props.scores = scores;
+                props.descriptions = descriptions;
+                
                 props.instructions = `<p>${idev.instructions || "Completa la siguiente rúbrica"}</p>`;
                 props["visible-info"] = false;
                 props.author = "CEDEC";
@@ -495,7 +501,21 @@ export async function compileExeProject(pagesConfig) {
                 const dataGameRegex = /(<div[^>]*class="[^"]*DataGame[^"]*"[^>]*>)(.*?)(<\/div>)/i;
                 if (dataGameRegex.test(snippet)) {
                     snippet = snippet.replace(dataGameRegex, (match, p1, p2, p3) => {
-                        const encryptedData = (idev.type === 'rubric') ? encodeURIComponent(JSON.stringify(mergedProps)) : exeEncrypt(JSON.stringify(mergedProps));
+                        let encryptedData;
+                        if (idev.type === 'rubric') {
+                            // Codificación Latin-1 (ISO-8859-1) para motor de rúbricas
+                            const jsonStr = JSON.stringify(mergedProps);
+                            encryptedData = encodeURIComponent(jsonStr)
+                                .replace(/%C3%A1/g, "%E1").replace(/%C3%A9/g, "%E9")
+                                .replace(/%C3%AD/g, "%ED").replace(/%C3%B3/g, "%F3")
+                                .replace(/%C3%BA/g, "%FA").replace(/%C3%B1/g, "%F1")
+                                .replace(/%C3%81/g, "%C1").replace(/%C3%89/g, "%C9")
+                                .replace(/%C3%8D/g, "%CD").replace(/%C3%93/g, "%D3")
+                                .replace(/%C3%9A/g, "%DA").replace(/%C3%91/g, "%D1")
+                                .replace(/%C2%BF/g, "%BF").replace(/%C2%A1/g, "%A1");
+                        } else {
+                            encryptedData = exeEncrypt(JSON.stringify(mergedProps));
+                        }
                         // Remove potential data-id or other attributes that might conflict during runtime init
                         const cleanTag = p1.replace(/\s(data-id|id)="[^"]*"/g, '');
                         return cleanTag + encryptedData + p3;
