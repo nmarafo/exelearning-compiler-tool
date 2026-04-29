@@ -160,6 +160,12 @@ export async function compileExeProject(pagesConfig) {
                 props.main_text = summaryHtml + (props.main_text || "");
             }
 
+            if (idev.type === 'digcompedu') {
+                props.digcompeduSummaryTextHtml = props.content || "";
+                props.digcompeduDataLang = "es";
+                props.digcompeduDisplayMode = "table";
+            }
+
             if (idev.type === 'progress-report') {
                 props.typeGame = "Progress Report";
                 props.instructions = idev.description || "";
