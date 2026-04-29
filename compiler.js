@@ -15,11 +15,12 @@ function exeEncrypt(str) {
     if (!str || str === 'undefined' || str === 'null') str = '';
     try {
         const key = 146;
-        // eXeLearning v4 expects XORed UTF-8 bytes, fully URL-escaped
-        const utf8Str = unescape(encodeURIComponent(str));
+        // eXeLearning interactives (Nodex/Quiddity) expect Latin-1 bytes for XOR
         let ostr = '';
-        for (let i = 0; i < utf8Str.length; i++) {
-            const xorByte = utf8Str.charCodeAt(i) ^ key;
+        for (let i = 0; i < str.length; i++) {
+            // Get character code and ensure it is treated as a byte (0-255)
+            const charCode = str.charCodeAt(i);
+            const xorByte = (charCode > 255 ? 63 : charCode) ^ key; // Fallback to '?' if not Latin-1
             // Use hex escaping for all bytes to ensure consistency with eXe's export
             ostr += '%' + xorByte.toString(16).toUpperCase().padStart(2, '0');
         }
