@@ -163,6 +163,12 @@ export async function compileExeProject(pagesConfig) {
             if (idev.type === 'progress-report') {
                 props.typeGame = "Progress Report";
                 props.instructions = idev.description || "";
+                props.id = ideviceId;
+                props.typeshow = 0;
+                props.showDate = true;
+                props.showTypeGame = true;
+                props.activeLinks = true;
+                props.userData = true;
                 props.msgs = {
                     msgSummary: "Resumen de las actividades",
                     msgNoCompletedActivities: "No has completado ninguna de las actividades sugeridas para ser evaluado.",
