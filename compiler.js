@@ -527,7 +527,7 @@ export async function compileExeProject(pagesConfig) {
             });
 
             // E) Codificación XOR interactiva (Juegos v4.0.0-rc3)
-            const uriEncodedTypes = ['checklist', 'guess', 'select-media-files', 'rubric', 'complete', 'trueorfalse', 'quick-questions-multiple-choice'];
+            const uriEncodedTypes = ['checklist', 'guess', 'select-media-files', 'rubric', 'complete', 'trueorfalse', 'quick-questions-multiple-choice', 'progress-report'];
             if (uriEncodedTypes.includes(idev.type)) {
                 // More robust regex to find the DataGame div regardless of specific class prefix or extra attributes
                 const dataGameRegex = /(<div[^>]*class="[^"]*DataGame[^"]*"[^>]*>)(.*?)(<\/div>)/i;
@@ -545,6 +545,9 @@ export async function compileExeProject(pagesConfig) {
                                 .replace(/%C3%8D/g, "%CD").replace(/%C3%93/g, "%D3")
                                 .replace(/%C3%9A/g, "%DA").replace(/%C3%91/g, "%D1")
                                 .replace(/%C2%BF/g, "%BF").replace(/%C2%A1/g, "%A1");
+                        } else if (idev.type === 'progress-report') {
+                            // Informe de progreso usa JSON plano en el DataGame
+                            encryptedData = JSON.stringify(mergedProps);
                         } else {
                             encryptedData = exeEncrypt(JSON.stringify(mergedProps));
                         }
