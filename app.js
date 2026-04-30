@@ -73,8 +73,14 @@ document.addEventListener('DOMContentLoaded', () => {
             if (errorDisplay) errorDisplay.style.display = 'none';
             
             try {
-                const rawJson = jsonInputMaster.value.trim();
+                let rawJson = jsonInputMaster.value.trim();
                 if (!rawJson) throw new Error("El campo JSON está vacío.");
+
+                // Limpieza automática de Markdown si el usuario pega el bloque con ```json ... ```
+                const markdownMatch = rawJson.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
+                if (markdownMatch) {
+                    rawJson = markdownMatch[1].trim();
+                }
 
                 const data = JSON.parse(rawJson);
                 if (!Array.isArray(data)) {
