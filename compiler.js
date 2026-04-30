@@ -630,9 +630,8 @@ export async function compileExeProject(pagesConfig) {
                         } else {
                             encryptedData = exeEncrypt(JSON.stringify(mergedProps));
                         }
-                        // Remove potential data-id or other attributes that might conflict during runtime init
-                        const cleanTag = p1.replace(/\s(data-id|id)="[^"]*"/g, '');
-                        return cleanTag + encryptedData + p3;
+                        // No remove attributes, they are needed by the runtime (e.g. rosco-DataGame ID)
+                        return p1 + encryptedData + p3;
                     });
                 }
 
