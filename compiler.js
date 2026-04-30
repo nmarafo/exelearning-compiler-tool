@@ -59,7 +59,7 @@ export async function compileExeProject(pagesConfig) {
   <odeProperty><key>pp_license</key><value>creative commons: attribution - share alike 4.0</value></odeProperty>
   <odeProperty><key>pp_licenseUrl</key><value>https://creativecommons.org/licenses/by-sa/4.0/</value></odeProperty>
   <odeProperty><key>pp_theme</key><value>base</value></odeProperty>
-  <odeProperty><key>pp_exelearning_version</key><value>v4.0.0-rc3</value></odeProperty>
+  <odeProperty><key>pp_exelearning_version</key><value>v4.0.0</value></odeProperty>
   <odeProperty><key>pp_modified</key><value>${MODIFIED_TIMESTAMP}</value></odeProperty>
   <odeProperty><key>pp_addExeLink</key><value>true</value></odeProperty>
   <odeProperty><key>pp_addPagination</key><value>false</value></odeProperty>
@@ -532,7 +532,7 @@ export async function compileExeProject(pagesConfig) {
                 } catch (e) { return match; }
             });
 
-            // E) Codificación XOR interactiva (Juegos v4.0.0-rc3)
+            // E) Codificación XOR interactiva (Juegos v4.0.0)
             const uriEncodedTypes = ['checklist', 'guess', 'select-media-files', 'rubric', 'complete', 'trueorfalse', 'quick-questions-multiple-choice', 'progress-report'];
             if (uriEncodedTypes.includes(idev.type)) {
                 // More robust regex to find the DataGame div regardless of specific class prefix or extra attributes
@@ -603,7 +603,7 @@ ${snippet}
 </odeNavStructures>
 </ode>`;
 
-    // Corrección crítica RC3: Asegurar que los caracteres & se conviertan en &amp;
+    // Corrección crítica: Asegurar que los caracteres & se conviertan en &amp;
     // Evitamos tocar los & que ya son parte de entidades como &amp; o &quot;
     // O mejor, aplicamos una sustitución selectiva que no rompa el XML
     xml = xml.replace(/&(?!(amp|lt|gt|quot|apos);)/g, "&amp;");

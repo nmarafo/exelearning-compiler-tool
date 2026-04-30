@@ -9,8 +9,8 @@ A diferencia de los resúmenes teóricos, estos bloques contienen TODO el andami
 
 ---
 
-### 🚨 Actualización Crítica v4.0.0 RC3
-Desde la versión v4.0.0 RC3, se han aplicado las siguientes reglas estrictas para la generación de proyectos `.elpx`:
+### 🚨 Actualización Crítica v4.0.0
+Desde la versión v4.0.0, se han aplicado las siguientes reglas estrictas para la generación de proyectos `.elpx`:
 
 1.  **Escape de Caracteres**: Todos los caracteres `&` dentro de archivos XML (como `content.xml`) **deben** escaparse obligatoriamente como `&amp;` para evitar la corrupción del archivo.
 2.  **Sincronización Dual**: Es imperativo que el bloque `<jsonProperties>` contenga un JSON válido (mínimo `<![CDATA[{"ideviceId":"..."}]]>`) para que el editor de eXe pueda cargar el componente. Un bloque vacío puede causar que el iDevice no sea editable.

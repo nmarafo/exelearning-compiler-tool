@@ -1,6 +1,6 @@
 # Guía Maestra: Estructura XML de iDevices en eXeLearning (Generación de `content.xml`)
 
-Esta guía técnica define cómo se estructuran y serializan los contenidos e iDevices dentro del archivo `content.xml` de **eXeLearning (v4.0.0 RC3)**. El objetivo principal de este documento es dotar a desarrolladores de la información necesaria para compilar, generar o manipular archivos `content.xml` de manera programática.
+Esta guía técnica define cómo se estructuran y serializan los contenidos e iDevices dentro del archivo `content.xml` de **eXeLearning (v4.0.0)**. El objetivo principal de este documento es dotar a desarrolladores de la información necesaria para compilar, generar o manipular archivos `content.xml` de manera programática.
 
 > [!NOTE]
 > En las nuevas versiones de eXeLearning (basadas en Nodex/Vue/Quasar), la extensión del proyecto es `.elpx` y el árbol de nodos se guarda en el archivo `content.xml`, gobernado por el **ODE Content DTD v2.0** (Namespace: `http://www.intef.es/xsd/ode`).
@@ -30,7 +30,7 @@ Todo `content.xml` tiene una raíz `<ode>` con la versión 2.0 y su declaración
   <!-- 3. Metadatos del Proyecto (Autor, Título, Licencia y Configuración V4) -->
   <odeProperties>
     <odeProperty><key>pp_title</key><value>Título</value></odeProperty>
-    <odeProperty><key>pp_exelearning_version</key><value>v4.0.0-rc3</value></odeProperty>
+    <odeProperty><key>pp_exelearning_version</key><value>v4.0.0</value></odeProperty>
     <odeProperty><key>pp_theme</key><value>base</value></odeProperty>
     <odeProperty><key>pp_modified</key><value>TIMESTAMP</value></odeProperty>
     <odeProperty><key>pp_addExeLink</key><value>true</value></odeProperty>
@@ -245,7 +245,7 @@ Si vas a programar un motor (en Python, JS u otro) para volcar contenido desde o
 
 1. **Gestión de UUID**: Asegúrate de emplear un generador de identificadores (UUID V4 usualmente). Deben sincronizarse el `<odeBlockId>` dentro del bloque de configuración de página con el `<odeBlockId>` de cada iDevice asociado.
 2. **Capa Dual Data/Vista**: Debido a cómo está estandarizado eXeLearning v4, en múltiples iDevices deberás **renderizar el esqueleto del widget en HTML para el `htmlView`** pero a su vez **preservar el objeto puro de configuración en `jsonProperties`**. Si falta el JSON interno, el sistema no tendrá datos sobre cómo re-pintar o editar el iDevice dentro de ExeLearning. 
-3. **Escapado de XML (REGLA DE ORO)**: A partir de la v4.0.0 RC3, es crítico asegurar que el carácter `&` se escape siempre como `&amp;` en todo el documento XML (incluso dentro de JSON si este se inyecta en etiquetas XML).
+3. **Escapado de XML (REGLA DE ORO)**: A partir de la v4.0.0, es crítico asegurar que el carácter `&` se escape siempre como `&amp;` en todo el documento XML (incluso dentro de JSON si este se inyecta en etiquetas XML).
 4. **Escapado de CDATA**: Como la vista se engloba bajo `<![CDATA[ ... ]]>`, es crítico que cualquier texto que accidentalmente contenga la cadena `]]>` se subdivida (p. ej. `]]]]><![CDATA[>`) para evitar el rompimiento en el Parser XML.
 5. **Validación DTD**: Conserva las etiquetas de metadatos estandarizadas. Etiqueta `<odeComponentsProperties></odeComponentsProperties>` debe estar presente incluso estandos vacía para mantener cumplimiento con el `content.dtd`.
 

@@ -12,7 +12,7 @@
 
 ## 🛠️ Compatibilidad
 
-Este compilador está actualizado y validado para ser **completamente operativo con eXeLearning v4.0.0-rc3**.
+Este compilador está actualizado y validado para ser **completamente operativo con eXeLearning v4.0.0** final.
 
 - **Extensión**: Genera archivos `.elpx`.
 - **Estructura**: Implementa la capa dual `htmlView` + `jsonProperties` en todos los iDevices.
