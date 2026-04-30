@@ -10,13 +10,14 @@ const SHARED_RULES = `REGLAS TÉCNICAS:
 7. iDevice 'guess': Usa "title", "term", "instructions", "hint" y "feedback".
 8. iDevice 'checklist': Usa "title" y "tasks" (array).
 9. iDevice 'rubric': Usa "title" y "rows" (array de {category, level1, level2, level3, level4}).
-10. FORMATO: Devuelve ÚNICAMENTE un ARRAY de objetos JSON de página: [ { "page_name": "...", "idevices": [...] }, ... ]`;
+10. iDevice 'rosco': Usa "title", "words" (array de {letter, word, definition, type: "starts"|"contains"}), "time" (segundos).
+11. FORMATO: Devuelve ÚNICAMENTE un ARRAY de objetos JSON de página: [ { "page_name": "...", "idevices": [...] }, ... ]`;
 
 const MASTER_PROMPT = (numSessions) => `Eres un Arquitecto eXeLearning experto. Tu tarea es generar una Situación de Aprendizaje (SA) COMPLETA y profesional en un único bloque JSON.
 
 ESTRUCTURA DEL PROYECTO A GENERAR:
 1. PÁGINAS INICIALES: Portada (text), Justificación (text+digcompedu), Objetivos (udl-content).
-2. SECUENCIA DIDÁCTICA: Genera exactamente ${numSessions} sesiones de desarrollo (Sesión 1 a ${numSessions}). Utiliza iDevices variados (casestudy, guess, interactive-video, image-gallery, select-media-files).
+2. SECUENCIA DIDÁCTICA: Genera exactamente ${numSessions} sesiones de desarrollo (Sesión 1 a ${numSessions}). Utiliza iDevices variados (casestudy, guess, interactive-video, image-gallery, select-media-files, rosco).
 3. PÁGINAS FINALES: Conclusiones (text), Evaluación (checklist + rubric) e Informe de Progreso (progress-report).
 
 REGLAS CRÍTICAS:

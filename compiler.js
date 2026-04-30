@@ -311,6 +311,73 @@ export async function compileExeProject(pagesConfig) {
                     showCodeAccess: false, codeAccess: "", messageCodeAccess: ""
                 };
             }
+
+            if (idev.type === 'rosco') {
+                props.typeGame = "Rosco";
+                props.version = 2;
+                props.id = ideviceId;
+                const spanishLetters = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ";
+                props.letters = spanishLetters;
+                
+                props.wordsGame = (idev.words || []).map((w, idx) => ({
+                    letter: w.letter || spanishLetters[idx] || "",
+                    word: w.word || "",
+                    definition: w.definition || "",
+                    type: w.type === "contains" ? 1 : 0,
+                    state: 1,
+                    correct: 0,
+                    author: "", alt: "", url: "", audio: ""
+                }));
+                
+                // Fill up to 27 words if necessary to avoid UI breakage
+                while (props.wordsGame.length < 27) {
+                    const nextLetter = spanishLetters[props.wordsGame.length] || "";
+                    props.wordsGame.push({
+                        letter: nextLetter,
+                        word: "",
+                        definition: "",
+                        type: 0,
+                        state: 0,
+                        correct: 0,
+                        author: "", alt: "", url: "", audio: ""
+                    });
+                }
+
+                props.msgs = { 
+                    ...COMMON_GAME_MSGS, 
+                    msgTypeGame: "Rosco",
+                    msgStartGame: "Comenzar el juego",
+                    msgReady: "¡Prepárate!",
+                    msgPlayStart: "Pulsa aquí para empezar",
+                    msgHits: "Aciertos",
+                    msgErrors: "Errores",
+                    msgTime: "Tiempo",
+                    msgOneRound: "Una vuelta",
+                    msgTowRounds: "Dos vueltas",
+                    msgHideRoulette: "Ocultar rosco",
+                    msgShowRoulette: "Mostrar rosco",
+                    msgFullScreen: "Pantalla completa",
+                    msgClue: "Pista",
+                    msgQuestion: "Pregunta",
+                    msgReply: "Responder",
+                    msgMoveOne: "Pasapalabra",
+                    msgWrote: "Escribe tu respuesta y pulsa en responder o pulsa Intro",
+                    msgAll: "Todas",
+                    msgUnanswered: "Sin responder",
+                    msgClose: "Cerrar",
+                    msgCorrect: "¡Correcto!",
+                    msgIncorrect: "¡Incorrecto!",
+                    msgStartWith: "Empieza por %1",
+                    msgContaint: "Contiene la %1"
+                };
+                props.durationGame = idev.time || 240;
+                props.numberTurns = 2;
+                props.itinerary = {
+                    showClue: false, clueGame: "", percentageClue: 40,
+                    showCodeAccess: false, codeAccess: "", messageCodeAccess: ""
+                };
+                props.showMinimize = false;
+            }
             
             if (idev.type === 'form') {
                 props.repeatActivity = true;
@@ -539,7 +606,7 @@ export async function compileExeProject(pagesConfig) {
             });
 
             // E) Codificación XOR interactiva (Juegos v4.0.0)
-            const uriEncodedTypes = ['checklist', 'guess', 'select-media-files', 'rubric', 'complete', 'trueorfalse', 'quick-questions-multiple-choice', 'progress-report'];
+            const uriEncodedTypes = ['checklist', 'guess', 'select-media-files', 'rubric', 'complete', 'trueorfalse', 'quick-questions-multiple-choice', 'progress-report', 'rosco'];
             if (uriEncodedTypes.includes(idev.type)) {
                 // More robust regex to find the DataGame div regardless of specific class prefix or extra attributes
                 const dataGameRegex = /(<div[^>]*class="[^"]*DataGame[^"]*"[^>]*>)(.*?)(<\/div>)/i;
