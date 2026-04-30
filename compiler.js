@@ -574,8 +574,7 @@ export async function compileExeProject(pagesConfig) {
                 '{{ACTIVITY}}': (props.activities && props.activities[0]) ? props.activities[0].activity : "",
                 '{{FEEDBACK}}': (props.activities && props.activities[0]) ? props.activities[0].feedback : "",
                 '{{TITLE}}': props.rubricTitle || "",
-                '{{INSTRUCTIONS_DATA}}': props.instructionsData || "",
-                '{{INSTRUCTIONS}}': props.instructions || ""
+                '{{INSTRUCTIONS_DATA}}': props.instructionsData || ""
             };
 
             for (const [key, val] of Object.entries(placeholders)) {
