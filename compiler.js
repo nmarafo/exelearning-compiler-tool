@@ -105,7 +105,7 @@ export async function compileExeProject(pagesConfig) {
             // Determinar Icono y Nombre de Bloque según tipo
             let iconName = 'activity';
             let blockName = 'Contenido';
-            if (['form', 'guess', 'select-media-files', 'checklist'].includes(idev.type)) {
+            if (['form', 'guess', 'select-media-files', 'checklist', 'rosco'].includes(idev.type)) {
                 iconName = 'interactive';
                 blockName = 'Actividad Interactiva';
             } else if (idev.type === 'udl-content') {
@@ -316,6 +316,7 @@ export async function compileExeProject(pagesConfig) {
                 props.typeGame = "Rosco";
                 props.version = 2;
                 props.id = ideviceId;
+                props.instructions = idev.instructions || "Observa las letras, identifica y rellena las palabras que faltan.";
                 const spanishLetters = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ";
                 props.letters = spanishLetters;
                 
