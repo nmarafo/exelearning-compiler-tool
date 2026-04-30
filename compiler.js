@@ -51,7 +51,7 @@ export async function compileExeProject(pagesConfig) {
 <odeResources>
   <odeResource><key>odeId</key><value>${PROJECT_ID}</value></odeResource>
   <odeResource><key>odeVersionId</key><value>${PROJECT_VERSION_ID}</value></odeResource>
-  <odeResource><key>exe_version</key><value>3.0</value></odeResource>
+  <odeResource><key>exe_version</key><value>4.0.0</value></odeResource>
 </odeResources>
 <odeProperties>
   <odeProperty><key>pp_title</key><value>Situación de Aprendizaje REA</value></odeProperty>
@@ -105,7 +105,7 @@ export async function compileExeProject(pagesConfig) {
             // Determinar Icono y Nombre de Bloque según tipo
             let iconName = 'activity';
             let blockName = 'Contenido';
-            if (['form', 'guess', 'select-media-files', 'checklist', 'rosco'].includes(idev.type)) {
+            if (['form', 'guess', 'select-media-files', 'checklist'].includes(idev.type)) {
                 iconName = 'interactive';
                 blockName = 'Actividad Interactiva';
             } else if (idev.type === 'udl-content') {
@@ -316,21 +316,19 @@ export async function compileExeProject(pagesConfig) {
                 props.typeGame = "Rosco";
                 props.version = 2;
                 props.id = ideviceId;
-                props.instructions = idev.instructions || "Observa las letras, identifica y rellena las palabras que faltan.";
                 const spanishLetters = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ";
                 props.letters = spanishLetters;
                 
                 props.wordsGame = (idev.words || []).map((w, idx) => ({
-                    letter: w.letter || spanishLetters[idx] || "",
+                    letter: (w.letter || spanishLetters[idx] || "").toUpperCase(),
                     word: w.word || "",
                     definition: w.definition || "",
                     type: w.type === "contains" ? 1 : 0,
-                    state: 1,
+                    state: (w.word && w.word.trim().length > 0) ? 1 : 0,
                     correct: 0,
                     author: "", alt: "", url: "", audio: ""
                 }));
                 
-                // Fill up to 27 words if necessary to avoid UI breakage
                 while (props.wordsGame.length < 27) {
                     const nextLetter = spanishLetters[props.wordsGame.length] || "";
                     props.wordsGame.push({
@@ -346,40 +344,33 @@ export async function compileExeProject(pagesConfig) {
 
                 props.msgs = { 
                     ...COMMON_GAME_MSGS, 
-                    msgTypeGame: "Rosco",
-                    msgStartGame: "Comenzar el juego",
-                    msgReady: "¡Prepárate!",
-                    msgPlayStart: "Pulsa aquí para empezar",
-                    msgHits: "Aciertos",
-                    msgErrors: "Errores",
-                    msgTime: "Tiempo",
-                    msgOneRound: "Una vuelta",
-                    msgTowRounds: "Dos vueltas",
+                    msgStartWith: "Empieza por %1",
+                    msgContaint: "Contiene la %1",
                     msgHideRoulette: "Ocultar rosco",
                     msgShowRoulette: "Mostrar rosco",
-                    msgFullScreen: "Pantalla completa",
-                    msgClue: "Pista",
-                    msgQuestion: "Pregunta",
-                    msgReply: "Responder",
-                    msgMoveOne: "Pasapalabra",
-                    msgWrote: "Escribe tu respuesta y pulsa en responder o pulsa Intro",
                     msgAll: "Todas",
-                    msgUnanswered: "Sin responder",
-                    msgClose: "Cerrar",
-                    msgCorrect: "¡Correcto!",
-                    msgIncorrect: "¡Incorrecto!",
-                    msgStartWith: "Empieza por %1",
-                    msgContaint: "Contiene la %1"
+                    msgUnanswered: "Sin responder"
                 };
+                
                 props.durationGame = idev.time || 240;
-                props.numberTurns = 2;
+                props.numberTurns = 1;
+                props.showSolution = true;
+                props.timeShowSolution = 3;
+                props.repeatActivity = true;
+                props.weighted = 100;
                 props.itinerary = {
-                    showClue: false, clueGame: "", percentageClue: 40,
-                    showCodeAccess: false, codeAccess: "", messageCodeAccess: ""
+                    showClue: false,
+                    clueGame: "",
+                    percentageClue: 40,
+                    showCodeAccess: false,
+                    codeAccess: "",
+                    messageCodeAccess: ""
                 };
                 props.showMinimize = false;
+                props.evaluationID = ideviceId.replace('idevice-', '');
+                props.evaluation = false;
+                props.type = "rosco";
             }
-            
             if (idev.type === 'form') {
                 props.repeatActivity = true;
                 props.isScorm = 0;
@@ -575,7 +566,8 @@ export async function compileExeProject(pagesConfig) {
                 '{{ACTIVITY}}': (props.activities && props.activities[0]) ? props.activities[0].activity : "",
                 '{{FEEDBACK}}': (props.activities && props.activities[0]) ? props.activities[0].feedback : "",
                 '{{TITLE}}': props.rubricTitle || "",
-                '{{INSTRUCTIONS_DATA}}': props.instructionsData || ""
+                '{{INSTRUCTIONS_DATA}}': props.instructionsData || "",
+                '{{INSTRUCTIONS}}': props.instructions || ""
             };
 
             for (const [key, val] of Object.entries(placeholders)) {
@@ -630,8 +622,9 @@ export async function compileExeProject(pagesConfig) {
                         } else {
                             encryptedData = exeEncrypt(JSON.stringify(mergedProps));
                         }
-                        // No remove attributes, they are needed by the runtime (e.g. rosco-DataGame ID)
-                        return p1 + encryptedData + p3;
+                        // Remove potential data-id or other attributes that might conflict during runtime init
+                        const cleanTag = p1.replace(/\s(data-id|id)="[^"]*"/g, '');
+                        return cleanTag + encryptedData + p3;
                     });
                 }
 
