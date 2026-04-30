@@ -230,18 +230,21 @@ export async function compileExeProject(pagesConfig) {
                     messageCodeAccess: ""
                 };
                 props.phrasesGame = [{
-                    cards: (props.options || []).map((opt, idx) => ({
-                        id: Date.now() + idx + Math.floor(Math.random() * 10000),
-                        type: 2,
-                        author: "",
-                        alt: opt.description || opt.text || "",
-                        url: opt.url || "",
-                        audio: "",
-                        eText: "",
-                        color: "#000000",
-                        backcolor: "#ffffff",
-                        state: !!opt.is_correct
-                    })),
+                    cards: (props.options || []).map((opt, idx) => {
+                        const isImage = !!opt.url;
+                        return {
+                            id: Date.now() + idx + Math.floor(Math.random() * 10000),
+                            type: isImage ? 2 : 1, // 2 para imagen, 1 para texto
+                            author: "",
+                            alt: isImage ? (opt.description || opt.text || "") : "",
+                            url: opt.url || "",
+                            audio: "",
+                            eText: !isImage ? (opt.text || opt.description || "") : "",
+                            color: "#000000",
+                            backcolor: "#ffffff",
+                            state: !!opt.is_correct
+                        };
+                    }),
                     msgError: "",
                     msgHit: "",
                     definition: props.title || props.instructions || "Enunciado",
