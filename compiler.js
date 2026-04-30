@@ -234,7 +234,7 @@ export async function compileExeProject(pagesConfig) {
                         id: Date.now() + idx + Math.floor(Math.random() * 10000),
                         type: 2,
                         author: "",
-                        alt: opt.description || "",
+                        alt: opt.description || opt.text || "",
                         url: opt.url || "",
                         audio: "",
                         eText: "",
@@ -318,23 +318,26 @@ export async function compileExeProject(pagesConfig) {
                 props.percentageQuestions = "100";
                 props.time = "0";
                 props.eXeFormInstructions = `<p>${idev.instructions || "Responde a las preguntas del cuestionario"}</p>`;
-                props.questionsData = (idev.questions || []).map((q, idx) => ({
-                    id: Date.now() + idx + "-" + Math.random().toString(36).substr(2, 5).toUpperCase(),
-                    activityType: "true-false",
-                    baseText: q.startsWith("<p>") ? q : `<p>${q}</p>`,
-                    feedbackRight: "",
-                    feedbackWrong: "",
-                    suggestion: "",
-                    wrongAnswersValue: "",
-                    selectionType: "single",
-                    answers: [],
-                    answer: "0",
-                    capitalization: false,
-                    strict: false,
-                    order: idx,
-                    customScore: 1,
-                    time: 0
-                }));
+                props.questionsData = (idev.questions || []).map((q, idx) => {
+                    const qText = typeof q === 'string' ? q : (q.question || q.text || "");
+                    return {
+                        id: Date.now() + idx + "-" + Math.random().toString(36).substr(2, 5).toUpperCase(),
+                        activityType: "true-false",
+                        baseText: qText.startsWith("<p>") ? qText : `<p>${qText}</p>`,
+                        feedbackRight: "",
+                        feedbackWrong: "",
+                        suggestion: "",
+                        wrongAnswersValue: "",
+                        selectionType: "single",
+                        answers: [],
+                        answer: "0",
+                        capitalization: false,
+                        strict: false,
+                        order: idx,
+                        customScore: 1,
+                        time: 0
+                    };
+                });
                 props.passRate = Math.floor((props.questionsData || []).length / 2);
                 props.addBtnAnswers = true;
                 props.eXeIdeviceTextAfter = "";
