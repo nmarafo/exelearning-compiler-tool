@@ -165,6 +165,7 @@ export async function compileExeProject(pagesConfig) {
                 msgShowDefinitions: "Mostrar/ocultar definiciones", msgShowBack: "Mostrar/ocultar imagen de fondo",
                 msgSolutionWord: "Palabra",
                 msgRestart: "Reiniciar", msgEndGameM: "Has completado el juego. Tu puntuación es %s.",
+                msgSubmit: "Enviar",
                 msgPlayAgain: "Jugar otra vez", msgTimeOver: "Tu tiempo ha finalizado. Inténtalo de nuevo",
                 msgAllAttemps: "¡Has agotado todos los intentos! Prueba de nuevo",
                 mgsAllPhrases: "¡Has ordenado todas las actividades!", msgAttempts: "Intentos",
@@ -614,7 +615,7 @@ export async function compileExeProject(pagesConfig) {
             });
 
             // E) Codificación XOR interactiva (Juegos v4.0.0)
-            const uriEncodedTypes = ['checklist', 'guess', 'select-media-files', 'rubric', 'complete', 'trueorfalse', 'quick-questions-multiple-choice', 'progress-report', 'rosco', 'crossword', 'relate', 'sort'];
+            const uriEncodedTypes = ['checklist', 'guess', 'select-media-files', 'rubric', 'complete', 'trueorfalse', 'quick-questions-multiple-choice', 'progress-report', 'rosco', 'crossword', 'sort', 'relate'];
             if (uriEncodedTypes.includes(idev.type)) {
                 // More robust regex to find the DataGame div regardless of specific class prefix or extra attributes
                 const dataGameRegex = /(<div[^>]*class="[^"]*DataGame[^"]*"[^>]*>)(.*?)(<\/div>)/i;
