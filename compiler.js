@@ -316,37 +316,36 @@ export async function compileExeProject(pagesConfig) {
                 props.typeGame = "Rosco";
                 props.version = 2;
                 props.id = ideviceId;
-                const spanishLetters = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ";
-                props.letters = spanishLetters;
+                const spanishLetters = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ".split('');
+                props.letters = spanishLetters.join('');
                 
-                props.wordsGame = (idev.words || []).map((w, idx) => ({
-                    letter: (w.letter || spanishLetters[idx] || "").toUpperCase(),
-                    word: w.word || "",
-                    definition: w.definition || "",
-                    type: 0, // Forzado a 0 (Empieza por) según requisito del usuario
-                    alt: "",
-                    author: "",
-                    url: "",
-                    audio: "",
-                    x: 0,
-                    y: 0
-                }));
-                
-                while (props.wordsGame.length < 27) {
-                    const nextLetter = spanishLetters[props.wordsGame.length] || "";
-                    props.wordsGame.push({
-                        letter: nextLetter,
-                        word: "",
-                        definition: "",
-                        type: 0,
-                        alt: "",
-                        author: "",
-                        url: "",
-                        audio: "",
-                        x: 0,
-                        y: 0
-                    });
-                }
+                // Construir wordsGame asegurando exactamente 27 letras en el orden correcto
+                props.wordsGame = spanishLetters.map((letter) => {
+                    // Buscar si la IA proporcionó una palabra para esta letra
+                    const foundWord = (idev.words || []).find(w => 
+                        (w.letter || "").toUpperCase() === letter || 
+                        (w.word || "").toUpperCase().startsWith(letter)
+                    );
+                    
+                    if (foundWord) {
+                        return {
+                            letter: letter,
+                            word: foundWord.word || "",
+                            definition: foundWord.definition || "",
+                            type: 0,
+                            alt: "", author: "", url: "", audio: "", x: 0, y: 0
+                        };
+                    } else {
+                        // Palabra vacía para rellenar el rosco
+                        return {
+                            letter: letter,
+                            word: "",
+                            definition: "",
+                            type: 0,
+                            alt: "", author: "", url: "", audio: "", x: 0, y: 0
+                        };
+                    }
+                });
 
                 props.msgs = { 
                     ...COMMON_GAME_MSGS, 
@@ -626,7 +625,8 @@ export async function compileExeProject(pagesConfig) {
                             // Informe de progreso usa JSON plano en el DataGame
                             encryptedData = JSON.stringify(mergedProps);
                         } else {
-                            encryptedData = exeEncrypt(JSON.stringify(mergedProps));
+                            // Usar encodeURIComponent para que decodeURIComponent en el motor JS funcione correctamente con UTF-8
+                            encryptedData = exeEncrypt(encodeURIComponent(JSON.stringify(mergedProps)));
                         }
                         // Remove potential data-id or other attributes that might conflict during runtime init
                         const cleanTag = p1.replace(/\s(data-id|id)="[^"]*"/g, '');
