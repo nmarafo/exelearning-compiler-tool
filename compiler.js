@@ -319,10 +319,11 @@ export async function compileExeProject(pagesConfig) {
                 const spanishLetters = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ";
                 props.letters = spanishLetters;
                 
-                props.wordsGame = (idev.words || []).map((w, idx) => ({
+                const wordsSource = idev.words || idev.terms || [];
+                props.wordsGame = wordsSource.map((w, idx) => ({
                     letter: (w.letter || spanishLetters[idx] || "").toUpperCase(),
                     word: w.word || "",
-                    definition: w.definition || "",
+                    definition: w.definition || w.description || "",
                     type: 0, // Forzado a 0 (Empieza por) según requisito del usuario
                     alt: "",
                     author: "",
@@ -589,10 +590,12 @@ export async function compileExeProject(pagesConfig) {
             }
 
             // D) Sincronizar el contenido procesado de vuelta a jsonProperties
-            // Esto asegura que el editor de eXe vea las imágenes y el texto final
             snippet = snippet.replace(/(<jsonProperties><!\[CDATA\[)(.*?)(\]\]><\/jsonProperties>)/, (match, p1, p2, p3) => {
                 try {
                     let obj = JSON.parse(p2);
+                    if (idev.type === 'rosco' && idev.terms) {
+                        obj.words = idev.terms.map(t => ({ letter: t.letter, word: t.word, definition: t.description }));
+                    }
                     if (obj.textTextarea && obj.textTextarea.includes('{{CONTENT}}')) {
                         obj.textTextarea = obj.textTextarea.replace('{{CONTENT}}', finalMainContent);
                     } else if (obj.history && obj.history.includes('{{CONTENT}}')) {
