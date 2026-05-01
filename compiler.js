@@ -105,9 +105,9 @@ export async function compileExeProject(pagesConfig) {
             // Determinar Icono y Nombre de Bloque según tipo
             let iconName = 'activity';
             let blockName = 'Contenido';
-            if (['form', 'guess', 'select-media-files', 'checklist', 'rosco'].includes(idev.type)) {
+            if (['form', 'guess', 'select-media-files', 'checklist'].includes(idev.type)) {
                 iconName = 'interactive';
-                blockName = idev.type === 'rosco' ? 'Rosco' : 'Actividad Interactiva';
+                blockName = 'Actividad Interactiva';
             } else if (idev.type === 'udl-content') {
                 iconName = 'info';
                 blockName = 'Contenido DUA';
