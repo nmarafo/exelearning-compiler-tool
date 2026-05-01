@@ -10,7 +10,7 @@ const SHARED_RULES = `REGLAS TÉCNICAS:
 7. iDevice 'guess': Usa "title", "term", "instructions", "hint" y "feedback".
 8. iDevice 'checklist': Usa "title" y "tasks" (array).
 9. iDevice 'rubric': Usa "title" y "rows" (array de {category, level1, level2, level3, level4}).
-10. iDevice 'rosco': Genera un juego de pasapalabra. Es OBLIGATORIO que para cada letra del abecedario, la palabra COMIENCE por esa letra (nunca usar 'contiene'). El array 'words' debe tener exactamente 27 objetos (A-Z y Ñ).
+10. iDevice 'rosco': Genera un juego de pasapalabra. Proporciona un máximo de 10 términos, cada uno comenzando estrictamente por su letra correspondiente y evitando las letras 'Ñ', 'X', 'Y' y 'Z'.
 11. iDevice 'lista': Para listas de elementos o pasos.
 12. FORMATO: Devuelve ÚNICAMENTE un ARRAY de objetos JSON de página: [ { "page_name": "...", "idevices": [...] }, ... ]`;
 
