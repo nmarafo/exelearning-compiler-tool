@@ -59,7 +59,7 @@ export async function compileExeProject(pagesConfig) {
   <odeProperty><key>pp_license</key><value>creative commons: attribution - share alike 4.0</value></odeProperty>
   <odeProperty><key>pp_licenseUrl</key><value>https://creativecommons.org/licenses/by-sa/4.0/</value></odeProperty>
   <odeProperty><key>pp_theme</key><value>base</value></odeProperty>
-  <odeProperty><key>pp_exelearning_version</key><value>v4.0.0</value></odeProperty>
+  <odeProperty><key>pp_exelearning_version</key><value>4.0.0</value></odeProperty>
   <odeProperty><key>pp_modified</key><value>${MODIFIED_TIMESTAMP}</value></odeProperty>
   <odeProperty><key>pp_addExeLink</key><value>true</value></odeProperty>
   <odeProperty><key>pp_addPagination</key><value>false</value></odeProperty>
