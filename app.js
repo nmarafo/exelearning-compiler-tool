@@ -11,8 +11,9 @@ const SHARED_RULES = `REGLAS TÉCNICAS:
 8. iDevice 'checklist': Usa "title" y "tasks" (array).
 9. iDevice 'rubric': Usa "title" y "rows" (array de {category, level1, level2, level3, level4}).
 10. iDevice 'rosco': Genera un juego de pasapalabra. Usa las claves "words" (array de {letter, word, definition}) y "title". Proporciona un máximo de 10 términos, cada uno comenzando estrictamente por su letra correspondiente y evitando las letras 'Ñ', 'X', 'Y' y 'Z'.
-11. iDevice 'lista': Para listas de elementos o pasos.
-12. FORMATO: Devuelve ÚNICAMENTE un ARRAY de objetos JSON de página: [ { "page_name": "...", "idevices": [...] }, ... ]`;
+11. iDevice 'crossword': Genera un crucigrama. Usa "title" y "words" (array de {word, definition}).
+12. iDevice 'lista': Para listas de elementos o pasos.
+13. FORMATO: Devuelve ÚNICAMENTE un ARRAY de objetos JSON de página: [ { "page_name": "...", "idevices": [...] }, ... ]`;
 
 const MASTER_PROMPT = (numSessions) => `Eres un Arquitecto eXeLearning experto. Tu tarea es generar una Situación de Aprendizaje (SA) COMPLETA y profesional en un único bloque JSON.
 

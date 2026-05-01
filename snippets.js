@@ -254,6 +254,8 @@ export const SNIPPETS_DICT = {
           <odeComponentsProperties>
           </odeComponentsProperties>
         </odeComponent>`,
+
+    crossword: `<odeComponent><odePageId>UUID-PAGINA</odePageId><odeBlockId>UUID-BLOQUE</odeBlockId><odeIdeviceId>UUID-IDEVICE</odeIdeviceId><odeIdeviceTypeName>crossword</odeIdeviceTypeName><htmlView><![CDATA[<div class="crucigrama-IDevice"><div class="game-evaluation-ids js-hidden" data-id="UUID-IDEVICE" data-evaluationb="false" data-evaluationid="UUID-EVALUACION"></div><div class="crucigrama-version js-hidden">1</div><div class="crucigrama-feedback-game"></div><div class="crucigrama-instructions gameQP-instructions"><p>{{INSTRUCTIONS}}</p></div><div class="crucigrama-DataGame js-hidden"></div><div class="crucigrama-bns js-hidden">Su navegador no es compatible con esta herramienta.</div></div>]]></htmlView><jsonProperties><![CDATA[{"ideviceId":"UUID-IDEVICE"}]]></jsonProperties><odeComponentsOrder>0</odeComponentsOrder><odeComponentsProperties></odeComponentsProperties></odeComponent>`,
     
     rosco: `<odeComponent>
           <odePageId>UUID-PAGINA</odePageId>

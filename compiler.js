@@ -158,7 +158,12 @@ export async function compileExeProject(pagesConfig) {
                 msgReady: "¿Preparado?", msgStartGame: "Pulsa aquí para empezar", msgPass: "Pasar a la siguiente palabra",
                 msgNewWord: "Palabra nueva", msgNewGame: "Pulsa aquí para empezar otra partida",
                 msgOneRound: "Una vuelta", msgTowRounds: "Dos vueltas", msgWhiteBoard: "Pizarra digital",
-                msgImage: "Imagen"
+                msgImage: "Imagen",
+                msgCheck: "Comprobar", msgShowSolution: "Mostrar las soluciones", msgReboot: "Jugar otra vez",
+                msgSelectWord: "Haz clic en el cuadrado de cada palabra para ver la definición",
+                msgHorizontals: "Horizontales", msgVerticals: "Verticales",
+                msgShowDefinitions: "Mostrar/ocultar definiciones", msgShowBack: "Mostrar/ocultar imagen de fondo",
+                msgSolutionWord: "Palabra"
             };
 
             // Ajustes específicos por tipo de iDevice
@@ -601,7 +606,7 @@ export async function compileExeProject(pagesConfig) {
             });
 
             // E) Codificación XOR interactiva (Juegos v4.0.0)
-            const uriEncodedTypes = ['checklist', 'guess', 'select-media-files', 'rubric', 'complete', 'trueorfalse', 'quick-questions-multiple-choice', 'progress-report', 'rosco'];
+            const uriEncodedTypes = ['checklist', 'guess', 'select-media-files', 'rubric', 'complete', 'trueorfalse', 'quick-questions-multiple-choice', 'progress-report', 'rosco', 'crossword'];
             if (uriEncodedTypes.includes(idev.type)) {
                 // More robust regex to find the DataGame div regardless of specific class prefix or extra attributes
                 const dataGameRegex = /(<div[^>]*class="[^"]*DataGame[^"]*"[^>]*>)(.*?)(<\/div>)/i;
@@ -622,6 +627,57 @@ export async function compileExeProject(pagesConfig) {
                         } else if (idev.type === 'progress-report') {
                             // Informe de progreso usa JSON plano en el DataGame
                             encryptedData = JSON.stringify(mergedProps);
+                        } else if (idev.type === 'crossword') {
+                            const words = idev.terms || idev.words || [];
+                            const wordsGame = words.map((w, idx) => ({
+                                word: (w.word || w.term || "").toUpperCase(),
+                                definition: w.definition || w.description || "",
+                                x: 0,
+                                y: 0,
+                                author: "",
+                                alt: "",
+                                url: "",
+                                audio: "",
+                                percentageShow: null
+                            }));
+
+                            let dataGame = {
+                                typeGame: "Crucigrama",
+                                instructions: `<p>${idev.instructions || "Completa el siguiente crucigrama."}</p>`,
+                                showMinimize: false,
+                                showSolution: true,
+                                itinerary: {
+                                    showClue: false,
+                                    clueGame: "",
+                                    percentageClue: 40,
+                                    showCodeAccess: false,
+                                    codeAccess: "",
+                                    messageCodeAccess: ""
+                                },
+                                wordsGame: wordsGame,
+                                isScorm: 0,
+                                hasBack: true,
+                                urlBack: "",
+                                textButtonScorm: "Guardar la puntuación",
+                                repeatActivity: true,
+                                weighted: 100,
+                                textFeedBack: "",
+                                textAfter: "",
+                                caseSensitive: false,
+                                tilde: true,
+                                feedBack: false,
+                                percentajeFB: 100,
+                                version: 2,
+                                evaluation: false,
+                                evaluationID: evalId,
+                                percentajeQuestions: "100",
+                                difficulty: "100",
+                                time: "0",
+                                authorBackImage: "",
+                                id: ideviceId,
+                                msgs: COMMON_GAME_MSGS
+                            };
+                            encryptedData = exeEncrypt(JSON.stringify(dataGame));
                         } else {
                             // Sanitizar mergedProps para Rosco para evitar bloat
                             let dataToEncrypt = mergedProps;
