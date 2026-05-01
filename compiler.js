@@ -163,7 +163,8 @@ export async function compileExeProject(pagesConfig) {
                 msgSelectWord: "Haz clic en el cuadrado de cada palabra para ver la definición",
                 msgHorizontals: "Horizontales", msgVerticals: "Verticales",
                 msgShowDefinitions: "Mostrar/ocultar definiciones", msgShowBack: "Mostrar/ocultar imagen de fondo",
-                msgSolutionWord: "Palabra"
+                msgSolutionWord: "Palabra",
+                msgRestart: "Reiniciar", msgEndGameM: "Has completado el juego. Tu puntuación es %s."
             };
 
             // Ajustes específicos por tipo de iDevice
@@ -606,7 +607,7 @@ export async function compileExeProject(pagesConfig) {
             });
 
             // E) Codificación XOR interactiva (Juegos v4.0.0)
-            const uriEncodedTypes = ['checklist', 'guess', 'select-media-files', 'rubric', 'complete', 'trueorfalse', 'quick-questions-multiple-choice', 'progress-report', 'rosco', 'crossword'];
+            const uriEncodedTypes = ['checklist', 'guess', 'select-media-files', 'rubric', 'complete', 'trueorfalse', 'quick-questions-multiple-choice', 'progress-report', 'rosco', 'crossword', 'relate'];
             if (uriEncodedTypes.includes(idev.type)) {
                 // More robust regex to find the DataGame div regardless of specific class prefix or extra attributes
                 const dataGameRegex = /(<div[^>]*class="[^"]*DataGame[^"]*"[^>]*>)(.*?)(<\/div>)/i;
@@ -627,6 +628,37 @@ export async function compileExeProject(pagesConfig) {
                         } else if (idev.type === 'progress-report') {
                             // Informe de progreso usa JSON plano en el DataGame
                             encryptedData = JSON.stringify(mergedProps);
+                        } else if (idev.type === 'relate') {
+                            const pairs = idev.pairs || [];
+                            const cardsGame = pairs.map(p => ({
+                                url: p.image1 || "", x: 0, y: 0, author: "", alt: "", audio: "", color: "#000000", backcolor: "#ffffff", eText: p.text1 || "",
+                                urlBk: p.image2 || "", xBk: 0, yBk: 0, authorBk: "", altBk: "", audioBk: "", colorBk: "#000000", backcolorBk: "#ffffff", eTextBk: p.text2 || ""
+                            }));
+                            let dataGame = {
+                                typeGame: "Relaciona",
+                                author: "",
+                                randomCards: true,
+                                instructions: `<p>${idev.instructions || "Relaciona cada tarjeta con su pareja."}</p>`,
+                                showMinimize: false,
+                                itinerary: { showClue: false, clueGame: "", percentageClue: 40, showCodeAccess: false, codeAccess: "", messageCodeAccess: "" },
+                                cardsGame: cardsGame,
+                                isScorm: 0,
+                                textButtonScorm: "Guardar la puntuación",
+                                repeatActivity: true,
+                                weighted: 100,
+                                textAfter: "",
+                                version: 2,
+                                percentajeCards: 100,
+                                type: 0,
+                                showSolution: true,
+                                timeShowSolution: 3,
+                                time: 3,
+                                evaluation: false,
+                                evaluationID: evalId,
+                                id: ideviceId,
+                                msgs: COMMON_GAME_MSGS
+                            };
+                            encryptedData = exeEncrypt(JSON.stringify(dataGame));
                         } else if (idev.type === 'crossword') {
                             const words = idev.terms || idev.words || [];
                             const wordsGame = words.map((w, idx) => ({
