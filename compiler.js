@@ -151,7 +151,10 @@ export async function compileExeProject(pagesConfig) {
                 msgCorrect: "Correcto", msgIncorrect: "Incorrecto", msgUncompletedActivity: "Actividad no completada",
                 msgSuccessfulActivity: "Actividad superada. Puntuación: %s",
                 msgUnsuccessfulActivity: "Actividad no superada. Puntuación: %s",
-                msgSaveScore: "Guardar la puntuación", msgLookAnswer: "Mira la respuesta"
+                msgSaveScore: "Guardar la puntuación", msgLookAnswer: "Mira la respuesta",
+                msgTypeGame: "Juego", msgShowWords: "Mostrar las soluciones", msgAll: "Todas", msgUnanswered: "Sin contestar",
+                msgShowRoulette: "Mostrar el rosco de palabras", msgHideRoulette: "Ocultar el rosco de palabras",
+                msgStartWith: "Empieza por %1", msgContaint: "Contiene la letra %1"
             };
 
             // Ajustes específicos por tipo de iDevice
@@ -313,70 +316,57 @@ export async function compileExeProject(pagesConfig) {
             }
 
             if (idev.type === 'rosco') {
-                props.typeGame = "Rosco";
-                props.version = 2;
-                props.id = ideviceId;
-                const spanishLetters = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ";
-                props.letters = spanishLetters;
-                
-                const wordsSource = idev.words || idev.terms || [];
-                props.wordsGame = wordsSource.map((w, idx) => ({
-                    letter: (w.letter || spanishLetters[idx] || "").toUpperCase(),
-                    word: w.word || "",
+                const words = (idev.words || idev.terms || []).map(w => ({
+                    letter: w.letter || "",
+                    word: w.word || w.term || "",
                     definition: w.definition || w.description || "",
-                    type: 0, // Forzado a 0 (Empieza por) según requisito del usuario
-                    alt: "",
-                    author: "",
-                    url: "",
-                    audio: "",
-                    x: 0,
-                    y: 0
+                    type: 0 // Forzamos 0 para "Empieza por"
                 }));
-                
-                while (props.wordsGame.length < 27) {
-                    const nextLetter = spanishLetters[props.wordsGame.length] || "";
-                    props.wordsGame.push({
-                        letter: nextLetter,
-                        word: "",
-                        definition: "",
-                        type: 0,
-                        alt: "",
-                        author: "",
-                        url: "",
-                        audio: "",
-                        x: 0,
-                        y: 0
-                    });
+
+                const spanishLetters = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ";
+                const wordsGame = [];
+                for (let i = 0; i < spanishLetters.length; i++) {
+                    const letter = spanishLetters[i];
+                    const found = words.find(w => w.letter.toUpperCase() === letter);
+                    if (found) {
+                        wordsGame.push({
+                            ...found,
+                            time: 0, x: 0, y: 0, author: "", alt: "", url: "", audio: ""
+                        });
+                    } else {
+                        wordsGame.push({
+                            letter: letter, word: "", definition: "", type: 0,
+                            time: 0, x: 0, y: 0, author: "", alt: "", url: "", audio: ""
+                        });
+                    }
                 }
 
-                props.msgs = { 
-                    ...COMMON_GAME_MSGS, 
-                    msgStartWith: "Empieza por %1",
-                    msgContaint: "Contiene la %1",
-                    msgHideRoulette: "Ocultar rosco",
-                    msgShowRoulette: "Mostrar rosco",
-                    msgAll: "Todas",
-                    msgUnanswered: "Sin responder"
-                };
-                
+                props.typeGame = "Rosco";
+                props.instructions = idev.instructions || "<p>Observa las letras, identifica y rellena las palabras que faltan.</p>";
+                props.timeShowSolution = 3;
                 props.durationGame = idev.time || 240;
                 props.numberTurns = 1;
                 props.showSolution = true;
-                props.timeShowSolution = 3;
+                props.showMinimize = false;
+                props.itinerary = {
+                    showClue: false, clueGame: "", percentageClue: 40,
+                    showCodeAccess: false, codeAccess: "", messageCodeAccess: ""
+                };
+                props.wordsGame = wordsGame;
+                props.isScorm = 0;
+                props.textButtonScorm = "Guardar la puntuación";
                 props.repeatActivity = true;
                 props.weighted = 100;
-                props.itinerary = {
-                    showClue: false,
-                    clueGame: "",
-                    percentageClue: 40,
-                    showCodeAccess: false,
-                    codeAccess: "",
-                    messageCodeAccess: ""
-                };
-                props.showMinimize = false;
-                props.evaluationID = ideviceId.replace('idevice-', '');
+                props.letters = spanishLetters;
+                props.textAfter = "";
+                props.caseSensitive = false;
+                props.version = 2;
+                props.modeBoard = false;
                 props.evaluation = false;
+                props.evaluationID = ideviceId.replace('idevice-', '');
+                props.id = ideviceId;
                 props.type = "rosco";
+                props.msgs = { ...COMMON_GAME_MSGS, msgTypeGame: "Rosco" };
             }
             if (idev.type === 'form') {
                 props.repeatActivity = true;
@@ -629,7 +619,22 @@ export async function compileExeProject(pagesConfig) {
                             // Informe de progreso usa JSON plano en el DataGame
                             encryptedData = JSON.stringify(mergedProps);
                         } else {
-                            encryptedData = exeEncrypt(JSON.stringify(mergedProps));
+                            // Sanitizar mergedProps para Rosco para evitar bloat
+                            let dataToEncrypt = mergedProps;
+                            if (idev.type === 'rosco') {
+                                const roscoKeys = [
+                                    'typeGame', 'instructions', 'timeShowSolution', 'durationGame',
+                                    'numberTurns', 'showSolution', 'showMinimize', 'itinerary',
+                                    'wordsGame', 'isScorm', 'textButtonScorm', 'repeatActivity',
+                                    'weighted', 'letters', 'textAfter', 'caseSensitive',
+                                    'version', 'modeBoard', 'evaluation', 'evaluationID', 'id', 'msgs'
+                                ];
+                                dataToEncrypt = {};
+                                roscoKeys.forEach(k => {
+                                    if (mergedProps[k] !== undefined) dataToEncrypt[k] = mergedProps[k];
+                                });
+                            }
+                            encryptedData = exeEncrypt(JSON.stringify(dataToEncrypt));
                         }
                         // Remove potential data-id or other attributes that might conflict during runtime init
                         const cleanTag = p1.replace(/\s(data-id|id)="[^"]*"/g, '');
