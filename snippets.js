@@ -1,4 +1,4 @@
-const snippets = {
+export const SNIPPETS_DICT = {
     header: `<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE ode SYSTEM "content.dtd">
 <ode xmlns="http://www.intef.es/xsd/ode" version="2.0">
@@ -88,4 +88,3 @@ const snippets = {
 </odeNavStructures>
 </ode>`
 };
-if (typeof module !== 'undefined') module.exports = snippets;
