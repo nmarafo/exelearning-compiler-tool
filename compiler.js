@@ -323,10 +323,13 @@ export async function compileExeProject(pagesConfig) {
                     letter: (w.letter || spanishLetters[idx] || "").toUpperCase(),
                     word: w.word || "",
                     definition: w.definition || "",
-                    type: w.type === "contains" ? 1 : 0,
-                    state: (w.word && w.word.trim().length > 0) ? 1 : 0,
-                    correct: 0,
-                    author: "", alt: "", url: "", audio: ""
+                    type: 0, // Forzado a 0 (Empieza por) según requisito del usuario
+                    alt: "",
+                    author: "",
+                    url: "",
+                    audio: "",
+                    x: 0,
+                    y: 0
                 }));
                 
                 while (props.wordsGame.length < 27) {
@@ -336,9 +339,12 @@ export async function compileExeProject(pagesConfig) {
                         word: "",
                         definition: "",
                         type: 0,
-                        state: 0,
-                        correct: 0,
-                        author: "", alt: "", url: "", audio: ""
+                        alt: "",
+                        author: "",
+                        url: "",
+                        audio: "",
+                        x: 0,
+                        y: 0
                     });
                 }
 
