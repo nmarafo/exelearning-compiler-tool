@@ -154,7 +154,11 @@ export async function compileExeProject(pagesConfig) {
                 msgSaveScore: "Guardar la puntuación", msgLookAnswer: "Mira la respuesta",
                 msgTypeGame: "Juego", msgShowWords: "Mostrar las soluciones", msgAll: "Todas", msgUnanswered: "Sin contestar",
                 msgShowRoulette: "Mostrar el rosco de palabras", msgHideRoulette: "Ocultar el rosco de palabras",
-                msgStartWith: "Empieza por %1", msgContaint: "Contiene la letra %1"
+                msgStartWith: "Empieza por %1", msgContaint: "Contiene la letra %1",
+                msgReady: "¿Preparado?", msgStartGame: "Pulsa aquí para empezar", msgPass: "Pasar a la siguiente palabra",
+                msgNewWord: "Palabra nueva", msgNewGame: "Pulsa aquí para empezar otra partida",
+                msgOneRound: "Una vuelta", msgTowRounds: "Dos vueltas", msgWhiteBoard: "Pizarra digital",
+                msgImage: "Imagen"
             };
 
             // Ajustes específicos por tipo de iDevice
