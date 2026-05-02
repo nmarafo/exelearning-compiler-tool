@@ -122,7 +122,19 @@
 
             <div class="instruction-step">
                 <h4>2. Generación de la SA (Deep Research) o adaptación de una SA preexistente</h4>
-                <p>Copia y pega el siguiente prompt en el Deep Research o en el panel de chat para generar o adaptar una SA:</p>
+                <p>Configura y copia el siguiente prompt para generar o adaptar tu SA:</p>
+                
+                <div class="prompt-controls" style="display: flex; gap: 10px; margin-bottom: 15px; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 8px;">
+                    <div style="flex: 1;">
+                        <label style="display: block; font-size: 0.75rem; font-weight: bold; margin-bottom: 4px; color: var(--accent-light);">Duración/Sesiones</label>
+                        <input type="text" id="input-prompt-duration" class="phase-input" style="width: 100%; padding: 6px; font-size: 0.85rem;" value="4 sesiones/bloque de contenido/actividad de 55 minutos">
+                    </div>
+                    <div style="flex: 1.5;">
+                        <label style="display: block; font-size: 0.75rem; font-weight: bold; margin-bottom: 4px; color: var(--accent-light);">Temática o Referencia</label>
+                        <input type="text" id="input-prompt-topic" class="phase-input" style="width: 100%; padding: 6px; font-size: 0.85rem;" value="AQUÍ TU TEMÁTICA O REFERENCIA A SA PREEXISTENTE">
+                    </div>
+                </div>
+
                 <div class="code-container" style="position: relative;">
                     <div class="code-block" id="prompt-research">”Actúa como un experto en diseño pedagógico digital y tecnopedagogía. Diseña una Situación de Aprendizaje de [4 sesiones/bloque de contenido/actividad de 55 minutos] cada una sobre [AQUÍ TU TEMÁTICA O REFERENCIA A SA PREEXISTENTE].
 

@@ -183,4 +183,30 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+
+    // 6. Lógica Dinámica de Prompt de Investigación (Modal)
+    const inputDuration = document.getElementById('input-prompt-duration');
+    const inputTopic = document.getElementById('input-prompt-topic');
+    const researchPromptBlock = document.getElementById('prompt-research');
+
+    if (researchPromptBlock) {
+        // Guardamos el texto original con los marcadores para poder reemplazar siempre sobre la base
+        researchPromptBlock.dataset.original = researchPromptBlock.innerText;
+    }
+
+    function updateResearchPrompt() {
+        if (!inputDuration || !inputTopic || !researchPromptBlock) return;
+        
+        const duration = inputDuration.value;
+        const topic = inputTopic.value;
+        
+        let text = researchPromptBlock.dataset.original;
+        text = text.replace("[4 sesiones/bloque de contenido/actividad de 55 minutos]", duration);
+        text = text.replace("[AQUÍ TU TEMÁTICA O REFERENCIA A SA PREEXISTENTE]", topic);
+        
+        researchPromptBlock.innerText = text;
+    }
+
+    if (inputDuration) inputDuration.addEventListener('input', updateResearchPrompt);
+    if (inputTopic) inputTopic.addEventListener('input', updateResearchPrompt);
 });
