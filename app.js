@@ -185,28 +185,32 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // 6. Lógica Dinámica de Prompt de Investigación (Modal)
-    const inputDuration = document.getElementById('input-prompt-duration');
+    const inputAge = document.getElementById('input-prompt-age');
+    const inputSessions = document.getElementById('input-prompt-sessions');
     const inputTopic = document.getElementById('input-prompt-topic');
     const researchPromptBlock = document.getElementById('prompt-research');
 
     if (researchPromptBlock) {
         // Guardamos el texto original con los marcadores para poder reemplazar siempre sobre la base
-        researchPromptBlock.dataset.original = researchPromptBlock.innerText;
+        researchPromptBlock.dataset.original = researchPromptBlock.innerHTML; // Usamos innerHTML por los <br>
     }
 
     function updateResearchPrompt() {
-        if (!inputDuration || !inputTopic || !researchPromptBlock) return;
+        if (!inputAge || !inputSessions || !inputTopic || !researchPromptBlock) return;
         
-        const duration = inputDuration.value;
-        const topic = inputTopic.value;
+        const age = inputAge.value || "[EDAD/CURSO]";
+        const sessions = inputSessions.value || "[Nº SESIONES]";
+        const topic = inputTopic.value || "[TEMÁTICA]";
         
         let text = researchPromptBlock.dataset.original;
-        text = text.replace("[4 sesiones/bloque de contenido/actividad de 55 minutos]", duration);
-        text = text.replace("[AQUÍ TU TEMÁTICA O REFERENCIA A SA PREEXISTENTE]", topic);
+        text = text.replace("[EDAD/CURSO DEL ALUMNADO]", age);
+        text = text.replace("[NÚMERO DE SESIONES]", sessions);
+        text = text.replace("[AQUÍ TU TEMÁTICA, CRITERIOS O REFERENCIA]", topic);
         
-        researchPromptBlock.innerText = text;
+        researchPromptBlock.innerHTML = text;
     }
 
-    if (inputDuration) inputDuration.addEventListener('input', updateResearchPrompt);
+    if (inputAge) inputAge.addEventListener('input', updateResearchPrompt);
+    if (inputSessions) inputSessions.addEventListener('input', updateResearchPrompt);
     if (inputTopic) inputTopic.addEventListener('input', updateResearchPrompt);
 });

@@ -126,51 +126,22 @@
                 
                 <div class="prompt-controls" style="display: flex; gap: 10px; margin-bottom: 15px; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 8px;">
                     <div style="flex: 1;">
-                        <label style="display: block; font-size: 0.75rem; font-weight: bold; margin-bottom: 4px; color: var(--accent-light);">Duración/Sesiones</label>
-                        <input type="text" id="input-prompt-duration" class="phase-input" style="width: 100%; padding: 6px; font-size: 0.85rem;" value="4 sesiones/bloque de contenido/actividad de 55 minutos">
+                        <label style="display: block; font-size: 0.75rem; font-weight: bold; margin-bottom: 4px; color: var(--accent-light);">Edad/Curso</label>
+                        <input type="text" id="input-prompt-age" class="phase-input" style="width: 100%; padding: 6px; font-size: 0.85rem;" value="EDAD/CURSO DEL ALUMNADO">
                     </div>
-                    <div style="flex: 1.5;">
-                        <label style="display: block; font-size: 0.75rem; font-weight: bold; margin-bottom: 4px; color: var(--accent-light);">Temática o Referencia</label>
-                        <input type="text" id="input-prompt-topic" class="phase-input" style="width: 100%; padding: 6px; font-size: 0.85rem;" value="AQUÍ TU TEMÁTICA O REFERENCIA A SA PREEXISTENTE">
+                    <div style="flex: 1;">
+                        <label style="display: block; font-size: 0.75rem; font-weight: bold; margin-bottom: 4px; color: var(--accent-light);">Nº Sesiones</label>
+                        <input type="text" id="input-prompt-sessions" class="phase-input" style="width: 100%; padding: 6px; font-size: 0.85rem;" value="NÚMERO DE SESIONES">
+                    </div>
+                    <div style="flex: 2;">
+                        <label style="display: block; font-size: 0.75rem; font-weight: bold; margin-bottom: 4px; color: var(--accent-light);">Temática/Criterios</label>
+                        <input type="text" id="input-prompt-topic" class="phase-input" style="width: 100%; padding: 6px; font-size: 0.85rem;" value="AQUÍ TU TEMÁTICA, CRITERIOS O REFERENCIA">
                     </div>
                 </div>
 
                 <div class="code-container" style="position: relative;">
-                    <div class="code-block" id="prompt-research">”Actúa como un experto en diseño pedagógico digital y tecnopedagogía. Diseña una Situación de Aprendizaje de [4 sesiones/bloque de contenido/actividad de 55 minutos] cada una sobre [AQUÍ TU TEMÁTICA O REFERENCIA A SA PREEXISTENTE].
+                    <div class="code-block" id="prompt-research">”Actúa como un experto en diseño pedagógico digital y tecnopedagogía. Diseña una Situación de Aprendizaje (SA) estructurada para alumnado de [EDAD/CURSO DEL ALUMNADO] compuesta por [NÚMERO DE SESIONES] sesiones de 55 minutos cada una, centrada en la siguiente temática o saberes básicos: [AQUÍ TU TEMÁTICA, CRITERIOS O REFERENCIA].<br><br>Diseña la secuencia integrando los principios DUA (Diseño Universal para el Aprendizaje) y aplicando las Fases de Instrucción de Merrill (Activación, Demostración, Aplicación e Integración).<br><br>Para cada sesión, especifica de forma concisa:<br>Objetivo de la sesión.<br>Acciones del docente.<br>Acciones del alumno.<br>Tipos de agrupamiento.<br><br>CRÍTICO: Toda la secuencia debe diseñarse para ser inyectada directamente en eXeLearning v4.0. Para cada tarea, indícame exactamente qué iDevice utilizar de la siguiente lista y redacta el contenido literal (textos, preguntas, estructura JSON, retroalimentaciones) que deberé introducir:<br><br>Utiliza estratégicamente las siguientes herramientas distribuidas a lo largo de las sesiones:<br><br>Presentación y Competencias: Inicia la secuencia justificando las competencias digitales con el iDevice DigCompEdu (digcompedu). Utiliza el iDevice Texto (text) para introducciones. Si hay material adjunto, indica el uso de Descargar Archivo (download-source-file).<br><br>Exposición Accesible (DUA): Redacta la teoría usando Contenido DUA (udl-content) proporcionando el texto principal, y versiones contas para 'Lectura facilitada' o 'Audio'. Apóyate visualmente con una Galería de Imágenes (image-gallery) o integra recursos de terceros mediante Sitio Web Externo (external-website).<br><br>Práctica Activa y Gamificada: Crea dinámicas usando Caso Práctico (casestudy). Introduce retos gamificados con Adivina el término (guess), Selecciona Multimedia (select-media-files), Rosco (rosco) (proporciona un máx. de 10 términos usando las claves "letter", "word" y "definition", evitando las letras 'Ñ', 'X', 'Y', 'Z'), Crucigrama (crossword) (claves "word" y "definition"), Relaciona (relate) (claves "text1" y "text2"), y Ordena (sort) (lista en "items"). Mantén la atención con un Vídeo Interactivo (interactive-video) sugiriendo la URL y los cortes de interacción.<br><br>Evaluación Formativa: Redacta ítems para Verdadero o falso (trueorfalse), Preguntas rápidas simples (quick-questions), Opción múltiple (quick-questions-multiple-choice), o basadas en un clip corto (quick-questions-video). Si hay reflexión amplia, diseña un Formulario (form).<br><br>Metacognición y Cierre: Termina la SA integrando un Informe de Progreso (progress-report). Diseña además una Lista de Cotejo (checklist) con 5 tareas clave de la SA y una Rúbrica Integradora (rubric) completa (4 categorías y 4 niveles de desempeño).<br><br>Entrégame la propuesta estructurada cronológicamente (Sesión 1, Sesión 2...), detallando en cada paso el 'iDevice seleccionado' y el 'Contenido literal a inyectar'.<br><br>CRÍTICO - REGLA ESTRICTA PARA URLs DE IMÁGENES Y VÍDEOS:<br>Al final de la propuesta, añade un listado de recursos multimedia funcionales.<br><br>Para las imágenes: PROHIBIDO generar URLs que apunten a subcarpetas numéricas de Wikimedia que generen enlaces rotos. Debes buscar el nombre exacto del archivo en internet y devolverme la URL utilizando estrictamente esta plantilla:<br>https://commons.wikimedia.org/wiki/Special:FilePath/AQUÍ_EL_NOMBRE_EXACTO_DEL_ARCHIVO.jpg (o .png).<br><br>Para los vídeos de YouTube: Extrae la URL real y funcional (ej. https://www.youtube.com/watch?v=...).”</div>
 
-Para cada sesión, especifica: objetivo, acciones del docente, acciones del alumno y tipos de agrupamiento.
-
-CRÍTICO: Toda la secuencia debe diseñarse para ser inyectada en eXeLearning v4.0. Para cada tarea, indícame exactamente qué iDevice utilizar de la siguiente lista y redacta el contenido literal (textos, preguntas, JSON, retroalimentaciones) que deberé introducir:
-
-Utiliza estratégicamente las siguientes herramientas a lo largo de las 4 sesiones:
-
-Presentación y Competencias: Inicia la secuencia justificando las competencias digitales que se trabajarán utilizando el iDevice DigCompEdu (digcompedu). Utiliza el iDevice Texto (text) para introducciones formales. Si hay material adjunto (PDFs, plantillas), indica que se use Descargar Archivo (download-source-file).
-
-Exposición Accesible y Enriquecida: Redacta la teoría usando el Contenido DUA (udl-content) (con texto principal, y versiones en 'Lectura facilitada' o 'Audio'). Apóyate visualmente con una Galería de Imágenes (image-gallery) o integra recursos de terceros (como simuladores o artículos) mediante Sitio Web Externo (external-website).
-
-Práctica Activa y Gamificada: Crea dinámicas usando Caso Práctico (casestudy) (redactando historia y solución). Introduce retos gamificados con Adivina el término (guess), Selecciona Multimedia (select-media-files), Rosco (rosco) (proporciona un máximo de 10 términos usando las claves "letter", "word" y "definition", cada uno comenzando estrictamente por su letra correspondiente y evitando las letras 'Ñ', 'X', 'Y' y 'Z'), Crucigrama (crossword) (proporciona términos usando "word" y "definition"), Relaciona (relate) (proporciona parejas usando "text1" y "text2") y Ordena (sort) (proporciona una lista de elementos a ordenar en "items"). Mantén la atención con un Vídeo Interactivo (interactive-video) (sugiriendo la URL y los cortes de interacción).
-
-Baterías de Preguntas (Test y Evaluación Formativa): Usa variedad en los cuestionarios: redacta ítems para Verdadero o falso (trueorfalse), preguntas rápidas simples (quick-questions), de opción múltiple (quick-questions-multiple-choice), o basadas en un clip (quick-questions-video). Si necesitas una evaluación más exhaustiva, diséñala para el iDevice Formulario (form).
-
-Metacognición y Seguimiento Final: Termina la Situación de Aprendizaje integrando un Informe de Progreso (progress-report) para que el alumno vea su estado. Diséñame además una Lista de Cotejo (checklist) con 5 tareas clave y una Rúbrica Integradora (rubric) completa (con 4 categorías y 4 niveles de desempeño listos para introducir en eXeLearning).
-
-Entrégame la propuesta estructurada cronológicamente (Sesión 1 a 4 por ejemplo), detallando en cada paso el 'iDevice seleccionado' y el 'Contenido literal a inyectar'.
-
-Añade también un listado de urls de imágenes (terminadas en .jpg o .png), así como de urls de vídeos de youtube que ayuden a ilustrar la SA
-
-CRÍTICO - REGLA ESTRICTA PARA URLs DE IMÁGENES (PREPARACIÓN PARA JSON):
-Dado que tu respuesta será inyectada en un JSON, los enlaces de imágenes rotos son inaceptables. PROHIBIDO generar URLs que apunten al servidor upload.wikimedia.org intentando adivinar las subcarpetas numéricas (ej. /3/31/), ya que esto produce alucinaciones y enlaces rotos.
-
-Para garantizar que las URLs funcionen siempre, debes utilizar exclusivamente el sistema de redirección nativa de Wikimedia. Sigue estos dos pasos para cada imagen:
-
-1. Busca en internet para confirmar el nombre exacto del archivo (incluyendo mayúsculas, minúsculas, guiones bajos y la extensión .jpg o .png).
-
-2. Construye y devuélveme la URL utilizando estrictamente la siguiente plantilla:
-https://commons.wikimedia.org/wiki/Special:FilePath/AQUÍ_EL_NOMBRE_EXACTO_DEL_ARCHIVO
-
-Ejemplo obligatorio: Si el archivo se llama Le_Canarien.jpg, la única URL válida que debes devolverme es: https://commons.wikimedia.org/wiki/Special:FilePath/Le_Canarien.jpg
-
-Para los vídeos de YouTube, utiliza tu capacidad de navegación para extraer la URL real y funcional (ej. https://www.youtube.com/watch?v=...) asegurando que el vídeo está activo y es pertinente.”</div>
                     <button class="secondary-btn btn-copy-modal" data-target="prompt-research" style="position: absolute; top: 10px; right: 10px; padding: 4px 8px; font-size: 0.75rem;">Copiar</button>
                 </div>
             </div>
