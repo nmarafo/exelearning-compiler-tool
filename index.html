@@ -244,21 +244,24 @@ Su cometido es diseñar Situaciones de Aprendizaje (SA) competenciales y estruct
                 </div>
 
                 <div class="code-container">
-                    <div class="code-block" id="prompt-research">“Actúe como un diseñador tecnopedagógico experto. Diseñe una Situación de Aprendizaje (SA) estructurada para alumnado de [EDAD/CURSO DEL ALUMNADO] compuesta por [NÚMERO DE SESIONES] sesiones de 55 minutos cada una, centrada en la temática: [AQUÍ TU TEMÁTICA, CRITERIOS O REFERENCIA].
+                    <div class="code-block" id="prompt-research">“Actúe como un diseñador tecnopedagógico experto. Diseñe una Situación de Aprendizaje (SA) estructurada para alumnado de [EDAD/CURSO DEL ALUMNADO] compuesta por [NÚMERO DE SESIONES] sesiones de 55 minutos cada una, centrada en la temática: [TEMÁTICA, CRITERIOS O SABERES BÁSICOS].
 
 Estructure la secuencia integrando los principios DUA (Diseño Universal para el Aprendizaje) y aplicando las Fases de Instrucción de Merrill (Activación, Demostración, Aplicación e Integración).
 
-REGLA CRÍTICA DE SALIDA: Toda la propuesta debe entregarse como un ARRAY JSON de páginas para eXeLearning v4.0.5. Cada página contendrá 'page_name' y un array 'idevices'.
+ESTRUCTURA DE PÁGINAS Y JERARQUÍA DIDÁCTICA:
+Entregue la propuesta estructurada en un bloque de código JSON compatible con eXeLearning v4.0.5. Cada página contendrá 'page_name' y un array 'idevices'. Para anidar las sesiones dentro de la secuencia didáctica, emplee la propiedad "parent": "Secuencia Didáctica" en cada sesión.
 
-Utilicen los siguientes iDevices soportados por eXeLearning v4.0.5:
-1. Presentación y Competencias: 'text' (introducción, justificación y resumen DUA), 'digcompedu' (indicadores de competencia digital como 1.1, 2.1, 3.2), 'download-source-file'.
+Utilice los siguientes iDevices soportados por eXeLearning v4.0.5:
+1. Presentación y Competencias: 'text' (introducción, justificación y resumen DUA), 'digcompedu' (indicadores de competencia digital como ["1.1", "2.1", "3.2"]), 'download-source-file'.
 2. Exposición Accesible: 'udl-content' (texto principal, lectura facilitada y guion de audio), 'image-gallery', 'external-website'.
-3. Práctica Gamificada: 'casestudy' (caso práctico con historia y retroalimentación), 'word-search' (sopa de letras con 'words' y 'hide_time_icon'), 'rosco' (máximo 10 palabras con 'letter', 'word' y 'definition' evitando Ñ, X, Y, Z), 'crossword' (crucigrama con 'words'), 'relate' (parejas con 'pairs'), 'sort' (ordenar con 'items'), 'guess' (adivina con 'term', 'hint' y 'feedback'), 'interactive-video' (vídeo interactivo con URL de YouTube).
+3. Práctica Gamificada: 'casestudy' (caso práctico con historia y retroalimentación), 'word-search' (sopa de letras con 'words' y 'hide_time_icon': true), 'rosco' (máximo 10-12 palabras con 'letter', 'word' y 'definition' evitando Ñ, X, Y, Z), 'crossword' (crucigrama con 'words'), 'relate' (parejas con 'pairs'), 'sort' (ordenar con 'items' y 'attempts'), 'guess' (adivina con 'term', 'hint' y 'feedback'), 'interactive-video' (vídeo interactivo con URL de YouTube).
 4. Evaluación Formativa y Cierre: 'trueorfalse' (preguntas de verdadero/falso con 'questions', 'solution' booleano y 'attempts'), 'form' (preguntas de reflexión con 'questions'), 'checklist' (lista de cotejo de evidencias con 'tasks'), 'rubric' (rúbrica analítica con 'rows' de 4 niveles) y 'progress-report' (informe de progreso final).
 
 REGLA ESTRICTA PARA RECURSOS MULTIMEDIA:
-- Para imágenes de Wikimedia Commons, empleen estrictamente la redirección directa: https://commons.wikimedia.org/wiki/Special:FilePath/Nombre_Archivo.jpg
-- Para vídeos, utilicen enlaces estándar de YouTube funcionales.”</div>
+- Para imágenes de Wikimedia Commons, emplee estrictamente la redirección directa: https://commons.wikimedia.org/wiki/Special:FilePath/Nombre_Archivo.jpg
+- Para vídeos, utilice enlaces estándar de YouTube funcionales.
+
+IMPORTANTE: Devuelva ÚNICAMENTE el bloque de código JSON sin ningún texto conversacional adicional.”</div>
                     <button class="secondary-btn btn-copy-modal" data-target="prompt-research">Copiar Prompt</button>
                 </div>
             </div>

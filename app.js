@@ -312,44 +312,54 @@ const IDEVICES_CATALOG = [
  * Función generadora del Prompt Maestro para modelos de IA.
  */
 const buildMasterPrompt = (stage, sessions, topic) => {
-    return `Eres un Asesor Tecnopedagógico experto en el diseño de Situaciones de Aprendizaje (SA) competenciales según la LOMLOE y especialista en eXeLearning v${EXE_VERSION} estable.
+    return `Actúe como un Asesor Tecnopedagógico experto en el diseño de Situaciones de Aprendizaje (SA) competenciales según el marco LOMLOE de Canarias y especialista en eXeLearning v${EXE_VERSION} estable.
 
-Tu tarea es diseñar una Situación de Aprendizaje COMPLETA, rigurosa y motivadora, y devolverla EXCLUSIVAMENTE en formato JSON válido para ser compilada a un archivo nativo .elpx de eXeLearning.
+Su cometido es diseñar una Situación de Aprendizaje COMPLETA, rigurosa y motivadora, estructurando la salida EXCLUSIVAMENTE en un único bloque de código JSON válido, listo para ser compilado directamente a un paquete nativo .elpx de eXeLearning.
 
 PARÁMETROS DEL PROYECTO:
 - Etapa / Curso: ${stage || "Educación Secundaria Obligatoria"}
 - Número de sesiones de desarrollo: ${sessions || 4}
-- Temática / Saberes Básicos / Criterios: ${topic || "Diseño curricular competencial y DUA"}
-- Marco Pedagógico: Principios DUA (Diseño Universal para el Aprendizaje) + Fases de Instrucción de Merrill (Activación, Demostración, Aplicación e Integración).
-- Estilo y Accesibilidad: WCAG 2.2 nivel AA (compatible con el tema oficial EducaBlue).
+- Temática / Saberes Básicos / Criterios: ${topic || "Ecosistemas de Canarias, biodiversidad y sostenibilidad"}
+- Marco Pedagógico: Principios DUA (Diseño Universal para el Aprendizaje) + Fases de Instrucción de Merrill (Activación, Demostración, Aplicación e Integración) + Evaluación Formativa Continua.
+- Accesibilidad y Estilo: Estándar WCAG 2.2 nivel AA (compatible con el tema oficial EducaBlue de eXeLearning v${EXE_VERSION}).
 
-ESTRUCTURA DIDÁCTICA DEL JSON (OBJETO CON METADATOS Y ARRAY DE PÁGINAS):
+ESTRUCTURA DIDÁCTICA DEL PROYECTO (OBJETO CON METADATOS Y ARRAY DE PÁGINAS):
 {
   "metadata": {
     "title": "Título conciso y motivador de la SA",
-    "author": "Nombre del docente o centro",
+    "author": "Nombre del docente o centro educativo",
     "theme": "educablue",
     "lang": "es",
     "license": "creative commons: attribution - share alike 4.0"
   },
   "pages": [
-    // 1. Portada y Justificación: text con resumen DUA + digcompedu con indicadores (ej. ["1.1", "2.1", "3.2"])
-    // 2. Fundamentación Curricular y DUA: udl-content (texto principal, lectura facilitada y guion de audio) + download-source-file
-    // 3. Secuencia Didáctica (Página contenedora)
-    // 4 a ${3 + Number(sessions)}. Sesiones 1 a ${sessions} (usar la propiedad "parent": "Secuencia Didáctica"):
-    //    Distribuir iDevices variados: casestudy, word-search, trueorfalse, rosco, interactive-video, sort, relate, guess
-    // Final: Evaluación y Metacognición: checklist + rubric (4 niveles analíticos) + progress-report
+    // 1. Portada y Justificación: text con resumen DUA ("summary") + digcompedu con indicadores (ej. ["1.1", "2.1", "3.1", "5.1", "6.2"])
+    // 2. Fundamentación Curricular y DUA: udl-content (texto base, lectura facilitada y guion de audio) + download-source-file
+    // 3. Secuencia Didáctica: text con la hoja de ruta metodológica
+    // 4 a ${3 + Number(sessions)}. Sesiones 1 a ${sessions} (especificar "parent": "Secuencia Didáctica" para anidarlas jerárquicamente en el árbol de navegación):
+    //    Distribuir iDevices gamificados y activos: casestudy, word-search, trueorfalse, rosco, interactive-video, sort, relate, guess
+    // Final. Evaluación y Metacognición: checklist + rubric (rúbrica analítica con 4 niveles ponderados) + progress-report
   ]
 }
 
-REGLAS CRÍTICAS DE CALIDAD:
-1. iDevice 'word-search': Incluye "title", "instructions", "words" (array de { "word", "definition" }) y "hide_time_icon": true.
-2. iDevice 'trueorfalse': Incluye "title", "attempts": 2, y "questions" (array de { "question", "solution": true/false, "feedback" }).
-3. iDevice 'rosco': Rosco de palabras con "words" (array de { "letter", "word", "definition" }) con un máximo de 10-12 términos que empiecen estrictamente por esa letra, evitando Ñ, X, Y, Z.
-4. iDevice 'rubric': Incluye "title", "instructions" y "rows" (array de { "category", "level4", "level3", "level2", "level1" }).
-5. iDevice 'digcompedu': Incluye "title", "indicators" (array de códigos como "1.1", "2.1") y "content".
-6. Recursos Multimedia: Para imágenes de Wikimedia Commons usa siempre el formato directo: https://commons.wikimedia.org/wiki/Special:FilePath/Nombre_Archivo.jpg. Para vídeos, enlaces funcionales de YouTube.
-7. Devuelve ÚNICAMENTE el bloque de código JSON, sin textos explicativos adicionales antes o después.`;
+ESPECIFICACIONES TÉCNICAS DE LOS IDEVICES EN eXeLearning v${EXE_VERSION}:
+1. iDevice 'word-search' (Sopa de letras): Utilice "title", "instructions", "words" (array de { "word", "definition" }) y "hide_time_icon": true.
+2. iDevice 'trueorfalse' (Verdadero/Falso): Utilice "title", "attempts": 2, y "questions" (array de { "question", "solution": true/false, "feedback", "suggestion" }).
+3. iDevice 'rosco' (Pasapalabra): Utilice "title", "time": 240, y "words" (array de { "letter", "word", "definition" }) con un máximo de 10-12 términos que comiencen estrictamente por esa letra, evitando las letras Ñ, X, Y y Z.
+4. iDevice 'rubric' (Rúbrica): Utilice "title", "instructions" y "rows" (array de { "category", "level4", "level3", "level2", "level1" }).
+5. iDevice 'sort' (Ordena): Utilice "title", "attempts": 3, e "items" (array de pasos ordenados lógicamente).
+6. iDevice 'relate' (Relaciona parejas): Utilice "title" y "pairs" (array de { "text1", "text2" }).
+7. iDevice 'casestudy' (Caso práctico): Utilice "title", "story", "activity" y "feedback".
+8. iDevice 'digcompedu': Utilice "title", "indicators" (array de indicadores como ["1.1", "2.1", "3.2"]) y "content".
+9. iDevice 'udl-content': Utilice "title", "main_text", "easy_reading" y "audio_script".
+10. iDevice 'checklist': Utilice "title" y "tasks" (array de evidencias de aprendizaje).
+11. iDevice 'text': Utilice "title", "main_text", "summary" (resumen DUA destacado), "duration" y "participants". Para contenido exclusivo del profesorado, puede añadir "teacher_only": true.
+
+REGLAS CRÍTICAS PARA RECURSOS MULTIMEDIA:
+- Imágenes de Wikimedia Commons: Utilice estrictamente la redirección directa oficial: https://commons.wikimedia.org/wiki/Special:FilePath/Nombre_Archivo.jpg (nunca enlaces a subcarpetas numéricas que puedan romperse).
+- Vídeos: Utilice enlaces funcionales de YouTube.
+
+IMPORTANTE: Devuelva ÚNICAMENTE el bloque de código JSON sin ningún texto explicativo previo ni posterior.`;
 };
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -786,7 +796,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let text = modalResearchPrompt.dataset.original;
         text = text.replace("[EDAD/CURSO DEL ALUMNADO]", age);
         text = text.replace("[NÚMERO DE SESIONES]", sessions);
-        text = text.replace("[AQUÍ TU TEMÁTICA, CRITERIOS O REFERENCIA]", topic);
+        text = text.replace("[TEMÁTICA, CRITERIOS O SABERES BÁSICOS]", topic);
         modalResearchPrompt.innerHTML = text;
     }
 
