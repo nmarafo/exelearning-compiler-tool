@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>eXeLearning Compiler Tool | De JSON a .elpx</title>
+    <title>eXeLearning Compiler Tool v4.0.5 | Compilador de SA a .elpx</title>
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 </head>
 <body>
@@ -17,133 +17,255 @@
     </div>
 
     <main class="app-container">
+        <!-- Encabezado Principal -->
         <header class="hero-section">
-            <div class="badge">V4.0 - Standalone</div>
+            <div class="badge-container">
+                <span class="badge badge-pulse">v4.0.5 Oficial</span>
+                <span class="badge badge-accent">LOMLOE & DUA</span>
+                <span class="badge badge-outline">Tema EducaBlue WCAG 2.2 AA</span>
+            </div>
             <h1>eXeLearning <span>Compiler Tool</span></h1>
-            <p class="subtitle">Traduce diseños de IA (JSON) a paquetes .elpx nativos al instante.</p>
+            <p class="subtitle">Traduzcan diseños pedagógicos generados por IA (JSON) a paquetes nativos de eXeLearning (.elpx) en segundos.</p>
             
             <div class="project-actions">
-                <button id="btn-save-project" class="secondary-btn">
+                <button id="btn-sample-project" class="primary-btn sample-btn" title="Cargar una Situación de Aprendizaje completa LOMLOE de ejemplo">
+                    <span>✨</span> Cargar SA de Ejemplo LOMLOE
+                </button>
+                <button id="btn-save-project" class="secondary-btn" title="Guardar el proyecto actual en formato JSON">
                     <span>💾</span> Guardar Proyecto (JSON)
                 </button>
-                <button id="btn-load-project" class="secondary-btn">
+                <button id="btn-load-project" class="secondary-btn" title="Cargar un archivo de proyecto JSON previo">
                     <span>📂</span> Cargar Proyecto (JSON)
                 </button>
                 <input type="file" id="input-load-project" style="display: none;" accept=".json">
             </div>
         </header>
 
-        <section class="glass-panel prompt-panel">
-            <div class="panel-header">
-                <div class="icon-box">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
-                </div>
-                <div class="header-flex">
-                    <div class="header-text">
-                        <h3>1. Obtener Prompt Maestro</h3>
-                        <p>Configura el número de sesiones y copia el prompt para NotebookLM.</p>
-                    </div>
-                    <button id="btn-show-instructions" class="primary-btn">💡 Instrucciones NotebookLM</button>
-                </div>
+        <!-- Configuración de Metadatos del Proyecto (eXe v4.0.5) -->
+        <section class="glass-panel metadata-panel">
+            <div class="panel-header-compact">
+                <div class="icon-box-small">⚙️</div>
+                <h4>Metadatos del Proyecto eXeLearning</h4>
             </div>
-            
-            <div class="prompt-area">
-                <div class="prompt-controls" style="margin-bottom: 1rem; display: flex; align-items: center; gap: 1rem;">
-                    <label>Número de sesiones de desarrollo:</label>
-                    <input type="number" id="num-sessions" min="1" max="10" value="4" style="width: 70px; padding: 0.5rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.2); color: white;">
+            <div class="metadata-grid">
+                <div class="meta-field">
+                    <label for="meta-title">Título de la Situación de Aprendizaje:</label>
+                    <input type="text" id="meta-title" placeholder="Ej. Ecosistemas de Canarias y Biodiversidad" value="Situación de Aprendizaje REA">
                 </div>
-                <div class="prompt-content" id="prompt-display">
-                    Presiona el botón para generar el prompt maestro...
+                <div class="meta-field">
+                    <label for="meta-author">Autoría / Docente:</label>
+                    <input type="text" id="meta-author" placeholder="Nombre del docente o centro" value="Norberto Martín Afonso">
                 </div>
-                <div class="prompt-actions">
-                    <button id="btn-copy-prompt" class="primary-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                        Copiar Prompt Maestro
-                    </button>
-                    <span id="copy-status" class="status-msg">¡Prompt Maestro copiado!</span>
+                <div class="meta-field">
+                    <label for="meta-theme">Estilo / Tema Oficial:</label>
+                    <select id="meta-theme">
+                        <option value="educablue" selected>EducaBlue (Nuevo v4.0.5 · WCAG 2.2 AA)</option>
+                        <option value="base">Base (Oficial Intef/Cedec)</option>
+                        <option value="universal">Universal (Accesible · Alto Contraste)</option>
+                        <option value="neo">Neo (Moderno Minimalista)</option>
+                        <option value="intef">Intef (Institucional)</option>
+                    </select>
+                </div>
+                <div class="meta-field">
+                    <label for="meta-license">Licencia de Publicación:</label>
+                    <select id="meta-license">
+                        <option value="creative commons: attribution - share alike 4.0" selected>Creative Commons BY-SA 4.0</option>
+                        <option value="creative commons: attribution 4.0">Creative Commons BY 4.0</option>
+                        <option value="creative commons: attribution - non commercial 4.0">Creative Commons BY-NC 4.0</option>
+                        <option value="public domain">Dominio Público (CC0)</option>
+                    </select>
                 </div>
             </div>
         </section>
 
+        <!-- Paso 1: Generador de Prompts Maestros -->
+        <section class="glass-panel prompt-panel">
+            <div class="panel-header">
+                <div class="icon-box primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
+                </div>
+                <div class="header-flex">
+                    <div class="header-text">
+                        <h3>1. Generador de Prompt Maestro (v4.0.5)</h3>
+                        <p>Configuren los parámetros pedagógicos y copien el prompt para su modelo de IA (NotebookLM, Gemini o Claude).</p>
+                    </div>
+                    <button id="btn-show-instructions" class="secondary-btn btn-pill">💡 Guía Metodológica IA</button>
+                </div>
+            </div>
+            
+            <div class="prompt-area">
+                <div class="prompt-filters-grid">
+                    <div class="filter-item">
+                        <label for="prompt-stage">Etapa / Curso:</label>
+                        <input type="text" id="prompt-stage" value="Educación Secundaria Obligatoria (ESO)" placeholder="Ej. 1º ESO, Bachillerato, Primaria, FP">
+                    </div>
+                    <div class="filter-item">
+                        <label for="num-sessions">Nº de Sesiones didácticas:</label>
+                        <input type="number" id="num-sessions" min="1" max="10" value="4">
+                    </div>
+                    <div class="filter-item filter-span-2">
+                        <label for="prompt-topic">Temática / Saberes Básicos / Criterios:</label>
+                        <input type="text" id="prompt-topic" value="Ecosistemas de Canarias, biodiversidad y desarrollo sostenible" placeholder="Describan la temática curricular de la SA">
+                    </div>
+                </div>
+
+                <div class="prompt-content-box">
+                    <div class="prompt-content" id="prompt-display">
+                        Cargando configuración del prompt maestro...
+                    </div>
+                </div>
+
+                <div class="prompt-actions">
+                    <button id="btn-copy-prompt" class="primary-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                        Copiar Prompt Maestro v4.0.5
+                    </button>
+                    <span id="copy-status" class="status-msg">¡Prompt Maestro copiado con éxito!</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Paso 2: Compilador de Estructura JSON -->
         <section class="glass-panel editor-panel">
             <div class="panel-header">
                 <div class="icon-box">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
                 </div>
-                <div>
-                    <h3>2. Compilador de Estructura</h3>
-                    <p>Pega aquí el JSON completo generado por NotebookLM.</p>
+                <div class="header-flex">
+                    <div>
+                        <h3>2. Compilador de Estructura JSON</h3>
+                        <p>Peguen aquí el JSON generado por la IA para compilar el paquete .elpx nativo.</p>
+                    </div>
+                    <div class="editor-quick-actions">
+                        <button id="btn-format-json" class="secondary-btn btn-sm" title="Limpia bloques de markdown (```) y formatea el código">
+                            <span>🧹</span> Formatear JSON
+                        </button>
+                        <button id="btn-copy-json" class="secondary-btn btn-sm" title="Copiar el JSON actual al portapapeles">
+                            <span>📋</span> Copiar
+                        </button>
+                        <button id="btn-clear-json" class="secondary-btn btn-sm" title="Borrar el contenido del editor">
+                            <span>❌</span> Limpiar
+                        </button>
+                    </div>
                 </div>
             </div>
 
-            <div class="editor-tabs">
-                <div class="phase-editor-item">
-                    <label>JSON de la Situación de Aprendizaje (Array de páginas)</label>
-                    <textarea id="json-input-master" class="phase-textarea" style="height: 400px !important;" placeholder='[ { "page_name": "Portada", ... }, { "page_name": "Sesión 1", ... }, ... ]'></textarea>
+            <!-- Diagnóstico en Tiempo Real -->
+            <div id="diagnostics-bar" class="diagnostics-bar">
+                <div class="diag-status">
+                    <span id="diag-badge" class="badge-status status-empty">Esperando JSON...</span>
+                    <span id="diag-page-count" class="diag-metric">0 páginas</span>
+                    <span id="diag-idevice-count" class="diag-metric">0 iDevices</span>
                 </div>
+                <div id="diag-idevice-tags" class="diag-tags"></div>
+            </div>
+
+            <div class="editor-area">
+                <textarea id="json-input-master" class="phase-textarea code-editor" placeholder='Peguen aquí el JSON generado por su IA (array de páginas o estructura con metadatos)...'></textarea>
             </div>
 
             <div class="compiler-footer">
-                <div id="error-display" class="error-msg"></div>
+                <div id="error-display" class="error-msg" style="display: none;"></div>
                 <button id="btn-compile" class="compile-btn">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-                    Generar Proyecto .elpx
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+                    <span>Generar y Descargar Proyecto .elpx (v4.0.5)</span>
                 </button>
             </div>
         </section>
 
+        <!-- Paso 3: Catálogo Interactivo de iDevices -->
+        <section class="glass-panel catalog-panel">
+            <details class="catalog-details">
+                <summary class="catalog-summary">
+                    <div class="catalog-title-group">
+                        <span class="icon-box-small">📚</span>
+                        <div>
+                            <h4>Catálogo de iDevices Compatibles (eXeLearning v4.0.5)</h4>
+                            <p class="summary-hint">Hagan clic para consultar la lista completa de 24 iDevices soportados y sus esquemas JSON.</p>
+                        </div>
+                    </div>
+                    <span class="catalog-toggle-icon">▼</span>
+                </summary>
+                <div class="catalog-content" id="catalog-content">
+                    <!-- Contenido renderizado dinámicamente desde app.js -->
+                </div>
+            </details>
+        </section>
+
+        <!-- Pie de página -->
         <footer class="footer">
-            <p>Creado por <strong>Norberto Martín Afonso</strong>.</p>
-            <p>
-                Sígueme en <a href="https://x.com/NorbertoMartnAf" target="_blank">X @NorbertoMartnAf</a> 
-                y <a href="https://github.com/nmarafo" target="_blank">Github @nmarafo</a>
+            <p>Desarrollado para el acompañamiento y diseño tecnopedagógico docente por <strong>Norberto Martín Afonso</strong>.</p>
+            <p class="footer-links">
+                <a href="https://x.com/NorbertoMartnAf" target="_blank" rel="noopener">X / Twitter: @NorbertoMartnAf</a> · 
+                <a href="https://github.com/nmarafo" target="_blank" rel="noopener">GitHub: @nmarafo</a> · 
+                <a href="https://github.com/nmarafo/exelearning-compiler-tool" target="_blank" rel="noopener">Repositorio oficial</a>
             </p>
             <p class="exe-ref">
-                Proyecto basado en <a href="https://github.com/exelearning/exelearning" target="_blank">eXeLearning Open Source</a>.
+                Generador independiente compatible con <a href="https://github.com/exelearning/exelearning" target="_blank" rel="noopener">eXeLearning Open Source</a>.
             </p>
-            <div class="version-tag">Operativo con eXeLearning v4.0.0</div>
+            <div class="version-tag">Validado y operativo con eXeLearning v4.0.5 estable</div>
         </footer>
     </main>
 
-    <!-- Modal de Instrucciones -->
+    <!-- Modal de Instrucciones Metodológicas -->
     <div id="modal-instructions" class="modal" style="display: none;">
         <div class="modal-content glass-panel">
             <span class="close-modal" id="close-modal">&times;</span>
-            <h2 class="modal-title">Guía de Uso con NotebookLM</h2>
+            <h2 class="modal-title">Guía de Uso con Modelos de IA (NotebookLM, Gemini, Claude)</h2>
             
             <div class="instruction-step">
-                <h4>1. Configuración de NotebookLM</h4>
-                <p>Pon en los ajustes el siguiente prompt personalizado y en la longitud de respuesta <strong>“Más larga”</strong>:</p>
-                <div class="code-container" style="position: relative;">
-                    <div class="code-block" id="prompt-config">“Eres un Arquitecto de Contenido Educativo especializado en eXeLearning v4 y la Guía de Estilo REA (Recursos Educativos Abiertos).<br><br>Tu tarea es generar un archivo JSON estricto que represente una Situación de Aprendizaje (SA) completa y profesional.”</div>
-                    <button class="secondary-btn btn-copy-modal" data-target="prompt-config" style="position: absolute; top: 10px; right: 10px; padding: 4px 8px; font-size: 0.75rem;">Copiar</button>
+                <h4>1. Configuración del Asistente en NotebookLM o Gemini</h4>
+                <p>En las instrucciones personalizadas del modelo, introduzcan el siguiente prompt de sistema para activar el rol de Arquitecto Tecnopedagógico eXeLearning v4.0.5:</p>
+                <div class="code-container">
+                    <div class="code-block" id="prompt-config">“Usted es un Arquitecto de Contenido Educativo Digital y Asesor Tecnopedagógico especializado en eXeLearning v4.0.5, el estándar DTD ODE 2.0 y el marco LOMLOE de Canarias.
+
+Su cometido es diseñar Situaciones de Aprendizaje (SA) competenciales y estructurar la salida EXCLUSIVAMENTE en un bloque de código JSON válido, listo para ser compilado directamente a formato nativo .elpx.”</div>
+                    <button class="secondary-btn btn-copy-modal" data-target="prompt-config">Copiar</button>
                 </div>
             </div>
 
             <div class="instruction-step">
-                <h4>2. Generación de la SA (Deep Research) o adaptación de una SA preexistente</h4>
-                <p>Configura y copia el siguiente prompt para generar o adaptar tu SA:</p>
+                <h4>2. Generación Didáctica (Deep Research / Investigación Curricular)</h4>
+                <p>Configuren los datos de su SA y copien el prompt de investigación adaptado a las fases de instrucción de Merrill y principios DUA:</p>
                 
-                <div class="prompt-controls" style="display: flex; gap: 10px; margin-bottom: 15px; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 8px;">
-                    <div style="flex: 1;">
-                        <label style="display: block; font-size: 0.75rem; font-weight: bold; margin-bottom: 4px; color: var(--accent-light);">Edad/Curso</label>
-                        <input type="text" id="input-prompt-age" class="phase-input" style="width: 100%; padding: 6px; font-size: 0.85rem;" value="EDAD/CURSO DEL ALUMNADO">
+                <div class="modal-prompt-inputs">
+                    <div>
+                        <label>Etapa / Curso:</label>
+                        <input type="text" id="modal-prompt-age" value="1º Educación Secundaria Obligatoria (ESO)">
                     </div>
-                    <div style="flex: 1;">
-                        <label style="display: block; font-size: 0.75rem; font-weight: bold; margin-bottom: 4px; color: var(--accent-light);">Nº Sesiones</label>
-                        <input type="text" id="input-prompt-sessions" class="phase-input" style="width: 100%; padding: 6px; font-size: 0.85rem;" value="NÚMERO DE SESIONES">
+                    <div>
+                        <label>Nº Sesiones:</label>
+                        <input type="number" id="modal-prompt-sessions" value="4" min="1" max="10">
                     </div>
-                    <div style="flex: 2;">
-                        <label style="display: block; font-size: 0.75rem; font-weight: bold; margin-bottom: 4px; color: var(--accent-light);">Temática/Criterios</label>
-                        <input type="text" id="input-prompt-topic" class="phase-input" style="width: 100%; padding: 6px; font-size: 0.85rem;" value="AQUÍ TU TEMÁTICA, CRITERIOS O REFERENCIA">
+                    <div>
+                        <label>Temática / Saberes Básicos:</label>
+                        <input type="text" id="modal-prompt-topic" value="Ecosistemas de Canarias y Conservación de la Biodiversidad">
                     </div>
                 </div>
 
-                <div class="code-container" style="position: relative;">
-                    <div class="code-block" id="prompt-research">”Actúa como un experto en diseño pedagógico digital y tecnopedagogía. Diseña una Situación de Aprendizaje (SA) estructurada para alumnado de [EDAD/CURSO DEL ALUMNADO] compuesta por [NÚMERO DE SESIONES] sesiones de 55 minutos cada una, centrada en la siguiente temática o saberes básicos: [AQUÍ TU TEMÁTICA, CRITERIOS O REFERENCIA].<br><br>Diseña la secuencia integrando los principios DUA (Diseño Universal para el Aprendizaje) y aplicando las Fases de Instrucción de Merrill (Activación, Demostración, Aplicación e Integración).<br><br>Para cada sesión, especifica de forma concisa:<br>Objetivo de la sesión.<br>Acciones del docente.<br>Acciones del alumno.<br>Tipos de agrupamiento.<br><br>CRÍTICO: Toda la secuencia debe diseñarse para ser inyectada directamente en eXeLearning v4.0. Para cada tarea, indícame exactamente qué iDevice utilizar de la siguiente lista y redacta el contenido literal (textos, preguntas, estructura JSON, retroalimentaciones) que deberé introducir:<br><br>Utiliza estratégicamente las siguientes herramientas distribuidas a lo largo de las sesiones:<br><br>Presentación y Competencias: Inicia la secuencia justificando las competencias digitales con el iDevice DigCompEdu (digcompedu). Utiliza el iDevice Texto (text) para introducciones. Si hay material adjunto, indica el uso de Descargar Archivo (download-source-file).<br><br>Exposición Accesible (DUA): Redacta la teoría usando Contenido DUA (udl-content) proporcionando el texto principal, y versiones contas para 'Lectura facilitada' o 'Audio'. Apóyate visualmente con una Galería de Imágenes (image-gallery) o integra recursos de terceros mediante Sitio Web Externo (external-website).<br><br>Práctica Activa y Gamificada: Crea dinámicas usando Caso Práctico (casestudy). Introduce retos gamificados con Adivina el término (guess), Selecciona Multimedia (select-media-files), Rosco (rosco) (proporciona un máx. de 10 términos usando las claves "letter", "word" y "definition", evitando las letras 'Ñ', 'X', 'Y', 'Z'), Crucigrama (crossword) (claves "word" y "definition"), Relaciona (relate) (claves "text1" y "text2"), y Ordena (sort) (lista en "items"). Mantén la atención con un Vídeo Interactivo (interactive-video) sugiriendo la URL y los cortes de interacción.<br><br>Evaluación Formativa: Redacta ítems para Verdadero o falso (trueorfalse), Preguntas rápidas simples (quick-questions), Opción múltiple (quick-questions-multiple-choice), o basadas en un clip corto (quick-questions-video). Si hay reflexión amplia, diseña un Formulario (form).<br><br>Metacognición y Cierre: Termina la SA integrando un Informe de Progreso (progress-report). Diseña además una Lista de Cotejo (checklist) con 5 tareas clave de la SA y una Rúbrica Integradora (rubric) completa (4 categorías y 4 niveles de desempeño).<br><br>Entrégame la propuesta estructurada cronológicamente (Sesión 1, Sesión 2...), detallando en cada paso el 'iDevice seleccionado' y el 'Contenido literal a inyectar'.<br><br>CRÍTICO - REGLA ESTRICTA PARA URLs DE IMÁGENES Y VÍDEOS:<br>Al final de la propuesta, añade un listado de recursos multimedia funcionales.<br><br>Para las imágenes: PROHIBIDO generar URLs que apunten a subcarpetas numéricas de Wikimedia que generen enlaces rotos. Debes buscar el nombre exacto del archivo en internet y devolverme la URL utilizando estrictamente esta plantilla:<br>https://commons.wikimedia.org/wiki/Special:FilePath/AQUÍ_EL_NOMBRE_EXACTO_DEL_ARCHIVO.jpg (o .png).<br><br>Para los vídeos de YouTube: Extrae la URL real y funcional (ej. https://www.youtube.com/watch?v=...).”</div>
+                <div class="code-container">
+                    <div class="code-block" id="prompt-research">“Actúe como un diseñador tecnopedagógico experto. Diseñe una Situación de Aprendizaje (SA) estructurada para alumnado de [EDAD/CURSO DEL ALUMNADO] compuesta por [NÚMERO DE SESIONES] sesiones de 55 minutos cada una, centrada en la temática: [AQUÍ TU TEMÁTICA, CRITERIOS O REFERENCIA].
 
-                    <button class="secondary-btn btn-copy-modal" data-target="prompt-research" style="position: absolute; top: 10px; right: 10px; padding: 4px 8px; font-size: 0.75rem;">Copiar</button>
+Estructure la secuencia integrando los principios DUA (Diseño Universal para el Aprendizaje) y aplicando las Fases de Instrucción de Merrill (Activación, Demostración, Aplicación e Integración).
+
+REGLA CRÍTICA DE SALIDA: Toda la propuesta debe entregarse como un ARRAY JSON de páginas para eXeLearning v4.0.5. Cada página contendrá 'page_name' y un array 'idevices'.
+
+Utilicen los siguientes iDevices soportados por eXeLearning v4.0.5:
+1. Presentación y Competencias: 'text' (introducción, justificación y resumen DUA), 'digcompedu' (indicadores de competencia digital como 1.1, 2.1, 3.2), 'download-source-file'.
+2. Exposición Accesible: 'udl-content' (texto principal, lectura facilitada y guion de audio), 'image-gallery', 'external-website'.
+3. Práctica Gamificada: 'casestudy' (caso práctico con historia y retroalimentación), 'word-search' (sopa de letras con 'words' y 'hide_time_icon'), 'rosco' (máximo 10 palabras con 'letter', 'word' y 'definition' evitando Ñ, X, Y, Z), 'crossword' (crucigrama con 'words'), 'relate' (parejas con 'pairs'), 'sort' (ordenar con 'items'), 'guess' (adivina con 'term', 'hint' y 'feedback'), 'interactive-video' (vídeo interactivo con URL de YouTube).
+4. Evaluación Formativa y Cierre: 'trueorfalse' (preguntas de verdadero/falso con 'questions', 'solution' booleano y 'attempts'), 'form' (preguntas de reflexión con 'questions'), 'checklist' (lista de cotejo de evidencias con 'tasks'), 'rubric' (rúbrica analítica con 'rows' de 4 niveles) y 'progress-report' (informe de progreso final).
+
+REGLA ESTRICTA PARA RECURSOS MULTIMEDIA:
+- Para imágenes de Wikimedia Commons, empleen estrictamente la redirección directa: https://commons.wikimedia.org/wiki/Special:FilePath/Nombre_Archivo.jpg
+- Para vídeos, utilicen enlaces estándar de YouTube funcionales.”</div>
+                    <button class="secondary-btn btn-copy-modal" data-target="prompt-research">Copiar Prompt</button>
                 </div>
+            </div>
+
+            <div class="instruction-step">
+                <h4>3. Compilación a Paquete .elpx</h4>
+                <p>Una vez que el modelo de IA genere el JSON, péguenlo en el <strong>Compilador de Estructura</strong>, pulsen <strong>"Generar y Descargar Proyecto .elpx"</strong> y ábranlo con eXeLearning v4.0.5. El proyecto contendrá automáticamente la miniatura de portada, estructura jerárquica y todos los interactivos configurados.</p>
             </div>
         </div>
     </div>
