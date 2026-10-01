@@ -120,6 +120,7 @@
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
                         Copiar Prompt Maestro v4.0.5
                     </button>
+                    <span id="prompt-char-count" class="char-count-badge">✓ 3.119 / 4.000 caracteres (Apto para NotebookLM)</span>
                     <span id="copy-status" class="status-msg">¡Prompt Maestro copiado con éxito!</span>
                 </div>
             </div>
@@ -269,6 +270,11 @@ IMPORTANTE: Devuelva ÚNICAMENTE el bloque de código JSON sin ningún texto con
             <div class="instruction-step">
                 <h4>3. Compilación a Paquete .elpx</h4>
                 <p>Una vez que el modelo de IA genere el JSON, péguenlo en el <strong>Compilador de Estructura</strong>, pulsen <strong>"Generar y Descargar Proyecto .elpx"</strong> y ábranlo con eXeLearning v4.0.5. El proyecto contendrá automáticamente la miniatura de portada, estructura jerárquica y todos los interactivos configurados.</p>
+            </div>
+
+            <div class="instruction-step">
+                <h4>💡 Límite de Entrada en NotebookLM y Uso de Fuentes</h4>
+                <p>El chat de <strong>NotebookLM</strong> impone un límite estricto de <strong>4.000 caracteres</strong> por mensaje. El Prompt Maestro de esta herramienta ha sido optimizado (~3.100 caracteres) para enviarse íntegro sin truncarse. Si cuentan con programaciones de aula extensas o decretos curriculares, agréguenlos como <strong>Fuente (Source)</strong> del cuaderno de NotebookLM y luego envíen el Prompt Maestro en el chat: la IA generará el JSON con máxima fidelidad curricular.</p>
             </div>
         </div>
     </div>

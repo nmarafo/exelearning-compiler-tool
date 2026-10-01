@@ -45,8 +45,8 @@ Esta versión incorpora todas las especificaciones y mejoras de la última versi
 ## 🚀 Cómo Empezar
 
 1. Abran `index.html` en cualquier navegador web moderno (no requiere servidor backend ni instalación previa).
-2. En la sección **1. Generador de Prompt Maestro**, configuren la etapa educativa, el número de sesiones y la temática de su Situación de Aprendizaje.
-3. Copien el prompt y utilícenlo en su herramienta de IA de preferencia (se recomienda **NotebookLM con Deep Research** o **Google Gemini**).
+2. En la sección **1. Generador de Prompt Maestro**, configuren la etapa educativa, el número de sesiones y la temática de su Situación de Aprendizaje. El prompt está calibrado (< 3.200 caracteres) para respetar el límite estricto de 4.000 caracteres de la ventana de chat de **NotebookLM**.
+3. Copien el prompt y utilícenlo en su herramienta de IA de preferencia (**Google NotebookLM**, **Google Gemini** o **Claude**). En NotebookLM, también pueden adjuntar documentos curriculares como **Fuente (Source)** en el cuaderno para que la IA disponga de todo el contexto oficial.
 4. O si lo desean, pulsen **"✨ Cargar SA de Ejemplo LOMLOE"** para probar el flujo de trabajo inmediatamente.
 5. Peguen el JSON resultante en el **2. Compilador de Estructura JSON**.
 6. Hagan clic en **"Generar y Descargar Proyecto .elpx"** y abran el archivo descargado directamente con eXeLearning v4.0.5.

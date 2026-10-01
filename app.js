@@ -312,18 +312,18 @@ const IDEVICES_CATALOG = [
  * Función generadora del Prompt Maestro para modelos de IA.
  */
 const buildMasterPrompt = (stage, sessions, topic) => {
-    return `Actúe como un Asesor Tecnopedagógico experto en el diseño de Situaciones de Aprendizaje (SA) competenciales según el marco LOMLOE de Canarias y especialista en eXeLearning v${EXE_VERSION} estable.
+    return `Actúe como Asesor Tecnopedagógico experto en Situaciones de Aprendizaje (SA) LOMLOE (Canarias) y especialista en eXeLearning v${EXE_VERSION} estable.
 
-Su cometido es diseñar una Situación de Aprendizaje COMPLETA, rigurosa y motivadora, estructurando la salida EXCLUSIVAMENTE en un único bloque de código JSON válido, listo para ser compilado directamente a un paquete nativo .elpx de eXeLearning.
+Su cometido es diseñar una Situación de Aprendizaje COMPLETA y motivadora, estructurando la salida EXCLUSIVAMENTE en un único bloque de código JSON válido, listo para ser compilado a un paquete nativo .elpx de eXeLearning.
 
 PARÁMETROS DEL PROYECTO:
 - Etapa / Curso: ${stage || "Educación Secundaria Obligatoria"}
-- Número de sesiones de desarrollo: ${sessions || 4}
+- Nº de sesiones: ${sessions || 4}
 - Temática / Saberes Básicos / Criterios: ${topic || "Ecosistemas de Canarias, biodiversidad y sostenibilidad"}
-- Marco Pedagógico: Principios DUA (Diseño Universal para el Aprendizaje) + Fases de Instrucción de Merrill (Activación, Demostración, Aplicación e Integración) + Evaluación Formativa Continua.
-- Accesibilidad y Estilo: Estándar WCAG 2.2 nivel AA (compatible con el tema oficial EducaBlue de eXeLearning v${EXE_VERSION}).
+- Marco Pedagógico: Principios DUA + Fases de Merrill (Activación, Demostración, Aplicación, Integración) + Evaluación Formativa Continua.
+- Estilo y Accesibilidad: WCAG 2.2 nivel AA (compatible con el tema oficial EducaBlue de eXeLearning v${EXE_VERSION}).
 
-ESTRUCTURA DIDÁCTICA DEL PROYECTO (OBJETO CON METADATOS Y ARRAY DE PÁGINAS):
+ESTRUCTURA DIDÁCTICA DEL JSON:
 {
   "metadata": {
     "title": "Título conciso y motivador de la SA",
@@ -333,33 +333,32 @@ ESTRUCTURA DIDÁCTICA DEL PROYECTO (OBJETO CON METADATOS Y ARRAY DE PÁGINAS):
     "license": "creative commons: attribution - share alike 4.0"
   },
   "pages": [
-    // 1. Portada y Justificación: text con resumen DUA ("summary") + digcompedu con indicadores (ej. ["1.1", "2.1", "3.1", "5.1", "6.2"])
+    // 1. Portada y Justificación: text con resumen DUA ("summary") + digcompedu con indicadores (ej. ["1.1", "2.1", "3.2"])
     // 2. Fundamentación Curricular y DUA: udl-content (texto base, lectura facilitada y guion de audio) + download-source-file
     // 3. Secuencia Didáctica: text con la hoja de ruta metodológica
     // 4 a ${3 + Number(sessions)}. Sesiones 1 a ${sessions} (especificar "parent": "Secuencia Didáctica" para anidarlas jerárquicamente en el árbol de navegación):
-    //    Distribuir iDevices gamificados y activos: casestudy, word-search, trueorfalse, rosco, interactive-video, sort, relate, guess
-    // Final. Evaluación y Metacognición: checklist + rubric (rúbrica analítica con 4 niveles ponderados) + progress-report
+    //    Distribuir iDevices: casestudy, word-search, trueorfalse, rosco, interactive-video, sort, relate, guess
+    // Final. Evaluación y Metacognición: checklist + rubric (rúbrica analítica de 4 niveles ponderados) + progress-report
   ]
 }
 
-ESPECIFICACIONES TÉCNICAS DE LOS IDEVICES EN eXeLearning v${EXE_VERSION}:
-1. iDevice 'word-search' (Sopa de letras): Utilice "title", "instructions", "words" (array de { "word", "definition" }) y "hide_time_icon": true.
-2. iDevice 'trueorfalse' (Verdadero/Falso): Utilice "title", "attempts": 2, y "questions" (array de { "question", "solution": true/false, "feedback", "suggestion" }).
-3. iDevice 'rosco' (Pasapalabra): Utilice "title", "time": 240, y "words" (array de { "letter", "word", "definition" }) con un máximo de 10-12 términos que comiencen estrictamente por esa letra, evitando las letras Ñ, X, Y y Z.
-4. iDevice 'rubric' (Rúbrica): Utilice "title", "instructions" y "rows" (array de { "category", "level4", "level3", "level2", "level1" }).
-5. iDevice 'sort' (Ordena): Utilice "title", "attempts": 3, e "items" (array de pasos ordenados lógicamente).
-6. iDevice 'relate' (Relaciona parejas): Utilice "title" y "pairs" (array de { "text1", "text2" }).
-7. iDevice 'casestudy' (Caso práctico): Utilice "title", "story", "activity" y "feedback".
-8. iDevice 'digcompedu': Utilice "title", "indicators" (array de indicadores como ["1.1", "2.1", "3.2"]) y "content".
-9. iDevice 'udl-content': Utilice "title", "main_text", "easy_reading" y "audio_script".
-10. iDevice 'checklist': Utilice "title" y "tasks" (array de evidencias de aprendizaje).
-11. iDevice 'text': Utilice "title", "main_text", "summary" (resumen DUA destacado), "duration" y "participants". Para contenido exclusivo del profesorado, puede añadir "teacher_only": true.
+ESPECIFICACIONES DE IDEVICES EN eXeLearning v${EXE_VERSION}:
+1. 'word-search': "title", "instructions", "words": [{"word", "definition"}], "hide_time_icon": true.
+2. 'trueorfalse': "title", "attempts": 2, "questions": [{"question", "solution": true/false, "feedback", "suggestion"}].
+3. 'rosco': "title", "time": 240, "words": [{"letter", "word", "definition"}] (máximo 10-12 palabras; evitar Ñ, X, Y, Z).
+4. 'rubric': "title", "instructions", "rows": [{"category", "level4", "level3", "level2", "level1"}].
+5. 'sort': "title", "attempts": 3, "items": ["paso 1", "paso 2", ...].
+6. 'relate': "title", "pairs": [{"text1", "text2"}].
+7. 'casestudy': "title", "story", "activity", "feedback".
+8. 'digcompedu': "title", "indicators": ["1.1", "2.1", "3.2"], "content".
+9. 'udl-content': "title", "main_text", "easy_reading", "audio_script".
+10. 'checklist': "title", "tasks": ["evidencia 1", ...].
+11. 'text': "title", "main_text", "summary", "duration", "participants", opcional "teacher_only": true.
 
-REGLAS CRÍTICAS PARA RECURSOS MULTIMEDIA:
-- Imágenes de Wikimedia Commons: Utilice estrictamente la redirección directa oficial: https://commons.wikimedia.org/wiki/Special:FilePath/Nombre_Archivo.jpg (nunca enlaces a subcarpetas numéricas que puedan romperse).
-- Vídeos: Utilice enlaces funcionales de YouTube.
-
-IMPORTANTE: Devuelva ÚNICAMENTE el bloque de código JSON sin ningún texto explicativo previo ni posterior.`;
+REGLAS MULTIMEDIA Y FORMATO DE SALIDA:
+- Imágenes de Wikimedia Commons: Utilice formato directo oficial: https://commons.wikimedia.org/wiki/Special:FilePath/Nombre_Archivo.jpg
+- Vídeos: Enlaces funcionales de YouTube.
+- IMPORTANTE: Devuelva ÚNICAMENTE el bloque de código JSON sin ningún texto explicativo previo ni posterior.`;
 };
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -369,6 +368,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const promptTopicInput = document.getElementById('prompt-topic');
     const promptDisplay = document.getElementById('prompt-display');
     const btnCopyPrompt = document.getElementById('btn-copy-prompt');
+    const promptCharCount = document.getElementById('prompt-char-count');
     const copyStatus = document.getElementById('copy-status');
 
     // Referencias UI - Metadatos
@@ -413,6 +413,19 @@ document.addEventListener('DOMContentLoaded', () => {
         const promptText = buildMasterPrompt(stage, num, topic);
         if (promptDisplay) {
             promptDisplay.textContent = promptText;
+        }
+        if (promptCharCount) {
+            const len = promptText.length;
+            if (len <= 3800) {
+                promptCharCount.className = "char-count-badge";
+                promptCharCount.innerHTML = `✓ ${len.toLocaleString()} / 4.000 caracteres (Apto para NotebookLM)`;
+            } else if (len <= 4000) {
+                promptCharCount.className = "char-count-badge warning";
+                promptCharCount.innerHTML = `⚠ ${len.toLocaleString()} / 4.000 caracteres (Próximo al límite de NotebookLM)`;
+            } else {
+                promptCharCount.className = "char-count-badge danger";
+                promptCharCount.innerHTML = `✕ ${len.toLocaleString()} / 4.000 caracteres (Excede límite de NotebookLM)`;
+            }
         }
     }
 
