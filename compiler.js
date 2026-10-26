@@ -1235,7 +1235,11 @@ export async function compileExeProject(projectInput, customOptions = {}) {
                 '{{DIGCOMPEDU_MODE}}': props.digcompeduDisplayMode || "table",
                 '{{DIGCOMPEDU_TABLE}}': props.digcompeduSummaryTableHtml || "",
                 '{{DIGCOMPEDU_TEXT}}': props.digcompeduSummaryTextHtml || "",
-                '{{LOMLOE_HTML}}': props.lomloeSummaryHtml || ""
+                '{{LOMLOE_HTML}}': props.lomloeSummaryHtml || "",
+                '{{PACKAGE_TITLE}}': escapeXml(projectTitle),
+                '{{PACKAGE_DESCRIPTION}}': escapeXml(projectDescription),
+                '{{PACKAGE_AUTHOR}}': escapeXml(projectAuthor),
+                '{{PACKAGE_LICENSE}}': escapeXml(projectLicense)
             };
 
             for (const [key, val] of Object.entries(placeholders)) {
