@@ -25,6 +25,17 @@ export const SNIPPETS_DICT = {
           <odeComponentsProperties></odeComponentsProperties>
         </odeComponent>`,
 
+    lomloe: `<odeComponent>
+          <odePageId>UUID-PAGINA</odePageId>
+          <odeBlockId>UUID-BLOQUE</odeBlockId>
+          <odeIdeviceId>UUID-IDEVICE</odeIdeviceId>
+          <odeIdeviceTypeName>lomloe</odeIdeviceTypeName>
+          <htmlView><![CDATA[<div class="lomloeIdeviceContent"><div class="lomloe-summary-wrapper">{{LOMLOE_HTML}}</div></div>]]></htmlView>
+          <jsonProperties><![CDATA[{"ideviceId":"UUID-IDEVICE","lomloeDataset":"ES-CN","lomloeDisplayMode":"compact","lomloeSelections":{},"lomloeSummaryHtml":""}]]></jsonProperties>
+          <odeComponentsOrder>0</odeComponentsOrder>
+          <odeComponentsProperties></odeComponentsProperties>
+        </odeComponent>`,
+
     digcompedu: `<odeComponent>
           <odePageId>UUID-PAGINA</odePageId>
           <odeBlockId>UUID-BLOQUE</odeBlockId>
@@ -32,7 +43,7 @@ export const SNIPPETS_DICT = {
           <odeIdeviceTypeName>digcompedu</odeIdeviceTypeName>
           <htmlView><![CDATA[<div class="digcompeduIdeviceContent">
 <div class="digcompedu-instructions">{{CONTENT}}</div>
-<h3>Resumen DigCompEdu</h3><p>Indicadores seleccionados: {{DIGCOMPEDU_COUNT}}</p><div class="digcompedu-summary-wrapper" data-lang="es" data-display="table">{{DIGCOMPEDU_TABLE}}</div>
+<h3>Resumen DigCompEdu</h3><p>Indicadores seleccionados: {{DIGCOMPEDU_COUNT}}</p><div class="digcompedu-summary-wrapper" data-lang="es" data-display="{{DIGCOMPEDU_MODE}}">{{DIGCOMPEDU_TABLE}}{{DIGCOMPEDU_TEXT}}</div>
 </div>]]></htmlView>
           <jsonProperties><![CDATA[{"ideviceId":"UUID-IDEVICE","digcompeduSelected":[],"digcompeduDisplayMode":"table","digcompeduDataLang":"es","digcompeduGranularity":"indicator","digcompeduSummaryTableHtml":"","digcompeduSummaryTextHtml":""}]]></jsonProperties>
           <odeComponentsOrder>0</odeComponentsOrder>
@@ -90,7 +101,7 @@ export const SNIPPETS_DICT = {
           <odeIdeviceTypeName>checklist</odeIdeviceTypeName>
           <htmlView><![CDATA[<div class="listacotejo-IDevice">
   <div class="game-evaluation-ids js-hidden" data-id="UUID-IDEVICE" data-evaluationb="false" data-evaluationid="UUID-EVALUACION"></div>
-  <div class="listacotejo-feedback-game"></div>
+  <div class="listacotejo-feedback-game">{{FEEDBACK}}</div>
   <div class="listacotejo-instructions CTJ-instructions"><p>{{INSTRUCTIONS}}</p></div>
   <div id="listacotejo-DataGame-UUID-IDEVICE" class="listacotejo-DataGame js-hidden" data-id="UUID-IDEVICE"></div>
   <div class="listacotejo-bns js-hidden">Su navegador no es compatible con esta herramienta.</div>
@@ -117,7 +128,7 @@ export const SNIPPETS_DICT = {
           </div>
       </div>
       <div class="FRMP-StartGame" id="frmStartGameDiv-UUID-IDEVICE" style="display:none;">
-          <button id="frmStartGame-UUID-IDEVICE" type="button" class="btn btn-primary">Pulsa aquí para empezar</button>
+          <button id="frmStartGame-UUID-IDEVICE" type="button" class="btn btn-primary">Pulsen aquí para comenzar</button>
       </div>
       <div class="form-body" id="frmBody-UUID-IDEVICE" style="display:block;">
           <div class="FRMP-Questions">
@@ -153,8 +164,8 @@ export const SNIPPETS_DICT = {
           <odeBlockId>UUID-BLOQUE</odeBlockId>
           <odeIdeviceId>UUID-IDEVICE</odeIdeviceId>
           <odeIdeviceTypeName>guess</odeIdeviceTypeName>
-          <htmlView><![CDATA[<div class="adivina-IDevice"><div class="game-evaluation-ids js-hidden" data-id="UUID-IDEVICE" data-evaluationb="false" data-evaluationid="UUID-EVALUACION"></div><div class="adivina-version js-hidden">2</div><div class="adivina-feedback-game"></div><div class="adivina-instructions gameQP-instructions"><p>{{INSTRUCTIONS}}</p></div><div class="adivina-DataGame js-hidden"></div><div class="adivina-bns js-hidden">Su navegador no es compatible con esta herramienta.</div></div>]]></htmlView>
-          <jsonProperties><![CDATA[{"ideviceId":"UUID-IDEVICE","typeGame":"Guess","instructions":"<p>{{INSTRUCTIONS}}</p>","msgs":{"msgCorrect":"¡Correcto!","msgIncorrect":"¡Incorrecto!","msgLookAnswer":"Mira la respuesta","msgSubmit":"Comprobar"},"words":[]}]]></jsonProperties>
+          <htmlView><![CDATA[<div class="adivina-IDevice"><div class="game-evaluation-ids js-hidden" data-id="UUID-IDEVICE" data-evaluationb="false" data-evaluationid="UUID-EVALUACION"></div><div class="adivina-version js-hidden">2</div><div class="adivina-feedback-game">{{FEEDBACK}}</div><div class="adivina-instructions gameQP-instructions"><p>{{INSTRUCTIONS}}</p></div><div class="adivina-DataGame js-hidden"></div><div class="adivina-bns js-hidden">Su navegador no es compatible con esta herramienta.</div></div>]]></htmlView>
+          <jsonProperties><![CDATA[{"ideviceId":"UUID-IDEVICE","typeGame":"Adivina","instructions":"<p>{{INSTRUCTIONS}}</p>","msgs":{"msgCorrect":"¡Correcto!","msgIncorrect":"¡Incorrecto!","msgLookAnswer":"Miren la respuesta","msgSubmit":"Comprobar"},"words":[]}]]></jsonProperties>
           <odeComponentsOrder>0</odeComponentsOrder>
           <odeComponentsProperties></odeComponentsProperties>
         </odeComponent>`,
@@ -186,7 +197,7 @@ export const SNIPPETS_DICT = {
           <odeBlockId>UUID-BLOQUE</odeBlockId>
           <odeIdeviceId>UUID-IDEVICE</odeIdeviceId>
           <odeIdeviceTypeName>complete</odeIdeviceTypeName>
-          <htmlView><![CDATA[<div class="completa-IDevice"><div class="game-evaluation-ids js-hidden" data-id="UUID-IDEVICE" data-evaluationb="false" data-evaluationid="UUID-EVALUACION"></div><div class="completa-feedback-game"></div><div class="completa-instructions"><p>{{INSTRUCTIONS}}</p></div><div id="completa-DataGame-UUID-IDEVICE" class="completa-DataGame js-hidden" data-id="UUID-IDEVICE"></div><div class="completa-text-game js-hidden">{{CONTENT}}</div><div class="cmpt-bns js-hidden">Su navegador no es compatible con esta herramienta.</div></div>]]></htmlView>
+          <htmlView><![CDATA[<div class="completa-IDevice"><div class="game-evaluation-ids js-hidden" data-id="UUID-IDEVICE" data-evaluationb="false" data-evaluationid="UUID-EVALUACION"></div><div class="completa-feedback-game">{{FEEDBACK}}</div><div class="completa-instructions"><p>{{INSTRUCTIONS}}</p></div><div id="completa-DataGame-UUID-IDEVICE" class="completa-DataGame js-hidden" data-id="UUID-IDEVICE"></div><div class="completa-text-game js-hidden">{{CONTENT}}</div><div class="cmpt-bns js-hidden">Su navegador no es compatible con esta herramienta.</div></div>]]></htmlView>
           <jsonProperties><![CDATA[{"ideviceId":"UUID-IDEVICE"}]]></jsonProperties>
           <odeComponentsOrder>0</odeComponentsOrder>
           <odeComponentsProperties></odeComponentsProperties>
@@ -197,7 +208,7 @@ export const SNIPPETS_DICT = {
           <odeBlockId>UUID-BLOQUE</odeBlockId>
           <odeIdeviceId>UUID-IDEVICE</odeIdeviceId>
           <odeIdeviceTypeName>select-media-files</odeIdeviceTypeName>
-          <htmlView><![CDATA[<div class="seleccionamedias-IDevice"><div class="game-evaluation-ids js-hidden" data-id="UUID-IDEVICE" data-evaluationb="false" data-evaluationid="UUID-EVALUACION"></div><div class="seleccionamedias-feedback-game"></div><div class="seleccionamedias-instructions gameQP-instructions"><p>{{INSTRUCTIONS}}</p></div><div id="seleccionamedias-DataGame-UUID-IDEVICE" class="seleccionamedias-DataGame js-hidden" data-id="UUID-IDEVICE"></div><div class="seleccionamedias-bns js-hidden">Su navegador no es compatible con esta herramienta.</div></div>]]></htmlView>
+          <htmlView><![CDATA[<div class="seleccionamedias-IDevice"><div class="game-evaluation-ids js-hidden" data-id="UUID-IDEVICE" data-evaluationb="false" data-evaluationid="UUID-EVALUACION"></div><div class="seleccionamedias-feedback-game">{{FEEDBACK}}</div><div class="seleccionamedias-instructions gameQP-instructions"><p>{{INSTRUCTIONS}}</p></div><div id="seleccionamedias-DataGame-UUID-IDEVICE" class="seleccionamedias-DataGame js-hidden" data-id="UUID-IDEVICE"></div><div class="seleccionamedias-bns js-hidden">Su navegador no es compatible con esta herramienta.</div></div>]]></htmlView>
           <jsonProperties><![CDATA[{"ideviceId":"UUID-IDEVICE"}]]></jsonProperties>
           <odeComponentsOrder>0</odeComponentsOrder>
           <odeComponentsProperties></odeComponentsProperties>
@@ -208,7 +219,7 @@ export const SNIPPETS_DICT = {
           <odeBlockId>UUID-BLOQUE</odeBlockId>
           <odeIdeviceId>UUID-IDEVICE</odeIdeviceId>
           <odeIdeviceTypeName>rubric</odeIdeviceTypeName>
-          <htmlView><![CDATA[<div class="rubric-IDevice"><div class="exe-rubrics-instructions gameQP-instructions"><p>{{INSTRUCTIONS}}</p></div><div class="rubric"><div class="exe-rubrics-DataGame js-hidden"></div><p class="exe-rubrics-authorship sr-av"><a href="http://cedec.intef.es/" target="_blank" class="author" rel="noopener">CEDEC</a>. <span class="title"><em>{{TITLE}}</em></span> <span class="license">(<a href="https://creativecommons.org/licenses/" rel="license nofollow noopener" target="_blank" title="Creative Commons CC-BY-SA">CC BY-SA</a>)</span></p><ul class="exe-rubrics-strings"><li class="rubric">Rúbrica</li><li class="activity">Actividad</li><li class="name">Nombre</li><li class="date">Fecha</li><li class="score">Puntuación</li><li class="notes">Notas</li><li class="download">Descargar</li><li class="msgDelete">¿Seguro que desea borrar todos los campos del formulario?</li><li class="reset">Reiniciar</li><li class="print">Imprimir</li><li class="apply">Aplicar</li><li class="newWindow">Ventana nueva</li><li class="msgEndGameScore">Completa la rúbrica antes de guardar tu puntuación.</li><li class="msgScoreScorm">La puntuación no se puede guardar porque esta página no forma parte de un paquete SCORM.</li><li class="msgOnlySaveScore">¡Solo puede guardar la puntuación una vez!</li><li class="msgYouScore">Su puntuación</li><li class="msgOnlySaveAuto">Tu puntuación se guardará después de cada cambio. Solo puedes completarla una vez.</li><li class="msgSaveAuto">Tu puntuación se guardará automáticamente después de cada cambio.</li><li class="msgSeveralScore">Puede guardar la puntuación tantas veces como quiera</li><li class="msgYouLastScore">La última puntuación guardada es</li><li class="msgActityComply">Ya ha realizado esta actividad.</li><li class="msgPlaySeveralTimes">Puede realizar esta actividad cuantas veces quiera</li><li class="msgScore">Puntuación</li><li class="msgWeight">Peso</li></ul></div><div class="exe-rubrics-richtext-data sr-av"><span class="exe-rubrics-instructions-data">{{INSTRUCTIONS_DATA}}</span><span class="exe-rubrics-text-after-data"></span></div></div>]]></htmlView>
+          <htmlView><![CDATA[<div class="rubric-IDevice"><div class="exe-rubrics-instructions gameQP-instructions"><p>{{INSTRUCTIONS}}</p></div><div class="rubric"><div class="exe-rubrics-DataGame js-hidden"></div><p class="exe-rubrics-authorship sr-av"><a href="http://cedec.intef.es/" target="_blank" class="author" rel="noopener">CEDEC</a>. <span class="title"><em>{{TITLE}}</em></span> <span class="license">(<a href="https://creativecommons.org/licenses/" rel="license nofollow noopener" target="_blank" title="Creative Commons CC-BY-SA">CC BY-SA</a>)</span></p><ul class="exe-rubrics-strings"><li class="rubric">Rúbrica</li><li class="activity">Actividad</li><li class="name">Nombre</li><li class="date">Fecha</li><li class="score">Puntuación</li><li class="notes">Notas</li><li class="download">Descargar</li><li class="msgDelete">¿Seguro que desean borrar todos los campos del formulario?</li><li class="reset">Reiniciar</li><li class="print">Imprimir</li><li class="apply">Aplicar</li><li class="newWindow">Ventana nueva</li><li class="msgEndGameScore">Completen la rúbrica antes de guardar su puntuación.</li><li class="msgScoreScorm">La puntuación no se puede guardar porque esta página no forma parte de un paquete SCORM.</li><li class="msgOnlySaveScore">¡Solo pueden guardar la puntuación una vez!</li><li class="msgYouScore">Su puntuación</li><li class="msgOnlySaveAuto">Su puntuación se guardará después de cada cambio. Solo pueden completarla una vez.</li><li class="msgSaveAuto">Su puntuación se guardará automáticamente después de cada cambio.</li><li class="msgSeveralScore">Pueden guardar la puntuación tantas veces como quieran</li><li class="msgYouLastScore">La última puntuación guardada es</li><li class="msgActityComply">Ya han realizado esta actividad.</li><li class="msgPlaySeveralTimes">Pueden realizar esta actividad cuantas veces quieran</li><li class="msgScore">Puntuación</li><li class="msgWeight">Peso</li></ul></div><div class="exe-rubrics-richtext-data sr-av"><span class="exe-rubrics-instructions-data">{{INSTRUCTIONS_DATA}}</span><span class="exe-rubrics-text-after-data"></span></div></div>]]></htmlView>
           <jsonProperties><![CDATA[{"ideviceId":"UUID-IDEVICE"}]]></jsonProperties>
           <odeComponentsOrder>0</odeComponentsOrder>
           <odeComponentsProperties></odeComponentsProperties>
@@ -219,7 +230,7 @@ export const SNIPPETS_DICT = {
           <odeBlockId>UUID-BLOQUE</odeBlockId>
           <odeIdeviceId>UUID-IDEVICE</odeIdeviceId>
           <odeIdeviceTypeName>quick-questions-multiple-choice</odeIdeviceTypeName>
-          <htmlView><![CDATA[<div class="selecciona-IDevice"><div class="game-evaluation-ids js-hidden" data-id="UUID-IDEVICE" data-evaluationb="false" data-evaluationid="UUID-EVALUACION"></div><div class="selecciona-instructions SLCNP-instructions"><p>{{INSTRUCTIONS}}</p></div><div class="selecciona-version js-hidden">2</div><div class="selecciona-feedback-game"></div><div class="selecciona-DataGame js-hidden"></div><div class="selecciona-bns js-hidden">Su navegador no es compatible con esta herramienta.</div></div>]]></htmlView>
+          <htmlView><![CDATA[<div class="selecciona-IDevice"><div class="game-evaluation-ids js-hidden" data-id="UUID-IDEVICE" data-evaluationb="false" data-evaluationid="UUID-EVALUACION"></div><div class="selecciona-instructions SLCNP-instructions"><p>{{INSTRUCTIONS}}</p></div><div class="selecciona-version js-hidden">2</div><div class="selecciona-feedback-game">{{FEEDBACK}}</div><div class="selecciona-DataGame js-hidden"></div><div class="selecciona-bns js-hidden">Su navegador no es compatible con esta herramienta.</div></div>]]></htmlView>
           <jsonProperties><![CDATA[{"ideviceId":"UUID-IDEVICE"}]]></jsonProperties>
           <odeComponentsOrder>0</odeComponentsOrder>
           <odeComponentsProperties></odeComponentsProperties>
@@ -230,7 +241,7 @@ export const SNIPPETS_DICT = {
           <odeBlockId>UUID-BLOQUE</odeBlockId>
           <odeIdeviceId>UUID-IDEVICE</odeIdeviceId>
           <odeIdeviceTypeName>quick-questions</odeIdeviceTypeName>
-          <htmlView><![CDATA[<div class="quext-IDevice"><div class="game-evaluation-ids js-hidden" data-id="UUID-IDEVICE" data-evaluationb="false" data-evaluationid="UUID-EVALUACION"></div><div class="quext-instructions QXTP-instructions"><p>{{INSTRUCTIONS}}</p></div><div class="quext-version js-hidden">2</div><div class="quext-feedback-game"></div><div class="quext-DataGame js-hidden"></div><div class="quext-bns js-hidden">Su navegador no es compatible con esta herramienta.</div></div>]]></htmlView>
+          <htmlView><![CDATA[<div class="quext-IDevice"><div class="game-evaluation-ids js-hidden" data-id="UUID-IDEVICE" data-evaluationb="false" data-evaluationid="UUID-EVALUACION"></div><div class="quext-instructions QXTP-instructions"><p>{{INSTRUCTIONS}}</p></div><div class="quext-version js-hidden">2</div><div class="quext-feedback-game">{{FEEDBACK}}</div><div class="quext-DataGame js-hidden"></div><div class="quext-bns js-hidden">Su navegador no es compatible con esta herramienta.</div></div>]]></htmlView>
           <jsonProperties><![CDATA[{"ideviceId":"UUID-IDEVICE"}]]></jsonProperties>
           <odeComponentsOrder>0</odeComponentsOrder>
           <odeComponentsProperties></odeComponentsProperties>
@@ -267,12 +278,12 @@ export const SNIPPETS_DICT = {
                 <div class="TOFP-Message" id="tofPMessage-UUID-IDEVICE"></div>
             </div>
             <div class="TOFP-StartGameDiv TOFP-EHidden" id="tofPStartGameDiv-UUID-IDEVICE">
-                <button id="tofPStartGame-UUID-IDEVICE" type="button" class="btn btn-primary">Pulsa aquí para empezar</button>
+                <button id="tofPStartGame-UUID-IDEVICE" type="button" class="btn btn-primary">Pulsen aquí para comenzar</button>
             </div>
             <div class="TOFP-Multimedia" id="tofPMultimedia-UUID-IDEVICE"></div>
             <div class="TOFP-CheckTestDiv TOFP-EHidden" id="tofPCheckTestDiv-UUID-IDEVICE">
                 <button id="tofPCheckTest-UUID-IDEVICE" type="button" class="btn btn-primary">Comprobar</button>
-                <button id="tofRebootTest-UUID-IDEVICE" type="button" class="btn btn-primary TOFP-EHidden">¡Prueba otra vez!</button>
+                <button id="tofRebootTest-UUID-IDEVICE" type="button" class="btn btn-primary TOFP-EHidden">¡Prueben otra vez!</button>
             </div>
         </div> 
         <div class="Games-BottonContainer">
@@ -295,7 +306,7 @@ export const SNIPPETS_DICT = {
           <odeBlockId>UUID-BLOQUE</odeBlockId>
           <odeIdeviceId>UUID-IDEVICE</odeIdeviceId>
           <odeIdeviceTypeName>crossword</odeIdeviceTypeName>
-          <htmlView><![CDATA[<div class="crucigrama-IDevice"><div class="game-evaluation-ids js-hidden" data-id="UUID-IDEVICE" data-evaluationb="false" data-evaluationid="UUID-EVALUACION"></div><div class="crucigrama-version js-hidden">1</div><div class="crucigrama-feedback-game"></div><div class="crucigrama-instructions gameQP-instructions"><p>{{INSTRUCTIONS}}</p></div><div class="crucigrama-DataGame js-hidden"></div><div class="crucigrama-bns js-hidden">Su navegador no es compatible con esta herramienta.</div></div>]]></htmlView>
+          <htmlView><![CDATA[<div class="crucigrama-IDevice"><div class="game-evaluation-ids js-hidden" data-id="UUID-IDEVICE" data-evaluationb="false" data-evaluationid="UUID-EVALUACION"></div><div class="crucigrama-version js-hidden">2</div><div class="crucigrama-feedback-game">{{FEEDBACK}}</div><div class="crucigrama-instructions gameQP-instructions"><p>{{INSTRUCTIONS}}</p></div><div class="crucigrama-DataGame js-hidden"></div><div class="crucigrama-bns js-hidden">Su navegador no es compatible con esta herramienta.</div></div>]]></htmlView>
           <jsonProperties><![CDATA[{"ideviceId":"UUID-IDEVICE"}]]></jsonProperties>
           <odeComponentsOrder>0</odeComponentsOrder>
           <odeComponentsProperties></odeComponentsProperties>
@@ -306,7 +317,7 @@ export const SNIPPETS_DICT = {
           <odeBlockId>UUID-BLOQUE</odeBlockId>
           <odeIdeviceId>UUID-IDEVICE</odeIdeviceId>
           <odeIdeviceTypeName>sort</odeIdeviceTypeName>
-          <htmlView><![CDATA[<div class="ordena-IDevice"><div class="game-evaluation-ids js-hidden" data-id="UUID-IDEVICE" data-evaluationb="false" data-evaluationid="UUID-EVALUACION"></div><div class="ordena-feedback-game"></div><div class="ordena-instructions"><p>{{INSTRUCTIONS}}</p></div><div class="ordena-DataGame js-hidden"></div><div class="ordena-bns js-hidden">Su navegador no es compatible con esta herramienta.</div></div>]]></htmlView>
+          <htmlView><![CDATA[<div class="ordena-IDevice"><div class="game-evaluation-ids js-hidden" data-id="UUID-IDEVICE" data-evaluationb="false" data-evaluationid="UUID-EVALUACION"></div><div class="ordena-feedback-game">{{FEEDBACK}}</div><div class="ordena-instructions"><p>{{INSTRUCTIONS}}</p></div><div class="ordena-DataGame js-hidden"></div><div class="ordena-bns js-hidden">Su navegador no es compatible con esta herramienta.</div></div>]]></htmlView>
           <jsonProperties><![CDATA[{"ideviceId":"UUID-IDEVICE"}]]></jsonProperties>
           <odeComponentsOrder>0</odeComponentsOrder>
           <odeComponentsProperties></odeComponentsProperties>
@@ -317,7 +328,7 @@ export const SNIPPETS_DICT = {
           <odeBlockId>UUID-BLOQUE</odeBlockId>
           <odeIdeviceId>UUID-IDEVICE</odeIdeviceId>
           <odeIdeviceTypeName>relate</odeIdeviceTypeName>
-          <htmlView><![CDATA[<div class="relaciona-IDevice"><div class="relaciona-instructions gameQP-instructions"><p>{{INSTRUCTIONS}}</p></div><div class="relaciona-DataGame js-hidden"></div><div class="game-evaluation-ids js-hidden" data-id="UUID-IDEVICE" data-evaluationb="false" data-evaluationid="UUID-EVALUACION"></div><div class="relaciona-bns js-hidden">Su navegador no es compatible con esta herramienta.</div></div>]]></htmlView>
+          <htmlView><![CDATA[<div class="relaciona-IDevice"><div class="relaciona-instructions gameQP-instructions"><p>{{INSTRUCTIONS}}</p></div><div class="relaciona-DataGame js-hidden"></div><div class="relaciona-extra-content js-hidden">{{FEEDBACK}}</div><div class="game-evaluation-ids js-hidden" data-id="UUID-IDEVICE" data-evaluationb="false" data-evaluationid="UUID-EVALUACION"></div><div class="relaciona-bns js-hidden">Su navegador no es compatible con esta herramienta.</div></div>]]></htmlView>
           <jsonProperties><![CDATA[{"ideviceId":"UUID-IDEVICE"}]]></jsonProperties>
           <odeComponentsOrder>0</odeComponentsOrder>
           <odeComponentsProperties></odeComponentsProperties>
@@ -328,7 +339,7 @@ export const SNIPPETS_DICT = {
           <odeBlockId>UUID-BLOQUE</odeBlockId>
           <odeIdeviceId>UUID-IDEVICE</odeIdeviceId>
           <odeIdeviceTypeName>az-quiz-game</odeIdeviceTypeName>
-          <htmlView><![CDATA[<div class="rosco-IDevice"><div class="game-evaluation-ids js-hidden" data-id="UUID-IDEVICE" data-evaluationb="false" data-evaluationid="UUID-EVALUACION"></div><div class="rosco-version js-hidden">2</div><div class="rosco-feedback-game"></div><div class="rosco-instructions"><p>{{INSTRUCTIONS}}</p></div><div class="rosco-DataGame js-hidden"></div><a href="#" class="js-hidden rosco-LinkImages">0</a><a href="#" class="js-hidden rosco-LinkImages">1</a><a href="#" class="js-hidden rosco-LinkImages">2</a><a href="#" class="js-hidden rosco-LinkImages">3</a><a href="#" class="js-hidden rosco-LinkImages">4</a><a href="#" class="js-hidden rosco-LinkImages">5</a><a href="#" class="js-hidden rosco-LinkImages">6</a><a href="#" class="js-hidden rosco-LinkImages">7</a><a href="#" class="js-hidden rosco-LinkImages">8</a><a href="#" class="js-hidden rosco-LinkImages">9</a><a href="#" class="js-hidden rosco-LinkImages">10</a><a href="#" class="js-hidden rosco-LinkImages">11</a><a href="#" class="js-hidden rosco-LinkImages">12</a><a href="#" class="js-hidden rosco-LinkImages">13</a><a href="#" class="js-hidden rosco-LinkImages">14</a><a href="#" class="js-hidden rosco-LinkImages">15</a><a href="#" class="js-hidden rosco-LinkImages">16</a><a href="#" class="js-hidden rosco-LinkImages">17</a><a href="#" class="js-hidden rosco-LinkImages">18</a><a href="#" class="js-hidden rosco-LinkImages">19</a><a href="#" class="js-hidden rosco-LinkImages">20</a><a href="#" class="js-hidden rosco-LinkImages">21</a><a href="#" class="js-hidden rosco-LinkImages">22</a><a href="#" class="js-hidden rosco-LinkImages">23</a><a href="#" class="js-hidden rosco-LinkImages">24</a><a href="#" class="js-hidden rosco-LinkImages">25</a><a href="#" class="js-hidden rosco-LinkImages">26</a><a href="#" class="js-hidden rosco-LinkAudios">0</a><a href="#" class="js-hidden rosco-LinkAudios">1</a><a href="#" class="js-hidden rosco-LinkAudios">2</a><a href="#" class="js-hidden rosco-LinkAudios">3</a><a href="#" class="js-hidden rosco-LinkAudios">4</a><a href="#" class="js-hidden rosco-LinkAudios">5</a><a href="#" class="js-hidden rosco-LinkAudios">6</a><a href="#" class="js-hidden rosco-LinkAudios">7</a><a href="#" class="js-hidden rosco-LinkAudios">8</a><a href="#" class="js-hidden rosco-LinkAudios">9</a><a href="#" class="js-hidden rosco-LinkAudios">10</a><a href="#" class="js-hidden rosco-LinkAudios">11</a><a href="#" class="js-hidden rosco-LinkAudios">12</a><a href="#" class="js-hidden rosco-LinkAudios">13</a><a href="#" class="js-hidden rosco-LinkAudios">14</a><a href="#" class="js-hidden rosco-LinkAudios">15</a><a href="#" class="js-hidden rosco-LinkAudios">16</a><a href="#" class="js-hidden rosco-LinkAudios">17</a><a href="#" class="js-hidden rosco-LinkAudios">18</a><a href="#" class="js-hidden rosco-LinkAudios">19</a><a href="#" class="js-hidden rosco-LinkAudios">20</a><a href="#" class="js-hidden rosco-LinkAudios">21</a><a href="#" class="js-hidden rosco-LinkAudios">22</a><a href="#" class="js-hidden rosco-LinkAudios">23</a><a href="#" class="js-hidden rosco-LinkAudios">24</a><a href="#" class="js-hidden rosco-LinkAudios">25</a><a href="#" class="js-hidden rosco-LinkAudios">26</a><div class="rosco-bns js-hidden">Su navegador no es compatible con esta herramienta.</div></div>]]></htmlView>
+          <htmlView><![CDATA[<div class="rosco-IDevice"><div class="game-evaluation-ids js-hidden" data-id="UUID-IDEVICE" data-evaluationb="false" data-evaluationid="UUID-EVALUACION"></div><div class="rosco-version js-hidden">2</div><div class="rosco-feedback-game">{{FEEDBACK}}</div><div class="rosco-instructions"><p>{{INSTRUCTIONS}}</p></div><div class="rosco-DataGame js-hidden"></div><a href="#" class="js-hidden rosco-LinkImages">0</a><a href="#" class="js-hidden rosco-LinkImages">1</a><a href="#" class="js-hidden rosco-LinkImages">2</a><a href="#" class="js-hidden rosco-LinkImages">3</a><a href="#" class="js-hidden rosco-LinkImages">4</a><a href="#" class="js-hidden rosco-LinkImages">5</a><a href="#" class="js-hidden rosco-LinkImages">6</a><a href="#" class="js-hidden rosco-LinkImages">7</a><a href="#" class="js-hidden rosco-LinkImages">8</a><a href="#" class="js-hidden rosco-LinkImages">9</a><a href="#" class="js-hidden rosco-LinkImages">10</a><a href="#" class="js-hidden rosco-LinkImages">11</a><a href="#" class="js-hidden rosco-LinkImages">12</a><a href="#" class="js-hidden rosco-LinkImages">13</a><a href="#" class="js-hidden rosco-LinkImages">14</a><a href="#" class="js-hidden rosco-LinkImages">15</a><a href="#" class="js-hidden rosco-LinkImages">16</a><a href="#" class="js-hidden rosco-LinkImages">17</a><a href="#" class="js-hidden rosco-LinkImages">18</a><a href="#" class="js-hidden rosco-LinkImages">19</a><a href="#" class="js-hidden rosco-LinkImages">20</a><a href="#" class="js-hidden rosco-LinkImages">21</a><a href="#" class="js-hidden rosco-LinkImages">22</a><a href="#" class="js-hidden rosco-LinkImages">23</a><a href="#" class="js-hidden rosco-LinkImages">24</a><a href="#" class="js-hidden rosco-LinkImages">25</a><a href="#" class="js-hidden rosco-LinkImages">26</a><a href="#" class="js-hidden rosco-LinkAudios">0</a><a href="#" class="js-hidden rosco-LinkAudios">1</a><a href="#" class="js-hidden rosco-LinkAudios">2</a><a href="#" class="js-hidden rosco-LinkAudios">3</a><a href="#" class="js-hidden rosco-LinkAudios">4</a><a href="#" class="js-hidden rosco-LinkAudios">5</a><a href="#" class="js-hidden rosco-LinkAudios">6</a><a href="#" class="js-hidden rosco-LinkAudios">7</a><a href="#" class="js-hidden rosco-LinkAudios">8</a><a href="#" class="js-hidden rosco-LinkAudios">9</a><a href="#" class="js-hidden rosco-LinkAudios">10</a><a href="#" class="js-hidden rosco-LinkAudios">11</a><a href="#" class="js-hidden rosco-LinkAudios">12</a><a href="#" class="js-hidden rosco-LinkAudios">13</a><a href="#" class="js-hidden rosco-LinkAudios">14</a><a href="#" class="js-hidden rosco-LinkAudios">15</a><a href="#" class="js-hidden rosco-LinkAudios">16</a><a href="#" class="js-hidden rosco-LinkAudios">17</a><a href="#" class="js-hidden rosco-LinkAudios">18</a><a href="#" class="js-hidden rosco-LinkAudios">19</a><a href="#" class="js-hidden rosco-LinkAudios">20</a><a href="#" class="js-hidden rosco-LinkAudios">21</a><a href="#" class="js-hidden rosco-LinkAudios">22</a><a href="#" class="js-hidden rosco-LinkAudios">23</a><a href="#" class="js-hidden rosco-LinkAudios">24</a><a href="#" class="js-hidden rosco-LinkAudios">25</a><a href="#" class="js-hidden rosco-LinkAudios">26</a><div class="rosco-bns js-hidden">Su navegador no es compatible con esta herramienta.</div></div>]]></htmlView>
           <jsonProperties><![CDATA[{"ideviceId":"UUID-IDEVICE","typeGame":"Rosco","instructions":"<p>{{INSTRUCTIONS}}</p>","words":[]}]]></jsonProperties>
           <odeComponentsOrder>0</odeComponentsOrder>
           <odeComponentsProperties></odeComponentsProperties>
@@ -343,7 +354,7 @@ export const SNIPPETS_DICT = {
     <div class="game-evaluation-ids js-hidden" data-id="UUID-IDEVICE" data-evaluationb="false" data-evaluationid="UUID-EVALUACION"></div>
     <div class="sopa-version js-hidden">2</div>
     <div class="sopa-instructions"><p>{{INSTRUCTIONS}}</p></div>
-    <div class="sopa-feedback-game"></div>              
+    <div class="sopa-feedback-game">{{FEEDBACK}}</div>              
     <div class="sopa-DataGame js-hidden"></div>
     <div class="sopa-bns js-hidden">Su navegador no es compatible con esta herramienta.</div>
 </div>]]></htmlView>

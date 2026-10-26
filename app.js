@@ -23,8 +23,8 @@ const SAMPLE_LOMLOE_PROJECT = {
                     title: "Presentación del Reto Ecosistémico",
                     summary: "Investigar la biodiversidad de los ecosistemas canarios, comprender las amenazas sobre la flora y fauna endémica y diseñar una campaña de concienciación digital.",
                     duration: "4 sesiones de 55 minutos",
-                    participants: "Equipos cooperativos (3-4 alumnos)",
-                    main_text: "<p>¡Bienvenidos a la Situación de Aprendizaje <strong>Guardianes de la Biodiversidad</strong>! A lo largo de esta unidad didáctica, ustedes investigarán los singulares pisos de vegetación de nuestras islas, el impacto de las especies invasoras y la importancia ecológica de los vientos alisios en el fenómeno de la lluvia horizontal.</p>"
+                    participants: "Equipos cooperativos (3-4 integrantes)",
+                    main_text: "<p>¡Bienvenidos y bienvenidas a la Situación de Aprendizaje <strong>Guardianes de la Biodiversidad</strong>! A lo largo de esta unidad didáctica, ustedes investigarán los singulares pisos de vegetación de nuestras islas, el impacto de las especies invasoras y la importancia ecológica de los vientos alisios en el fenómeno de la lluvia horizontal.</p>"
                 },
                 {
                     type: "digcompedu",
@@ -214,6 +214,20 @@ const IDEVICES_CATALOG = [
         category: "Competencias",
         desc: "Cuadro resumen oficial de las 6 áreas del Marco de Competencia Digital Docente y Alumnado.",
         example: '{\n  "type": "digcompedu",\n  "title": "Competencias Digitales",\n  "indicators": ["1.1", "2.1", "3.1", "5.1", "6.2"],\n  "content": "<p>Justificación curricular de la competencia digital...</p>"\n}'
+    },
+    {
+        type: "lomloe",
+        name: "Currículo LOMLOE Canarias",
+        category: "Competencias",
+        desc: "Tabla de vinculación curricular LOMLOE (Competencias específicas, criterios de evaluación y saberes básicos de Canarias).",
+        example: '{\n  "type": "lomloe",\n  "title": "Vinculación Curricular LOMLOE (Canarias)",\n  "lomloeDataset": "ES-CN",\n  "content": "<p>Tabla de competencias específicas, criterios y saberes básicos...</p>"\n}'
+    },
+    {
+        type: "select-media-files",
+        name: "Selecciona Multimedia / Tarjetas",
+        category: "Gamificación",
+        desc: "Juego de selección de tarjetas correctas (texto o imagen) con retroalimentación e intentos configurables.",
+        example: '{\n  "type": "select-media-files",\n  "title": "Selecciona las Opciones Correctas",\n  "attempts": 2,\n  "options": [\n    { "text": "Opción correcta", "is_correct": true },\n    { "text": "Opción distractora", "is_correct": false }\n  ],\n  "feedback": "<p>¡Excelente trabajo!</p>"\n}'
     },
     {
         type: "casestudy",

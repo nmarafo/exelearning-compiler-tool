@@ -14,26 +14,92 @@ export function uuidv4() {
 }
 
 /**
- * Encriptación XOR utilizada por eXeLearning para los iDevices interactivos (Nodex/Quiddity).
- * Clave oficial: 146 (0x92)
+ * Codificación compatible con escape() estándar de JavaScript (Latin-1 %XX y Unicode %uXXXX),
+ * requerida por el motor de eXeLearning v4.0.5 (libs/common.js y rubric.js).
+ */
+export function jsEscape(str) {
+    if (str === undefined || str === null) return '';
+    const s = String(str);
+    if (typeof escape === 'function') {
+        return escape(s);
+    }
+    const safeChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@*_+-./';
+    let out = '';
+    for (let i = 0; i < s.length; i++) {
+        const ch = s[i];
+        const code = s.charCodeAt(i);
+        if (safeChars.indexOf(ch) !== -1) {
+            out += ch;
+        } else if (code < 256) {
+            out += '%' + code.toString(16).toUpperCase().padStart(2, '0');
+        } else {
+            out += '%u' + code.toString(16).toUpperCase().padStart(4, '0');
+        }
+    }
+    return out;
+}
+
+/**
+ * Encriptación XOR oficial utilizada por eXeLearning v4.0.5 ($exe.encrypt en libs/common.js)
+ * para los iDevices interactivos (Nodex/Quiddity).
+ * Opera sobre unidades de código UTF-16 de 16 bits con clave 146 (0x92) seguida de escape().
  */
 export function exeEncrypt(str) {
     if (!str || str === 'undefined' || str === 'null') str = '';
     try {
         const key = 146;
-        const utf8Str = encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (match, p1) => {
-            return String.fromCharCode(parseInt(p1, 16));
-        });
-        
-        let ostr = '';
-        for (let i = 0; i < utf8Str.length; i++) {
-            const xorByte = utf8Str.charCodeAt(i) ^ key;
-            ostr += '%' + xorByte.toString(16).toUpperCase().padStart(2, '0');
+        let result = '';
+        for (let pos = 0; pos < str.length; pos++) {
+            const byte = str.charCodeAt(pos);
+            const char = key ^ byte;
+            result += String.fromCharCode(char);
         }
-        return ostr;
+        return jsEscape(result);
     } catch (ex) {
         return '';
     }
+}
+
+/**
+ * Garantiza que un texto esté envuelto en una etiqueta <p>...</p> sin duplicarla.
+ */
+function ensureParagraph(html) {
+    if (!html) return '';
+    const trimmed = String(html).trim();
+    if (/^<(p|div|ul|ol|h[1-6]|table|blockquote)\b/i.test(trimmed)) {
+        return trimmed;
+    }
+    return `<p>${trimmed}</p>`;
+}
+
+/**
+ * Extrae el contenido interior si el texto ya viene envuelto en un único <p>...</p>,
+ * evitando generar <p><p>...</p></p> al reemplazar en plantillas con <p>{{INSTRUCTIONS}}</p>.
+ */
+function stripOuterParagraph(html) {
+    if (!html) return '';
+    return String(html).trim().replace(/^<p[^>]*>([\s\S]*?)<\/p>$/i, '$1');
+}
+
+/**
+ * Elimina etiquetas HTML dejando texto plano limpio (necesario en DataGame JSON plano como relate).
+ */
+function stripHtmlTags(html) {
+    if (!html) return '';
+    return String(html).replace(/<[^>]+>/g, '').trim();
+}
+
+/**
+ * Escapa caracteres especiales XML para nodos de texto fuera de CDATA.
+ */
+function escapeXml(unsafe) {
+    if (!unsafe) return '';
+    return String(unsafe)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&apos;');
 }
 
 /**
@@ -223,63 +289,63 @@ export const OFFICIAL_ODE_DTD = `<!--
 `;
 
 /**
- * Mensajes comunes estandarizados para juegos interactivos Nodex (v4.0.5)
+ * Mensajes comunes estandarizados en norma culta canaria («ustedes») para juegos Nodex (v4.0.5)
  */
 export const COMMON_GAME_MSGS = {
     msgHappen: "Pasar", msgReply: "Responder", msgSubmit: "Enviar",
-    msgEnterCode: "Introduce el código de acceso", msgErrorCode: "El código de acceso no es correcto",
-    msgGameOver: "¡Fin de la partida!", msgIndicateWord: "Proporciona una palabra o expresión",
-    msgClue: "¡Genial! La pista es:", msgYouHas: "Tiene %1 aciertos y %2 fallos",
+    msgEnterCode: "Introduzcan el código de acceso", msgErrorCode: "El código de acceso no es correcto",
+    msgGameOver: "¡Fin de la partida!", msgIndicateWord: "Proporcionen una palabra o expresión",
+    msgClue: "¡Genial! La pista es:", msgYouHas: "Tienen %1 aciertos y %2 fallos",
     msgCodeAccess: "Código de acceso", msgPlayAgain: "Jugar otra vez",
     msgRequiredAccessKey: "Es necesario el código de acceso",
-    msgInformationLooking: "¡Genial! La información que estaba buscando",
-    msgPlayStart: "Pulsa aquí para jugar", msgErrors: "Errores", msgMoveOne: "Pasar",
+    msgInformationLooking: "¡Genial! La información que estaban buscando",
+    msgPlayStart: "Pulsen aquí para jugar", msgErrors: "Errores", msgMoveOne: "Pasar",
     msgHits: "Aciertos", msgScore: "Puntuación", msgWeight: "Peso", msgMinimize: "Minimizar",
     msgMaximize: "Maximizar", msgTime: "Límite de tiempo (mm:ss)", msgLive: "Vida",
     msgFullScreen: "Pantalla Completa", msgExitFullScreen: "Salir del modo pantalla completa",
     msgNumQuestions: "Número de preguntas", msgNoImage: "Pregunta sin imágenes", msgCool: "¡Bien!",
-    msgLoseT: "Ha perdido 330 puntos", msgLoseLive: "Ha perdido una vida",
-    msgLostLives: "¡Ha perdido todas sus vidas!", mgsAllQuestions: "¡Completadas las preguntas!",
+    msgLoseT: "Han perdido 330 puntos", msgLoseLive: "Han perdido una vida",
+    msgLostLives: "¡Han perdido todas sus vidas!", mgsAllQuestions: "¡Completadas las preguntas!",
     msgSuccesses: "¡Correcto! | ¡Excelente! | ¡Genial! | ¡Muy bien! | ¡Perfecto!",
     msgFailures: "¡No era eso! | ¡Incorrecto! | ¡No es correcto! | ¡Lo sentimos! | ¡Error!",
-    msgTryAgain: "Necesitas al menos %s% de respuestas correctas para obtener la información. Inténtalo de nuevo.",
-    msgWrote: "Escribe la palabra correcta y pulsa en Responder. Si dudas, pulsa en Seguir.",
+    msgTryAgain: "Necesitan al menos %s% de respuestas correctas para obtener la información. Inténtenlo de nuevo.",
+    msgWrote: "Escriban la palabra correcta y pulsen en Responder. Si dudan, pulsen en Seguir.",
     msgNotNetwork: "A este juego solo se puede jugar con conexión a internet.",
-    msgEndGameScore: "Comience la partida antes de guardar la puntuación.",
+    msgEndGameScore: "Comiencen la partida antes de guardar la puntuación.",
     msgScoreScorm: "La puntuación no se puede guardar porque esta página no forma parte de un paquete SCORM.",
-    msgQuestion: "Pregunta", msgAnswer: "Responder", msgOnlySaveScore: "¡Solo puede guardar la puntuación una vez!",
-    msgOnlySave: "Solo puede guardar una vez", msgInformation: "Información", msgYouScore: "Su puntuación",
-    msgAuthor: "Autoría", msgOnlySaveAuto: "Su puntuación se guardará después de cada pregunta. Solo puede jugar una vez.",
+    msgQuestion: "Pregunta", msgAnswer: "Responder", msgOnlySaveScore: "¡Solo pueden guardar la puntuación una vez!",
+    msgOnlySave: "Solo pueden guardar una vez", msgInformation: "Información", msgYouScore: "Su puntuación",
+    msgAuthor: "Autoría", msgOnlySaveAuto: "Su puntuación se guardará después de cada pregunta. Solo pueden jugar una vez.",
     msgSaveAuto: "Su puntuación se guardará automáticamente después de cada pregunta.",
-    msgSeveralScore: "Puede guardar la puntuación tantas veces como quiera",
-    msgYouLastScore: "La última puntuación guardada es", msgActityComply: "Ya ha realizado esta actividad.",
-    msgPlaySeveralTimes: "Puede realizar esta actividad cuantas veces quiera", msgClose: "Cerrar",
-    msgLoading: "Cargando. Espere, por favor...", msgPoints: "puntos", msgAudio: "Audio",
+    msgSeveralScore: "Pueden guardar la puntuación tantas veces como quieran",
+    msgYouLastScore: "La última puntuación guardada es", msgActityComply: "Ya han realizado esta actividad.",
+    msgPlaySeveralTimes: "Pueden realizar esta actividad cuantas veces quieran", msgClose: "Cerrar",
+    msgLoading: "Cargando. Esperen, por favor...", msgPoints: "puntos", msgAudio: "Audio",
     msgCorrect: "Correcto", msgIncorrect: "Incorrecto", msgUncompletedActivity: "Actividad no completada",
     msgSuccessfulActivity: "Actividad superada. Puntuación: %s",
     msgUnsuccessfulActivity: "Actividad no superada. Puntuación: %s",
-    msgSaveScore: "Guardar la puntuación", msgLookAnswer: "Mira la respuesta",
+    msgSaveScore: "Guardar la puntuación", msgLookAnswer: "Miren la respuesta",
     msgTypeGame: "Juego", msgShowWords: "Mostrar las soluciones", msgAll: "Todas", msgUnanswered: "Sin contestar",
     msgShowRoulette: "Mostrar el rosco de palabras", msgHideRoulette: "Ocultar el rosco de palabras",
     msgStartWith: "Empieza por %1", msgContaint: "Contiene la letra %1",
-    msgReady: "¿Preparado?", msgStartGame: "Pulsa aquí para empezar", msgPass: "Pasar a la siguiente palabra",
-    msgNewWord: "Palabra nueva", msgNewGame: "Pulsa aquí para empezar otra partida",
+    msgReady: "¿Preparados/as?", msgStartGame: "Pulsen aquí para comenzar", msgPass: "Pasar a la siguiente palabra",
+    msgNewWord: "Palabra nueva", msgNewGame: "Pulsen aquí para comenzar otra partida",
     msgOneRound: "Una vuelta", msgTowRounds: "Dos vueltas", msgWhiteBoard: "Pizarra digital",
     msgImage: "Imagen",
     msgCheck: "Comprobar", msgShowSolution: "Mostrar las soluciones", msgReboot: "Jugar otra vez",
-    msgSelectWord: "Haz clic en el cuadrado de cada palabra para ver la definición",
+    msgSelectWord: "Hagan clic en la casilla de cada palabra para ver la definición",
     msgHorizontals: "Horizontales", msgVerticals: "Verticales",
     msgShowDefinitions: "Mostrar/ocultar definiciones", msgShowBack: "Mostrar/ocultar imagen de fondo",
     msgSolutionWord: "Palabra",
-    msgRestart: "Reiniciar", msgEndGameM: "Has completado el juego. Tu puntuación es %s.",
-    msgPlayAgain: "Jugar otra vez", msgTimeOver: "Tu tiempo ha finalizado. Inténtalo de nuevo",
-    msgAllAttemps: "¡Has agotado todos los intentos! Prueba de nuevo",
-    mgsAllPhrases: "¡Has ordenado todas las actividades!", msgAttempts: "Intentos",
+    msgRestart: "Reiniciar", msgEndGameM: "Han completado el juego. Su puntuación es %s.",
+    msgTimeOver: "El tiempo ha finalizado. Inténtenlo de nuevo",
+    msgAllAttemps: "¡Han agotado todos los intentos! Prueben de nuevo",
+    mgsAllPhrases: "¡Han ordenado todas las tarjetas!", msgAttempts: "Intentos",
     msgNumbersAttemps: "Número de actividades pendientes", msgActivities: "Actividades",
     msgNextPhrase: "Próxima actividad", msgContinue: "Continuar",
-    msgPositions: "Posiciones correctas", msgAllOK: "¡Genial! Todo correcto ¡A por otra!",
-    msgAgain: "Inténtalo de nuevo", msgPhrases: "Frases",
-    msgWordsFind: "Palabras que faltan por encontrar", msgTimeOver: "El tiempo ha finalizado",
+    msgPositions: "Posiciones correctas", msgAllOK: "¡Genial! Todo correcto",
+    msgAgain: "Inténtenlo de nuevo", msgPhrases: "Frases",
+    msgWordsFind: "Palabras que faltan por encontrar",
     msgShowResolve: "Mostrar soluciones", msgLettersFound: "Letras encontradas"
 };
 
@@ -391,6 +457,8 @@ export async function compileExeProject(projectInput, customOptions = {}) {
             meta = { ...projectInput.metadata, ...meta };
         }
         if (projectInput.title && !meta.title) meta.title = projectInput.title;
+        if (projectInput.subtitle && !meta.subtitle) meta.subtitle = projectInput.subtitle;
+        if (projectInput.description && !meta.description) meta.description = projectInput.description;
         if (projectInput.author && !meta.author) meta.author = projectInput.author;
         if (projectInput.theme && !meta.theme) meta.theme = projectInput.theme;
         if (projectInput.lang && !meta.lang) meta.lang = projectInput.lang;
@@ -406,11 +474,14 @@ export async function compileExeProject(projectInput, customOptions = {}) {
     const MODIFIED_TIMESTAMP = Date.now();
 
     const projectTitle = meta.title || (rawPages[0] && rawPages[0].page_name) || "Situación de Aprendizaje REA";
+    const projectSubtitle = meta.subtitle || "";
+    const projectDescription = meta.description || `Situación de Aprendizaje y Recurso Educativo Abierto (REA): ${projectTitle}.`;
     const projectAuthor = meta.author || "Norberto Martín Afonso";
     const projectLang = meta.lang || "es";
     const projectTheme = (meta.theme || "educablue").toLowerCase();
     const projectLicense = meta.license || "creative commons: attribution - share alike 4.0";
     const projectLicenseUrl = meta.licenseUrl || "https://creativecommons.org/licenses/by-sa/4.0/";
+    const addPagination = meta.addPagination !== false;
 
     // 2. Normalización de la jerarquía de páginas (Árbol didáctico eXeLearning)
     const pagesList = normalizePagesHierarchy(rawPages);
@@ -420,7 +491,7 @@ export async function compileExeProject(projectInput, customOptions = {}) {
 <!DOCTYPE ode SYSTEM "content.dtd">
 <ode xmlns="http://www.intef.es/xsd/ode" version="2.0">
 <userPreferences>
-  <userPreference><key>theme</key><value>${projectTheme}</value></userPreference>
+  <userPreference><key>theme</key><value>${escapeXml(projectTheme)}</value></userPreference>
 </userPreferences>
 <odeResources>
   <odeResource><key>odeId</key><value>${PROJECT_ID}</value></odeResource>
@@ -428,16 +499,18 @@ export async function compileExeProject(projectInput, customOptions = {}) {
   <odeResource><key>exe_version</key><value>${EXE_VERSION}</value></odeResource>
 </odeResources>
 <odeProperties>
-  <odeProperty><key>pp_title</key><value>${projectTitle}</value></odeProperty>
-  <odeProperty><key>pp_author</key><value>${projectAuthor}</value></odeProperty>
-  <odeProperty><key>pp_lang</key><value>${projectLang}</value></odeProperty>
-  <odeProperty><key>pp_license</key><value>${projectLicense}</value></odeProperty>
-  <odeProperty><key>pp_licenseUrl</key><value>${projectLicenseUrl}</value></odeProperty>
-  <odeProperty><key>pp_theme</key><value>${projectTheme}</value></odeProperty>
+  <odeProperty><key>pp_title</key><value>${escapeXml(projectTitle)}</value></odeProperty>
+  <odeProperty><key>pp_subtitle</key><value>${escapeXml(projectSubtitle)}</value></odeProperty>
+  <odeProperty><key>pp_description</key><value>${escapeXml(projectDescription)}</value></odeProperty>
+  <odeProperty><key>pp_author</key><value>${escapeXml(projectAuthor)}</value></odeProperty>
+  <odeProperty><key>pp_lang</key><value>${escapeXml(projectLang)}</value></odeProperty>
+  <odeProperty><key>pp_license</key><value>${escapeXml(projectLicense)}</value></odeProperty>
+  <odeProperty><key>pp_licenseUrl</key><value>${escapeXml(projectLicenseUrl)}</value></odeProperty>
+  <odeProperty><key>pp_theme</key><value>${escapeXml(projectTheme)}</value></odeProperty>
   <odeProperty><key>pp_exelearning_version</key><value>${EXE_VERSION}</value></odeProperty>
   <odeProperty><key>pp_modified</key><value>${MODIFIED_TIMESTAMP}</value></odeProperty>
   <odeProperty><key>pp_addExeLink</key><value>true</value></odeProperty>
-  <odeProperty><key>pp_addPagination</key><value>false</value></odeProperty>
+  <odeProperty><key>pp_addPagination</key><value>${addPagination ? 'true' : 'false'}</value></odeProperty>
   <odeProperty><key>pp_addSearchBox</key><value>true</value></odeProperty>
   <odeProperty><key>pp_addAccessibilityToolbar</key><value>true</value></odeProperty>
   <odeProperty><key>pp_addMathJax</key><value>false</value></odeProperty>
@@ -455,10 +528,10 @@ export async function compileExeProject(projectInput, customOptions = {}) {
 <odeNavStructure>
   <odePageId>${pageId}</odePageId>
   <odeParentPageId>${parentId}</odeParentPageId>
-  <pageName>${page.page_name}</pageName>
+  <pageName>${escapeXml(page.page_name)}</pageName>
   <odeNavStructureOrder>${pageOrder++}</odeNavStructureOrder>
   <odeNavStructureProperties>
-    <odeNavStructureProperty><key>titlePage</key><value>${page.page_name}</value></odeNavStructureProperty>
+    <odeNavStructureProperty><key>titlePage</key><value>${escapeXml(page.page_name)}</value></odeNavStructureProperty>
   </odeNavStructureProperties>
   <odePagStructures>`;
 
@@ -482,68 +555,92 @@ export async function compileExeProject(projectInput, customOptions = {}) {
             snippet = snippet.replace(/UUID-EVALUACION/g, evalId);
 
             // Icono y nombre de bloque según tipo
-            let iconName = 'activity';
+            let iconName = idev.iconName || 'activity';
             let blockName = idev.title || 'Contenido';
-            if (['form', 'guess', 'select-media-files', 'checklist', 'trueorfalse', 'crossword', 'sort', 'relate', 'rosco', 'word-search', 'quick-questions', 'quick-questions-multiple-choice'].includes(idevType)) {
-                iconName = 'interactive';
-                blockName = idev.title || 'Actividad Interactiva';
-            } else if (idevType === 'udl-content') {
-                iconName = 'info';
-                blockName = idev.title || 'Contenido Accesible DUA';
-            } else if (idevType === 'rubric') {
-                iconName = 'competencies';
-                blockName = idev.title || 'Rúbrica de Evaluación';
-            } else if (idevType === 'casestudy') {
-                iconName = 'case';
-                blockName = idev.title || 'Caso Práctico';
-            } else if (idevType === 'interactive-video') {
-                iconName = 'video';
-                blockName = idev.title || 'Vídeo Interactivo';
-            } else if (idevType === 'digcompedu') {
-                iconName = 'technology';
-                blockName = idev.title || 'Competencia Digital (DigCompEdu)';
+            if (!idev.iconName) {
+                if (['form', 'guess', 'select-media-files', 'checklist', 'trueorfalse', 'crossword', 'sort', 'relate', 'rosco', 'word-search', 'quick-questions', 'quick-questions-multiple-choice', 'complete'].includes(idevType)) {
+                    iconName = 'interactive';
+                    blockName = idev.title || 'Actividad Interactiva';
+                } else if (idevType === 'udl-content') {
+                    iconName = 'info';
+                    blockName = idev.title || 'Contenido Accesible DUA';
+                } else if (idevType === 'rubric' || idevType === 'lomloe') {
+                    iconName = 'competencies';
+                    blockName = idev.title || (idevType === 'lomloe' ? 'Currículo LOMLOE Canarias' : 'Rúbrica de Evaluación');
+                } else if (idevType === 'casestudy') {
+                    iconName = 'case';
+                    blockName = idev.title || 'Caso Práctico';
+                } else if (idevType === 'interactive-video') {
+                    iconName = 'video';
+                    blockName = idev.title || 'Vídeo Interactivo';
+                } else if (idevType === 'digcompedu') {
+                    iconName = 'technology';
+                    blockName = idev.title || 'Competencia Digital (DigCompEdu)';
+                } else if (idevType === 'download-source-file') {
+                    iconName = 'download';
+                    blockName = idev.title || 'Descargar archivo fuente (.elpx)';
+                }
             }
 
             // Normalización y mapeo de datos
             let props = { ...idev };
             if (idev.content && typeof idev.content === 'object') Object.assign(props, idev.content);
+            let feedbackHtmlView = '';
 
-            // --- Adaptaciones por tipo de iDevice ---
-            if (idevType === 'text' && props.summary) {
-                const summaryHtml = `<div class="exe-summary" style="background:#f0f9ff; padding:1.2rem; border-radius:0.75rem; margin-bottom:1.2rem; border-left:5px solid #0284c7; box-shadow:0 2px 4px rgba(0,0,0,0.05);"><strong style="color:#0369a1; display:block; margin-bottom:0.4rem; font-size:1.05rem;">💡 Resumen / Ideas Clave:</strong> ${props.summary}</div>`;
-                props.main_text = summaryHtml + (props.main_text || "");
+            // --- Adaptaciones específicas por tipo de iDevice (ANTES de serializar jsonProperties) ---
+            if (idevType === 'text') {
+                if (props.summary) {
+                    const summaryHtml = `<div class="exe-summary" style="background:#f0f9ff; padding:1.2rem; border-radius:0.75rem; margin-bottom:1.2rem; border-left:5px solid #0284c7; box-shadow:0 2px 4px rgba(0,0,0,0.05);"><strong style="color:#0369a1; display:block; margin-bottom:0.4rem; font-size:1.05rem;">💡 Resumen / Ideas Clave:</strong> ${props.summary}</div>`;
+                    props.main_text = summaryHtml + (props.main_text || "");
+                }
+                if (props.duration) props.textInfoDurationInput = props.duration;
+                if (props.participants) props.textInfoParticipantsInput = props.participants;
+                if (props.feedback) props.textFeedbackTextarea = props.feedback;
+            }
+
+            if (idevType === 'lomloe') {
+                props.lomloeDataset = props.lomloeDataset || props.dataset || "ES-CN";
+                props.lomloeDisplayMode = props.lomloeDisplayMode || props.display_mode || "compact";
+                props.lomloeSelections = props.lomloeSelections || props.selections || {};
+                props.lomloeSummaryHtml = props.lomloeSummaryHtml || props.content || props.main_text || "";
             }
 
             if (idevType === 'digcompedu') {
                 const indicators = props.indicators || props.competencies || props.digcompeduSelected || ["1.1", "2.1", "3.1"];
+                const summaryText = props.content || props.main_text || props.digcompeduSummaryTextHtml || "";
+                const tableHtml = buildDigcompeduTable(indicators);
                 props.digcompeduSelected = indicators;
-                props.digcompeduDisplayMode = props.display_mode || "table";
+                props.digcompeduDisplayMode = props.display_mode || (summaryText ? "table+summary" : "table");
                 props.digcompeduDataLang = "es";
                 props.digcompeduGranularity = "indicator";
                 props.digcompeduCount = indicators.length;
-                props.digcompeduTableHtml = buildDigcompeduTable(indicators);
-                props.digcompeduSummaryTextHtml = props.content || props.main_text || "";
+                props.digcompeduTableHtml = tableHtml;
+                props.digcompeduSummaryTableHtml = tableHtml;
+                props.digcompeduSummaryTextHtml = summaryText;
             }
 
             if (idevType === 'casestudy') {
                 props.textTextarea = props.story || props.main_text || "";
+                if (props.duration) props.textInfoDurationInput = props.duration;
+                if (props.participants) props.textInfoParticipantsInput = props.participants;
                 props.activities = [{
-                    activity: props.activity || "Actividad del caso",
+                    activity: props.activity || "Actividad del caso práctico",
                     feedback: props.feedback || "Retroalimentación orientativa",
                     buttonCaption: props.button_show || "Mostrar retroalimentación"
                 }];
             }
 
             if (idevType === 'rubric') {
-                const instructions = idev.instructions || "Complete la siguiente rúbrica analítica";
-                props.instructions = instructions;
-                props.instructionsData = encodeURIComponent(`<p>${instructions}</p>`);
+                const rawInstructions = stripOuterParagraph(idev.instructions || "Completen la siguiente rúbrica analítica de evaluación:");
+                const instructionsHtml = `<p>${rawInstructions}</p>`;
+                props.instructions = instructionsHtml;
+                props.instructionsData = jsEscape(instructionsHtml);
                 props.rubricTitle = idev.title || "Rúbrica de Evaluación";
 
                 props.typeGame = "Rubric";
                 props.version = 2;
                 props.id = ideviceId;
-                const scores = ["4 Excelente", "3 Satisfactorio", "2 Mejorable", "1 Insuficiente"];
+                const scores = idev.scores || ["4 Excelente", "3 Satisfactorio", "2 Mejorable", "1 Insuficiente"];
                 let categories = [];
                 let descriptions = [];
 
@@ -563,6 +660,9 @@ export async function compileExeProject(projectInput, customOptions = {}) {
                             text: l.description || l.text || ""
                         }));
                     });
+                } else if (idev.table && Array.isArray(idev.table.categories)) {
+                    categories = idev.table.categories;
+                    descriptions = idev.table.descriptions || [];
                 } else {
                     categories = ["Concreción y Claridad", "Aplicación Práctica"];
                     descriptions = [
@@ -581,7 +681,6 @@ export async function compileExeProject(projectInput, customOptions = {}) {
                 props.categories = categories;
                 props.scores = scores;
                 props.descriptions = descriptions;
-                props.instructions = `<p>${instructions}</p>`;
                 props["visible-info"] = false;
                 props.author = projectAuthor;
                 props["author-url"] = "";
@@ -592,13 +691,436 @@ export async function compileExeProject(projectInput, customOptions = {}) {
                 props.repeatActivity = true;
             }
 
+            if (idevType === 'checklist') {
+                const rawTasks = idev.tasks || idev.items || [];
+                const levels = (Array.isArray(idev.levels) && idev.levels.length > 0 && idev.levels[0].item !== "PA")
+                    ? idev.levels
+                    : rawTasks.map(t => ({
+                        type: "0",
+                        nivel: "0",
+                        item: typeof t === 'string' ? t : (t.item || t.task || t.text || ""),
+                        points: typeof t === 'object' && t.points ? String(t.points) : ""
+                    }));
+                props.typeGame = "Cotejo";
+                props.id = ideviceId;
+                props.title = idev.title || "Lista de cotejo";
+                props.subtitle = idev.subtitle || "";
+                props.instructions = ensureParagraph(idev.instructions || "Marquen las evidencias o tareas completadas en la siguiente lista de cotejo:");
+                props.footer = idev.footer || 'Esta <a href="https://es.wikipedia.org/wiki/Lista_de_comprobaci%C3%B3n">lista de cotejo</a> se encuentra bajo una licencia <a href="https://creativecommons.org/licenses/by-sa/4.0/">Creative Commons BY-SA 4.0</a>';
+                props.useScore = Boolean(idev.useScore);
+                props.hasDecorative = idev.hasDecorative !== undefined ? Boolean(idev.hasDecorative) : true;
+                props.userData = Boolean(idev.userData);
+                props.saveData = idev.saveData !== undefined ? Boolean(idev.saveData) : true;
+                props.isScorm = 0;
+                props.weighted = 100;
+                props.textButtonScorm = "Guardar la puntuación";
+                props.repeatActivity = true;
+                props.levels = levels;
+                props.msgs = {
+                    msgComplit: "Completadas", msgDone: "Hecho", msgInProgress: "En proceso",
+                    msgUnrealized: "Sin completar", msgtaskNumber: "Número de tareas",
+                    msgName: "Nombre", msgDate: "Fecha", msgSave: "Descargar",
+                    msgList: "lista_de_cotejo", msgScore: "Puntuación", msgWeight: "Peso",
+                    msgPoints: "puntos", msgPoint: "punto", msgReboot: "Reiniciar",
+                    msgDelete: "¿Seguro que desean borrar todos los campos del formulario?",
+                    msgSaveScorm: "Guardar la puntuación",
+                    msgEndGameScore: "Completen la lista antes de guardar su puntuación.",
+                    msgScoreScorm: "La puntuación no se puede guardar porque esta página no forma parte de un paquete SCORM.",
+                    msgOnlySaveScore: "¡Solo pueden guardar la puntuación una vez!",
+                    msgOnlySave: "Solo pueden guardar una vez",
+                    msgOnlySaveAuto: "Su puntuación se guardará después de cada cambio.",
+                    msgPlaySeveralTimes: "Pueden realizar esta actividad cuantas veces quieran",
+                    msgYouLastScore: "La última puntuación guardada es",
+                    msgSeveralScore: "Pueden guardar la puntuación tantas veces como quieran",
+                    msgActityComply: "Ya han realizado esta actividad."
+                };
+            }
+
+            if (idevType === 'select-media-files') {
+                const options = idev.options || idev.cards || idev.items || [];
+                feedbackHtmlView = idev.feedback ? ensureParagraph(idev.feedback) : "";
+                props.typeGame = "SeleccionaMedias";
+                props.version = 1.5;
+                props.id = ideviceId;
+                props.author = projectAuthor;
+                props.instructions = ensureParagraph(idev.instructions || "Seleccionen las tarjetas correctas y pulsen en el botón de comprobación.");
+                props.showMinimize = false;
+                props.showSolution = true;
+                props.timeShowSolution = 4;
+                props.numberMaxCards = "30";
+                props.itinerary = { showClue: false, clueGame: "", percentageClue: 40, showCodeAccess: false, codeAccess: "", messageCodeAccess: "" };
+                props.phrasesGame = (Array.isArray(idev.phrasesGame) && idev.phrasesGame.length > 0) ? idev.phrasesGame : [{
+                    cards: options.map((opt, idx) => {
+                        const isImage = Boolean(opt.url || opt.image);
+                        return {
+                            id: Date.now() + idx,
+                            type: isImage ? 2 : 1,
+                            author: opt.author || "",
+                            alt: isImage ? (opt.alt || opt.description || opt.text || "") : "",
+                            url: opt.url || opt.image || "",
+                            audio: opt.audio || "",
+                            eText: !isImage ? (opt.text || opt.eText || opt.description || String(opt)) : (opt.eText || ""),
+                            color: opt.color || "#000000",
+                            backcolor: opt.backcolor || "#ffffff",
+                            state: Boolean(opt.is_correct !== undefined ? opt.is_correct : opt.state)
+                        };
+                    }),
+                    msgError: idev.msgError || "Inténtenlo de nuevo",
+                    msgHit: idev.msgHit || "¡Correcto!",
+                    definition: idev.definition || idev.title || "Seleccionen las opciones correctas",
+                    audioDefinition: "",
+                    audioHit: "",
+                    audioError: "",
+                    url: "",
+                    alt: "",
+                    author: ""
+                }];
+                props.isScorm = 0;
+                props.textButtonScorm = "Guardar la puntuación";
+                props.repeatActivity = true;
+                props.weighted = 100;
+                props.textFeedBack = feedbackHtmlView ? jsEscape(feedbackHtmlView) : "";
+                props.textAfter = "";
+                props.feedBack = Boolean(feedbackHtmlView);
+                props.percentajeFB = 100;
+                props.customMessages = false;
+                props.percentajeQuestions = 100;
+                props.time = idev.time || 0;
+                props.attempsNumber = idev.attempts || idev.attempsNumber || 2;
+                props.modeTable = Boolean(idev.modeTable);
+                props.evaluation = false;
+                props.evaluationID = evalId;
+                props.msgs = {
+                    ...COMMON_GAME_MSGS,
+                    msgChangeMode: "Cambiar modo de visualización",
+                    msgTypeGame: "Selecciona (multimedia)",
+                    msgTimeOver: "El tiempo ha finalizado",
+                    mgsAllPhrases: "¡Han completado todas las actividades!",
+                    msgNumbersAttemps: "Número de actividades pendientes",
+                    msgActivities: "Actividades",
+                    msgCheck: "Comprobar",
+                    msgContinue: "Continuar",
+                    msgAllOK: "¡Genial! Todo correcto",
+                    msgAgain: "Inténtenlo de nuevo"
+                };
+            }
+
+            if (idevType === 'sort') {
+                const items = idev.items || idev.cards || [];
+                feedbackHtmlView = idev.feedback ? ensureParagraph(idev.feedback) : "";
+                const isPhraseMode = (idev.mode === 'phrases' || idev.gameType === 0);
+                let phrasesGame = [];
+                if (Array.isArray(idev.phrasesGame) && idev.phrasesGame.length > 0) {
+                    phrasesGame = idev.phrasesGame;
+                } else if (isPhraseMode) {
+                    phrasesGame = items.map((it, idx) => ({
+                        cards: [{ id: Date.now() + idx, type: 2, x: 0, y: 0, author: "", alt: "", url: "", audio: "", eText: "", color: "#000000", backcolor: "#ffffff" }],
+                        msgError: "Inténtenlo de nuevo", msgHit: "¡Correcto!", definition: it.definition || "", phrase: it.text || it.phrase || String(it), audioDefinition: "", audioHit: "", audioError: ""
+                    }));
+                } else {
+                    phrasesGame = [{
+                        cards: items.map((it, idx) => ({
+                            id: Date.now() + idx,
+                            type: (typeof it === 'object' && it.url) ? 2 : 1,
+                            x: 0, y: 0, author: "", alt: (typeof it === 'object' && it.alt) || "",
+                            url: (typeof it === 'object' && it.url) || "",
+                            audio: (typeof it === 'object' && it.audio) || "",
+                            eText: typeof it === 'string' ? it : (it.eText || it.text || ""),
+                            color: (typeof it === 'object' && it.color) || "#000000",
+                            backcolor: (typeof it === 'object' && it.backcolor) || "#ffffff"
+                        })),
+                        msgError: idev.msgError || "Inténtenlo de nuevo",
+                        msgHit: idev.msgHit || "¡Secuencia correcta!",
+                        definition: idev.definition || idev.title || "Ordenen la secuencia en el orden correcto",
+                        phrase: "",
+                        audioDefinition: "",
+                        audioHit: "",
+                        audioError: ""
+                    }];
+                }
+                props.typeGame = "Ordena";
+                props.id = ideviceId;
+                props.author = projectAuthor;
+                props.instructions = ensureParagraph(idev.instructions || "Hagan clic sobre las tarjetas en el orden correcto para ordenar la secuencia.");
+                props.showMinimize = false;
+                props.showSolution = true;
+                props.itinerary = { showClue: false, clueGame: "", percentageClue: 40, showCodeAccess: false, codeAccess: "", messageCodeAccess: "" };
+                props.phrasesGame = phrasesGame;
+                props.isScorm = 0;
+                props.textButtonScorm = "Guardar la puntuación";
+                props.repeatActivity = true;
+                props.weighted = 100;
+                props.attempsNumber = idev.attempts || idev.attempsNumber || 2;
+                props.textFeedBack = feedbackHtmlView ? jsEscape(feedbackHtmlView) : "";
+                props.textAfter = "";
+                props.caseSensitive = false;
+                props.feedBack = Boolean(feedbackHtmlView);
+                props.percentajeFB = 100;
+                props.customMessages = false;
+                props.percentajeQuestions = 100;
+                props.timeShowSolution = 3;
+                props.time = idev.time || 0;
+                props.version = 1.5;
+                props.maxWidth = true;
+                props.cardHeight = 160;
+                props.startAutomatically = false;
+                props.orderedColumns = Boolean(idev.orderedColumns);
+                props.gameColumns = idev.gameColumns || 0;
+                props.evaluation = false;
+                props.evaluationID = evalId;
+                props.wordBorder = true;
+                props.type = isPhraseMode ? 0 : 1;
+                props.msgs = COMMON_GAME_MSGS;
+            }
+
+            if (idevType === 'relate') {
+                const pairs = idev.pairs || [];
+                feedbackHtmlView = idev.feedback ? ensureParagraph(idev.feedback) : "";
+                const cardsGame = (Array.isArray(idev.cardsGame) && idev.cardsGame.length > 0) ? idev.cardsGame : pairs.map(p => ({
+                    url: p.image1 || "", x: 0, y: 0, author: "", alt: "", audio: "", color: "#000000", backcolor: "#ffffff", eText: p.text1 || "",
+                    urlBk: p.image2 || "", xBk: 0, yBk: 0, authorBk: "", altBk: "", audioBk: "", colorBk: "#000000", backcolorBk: "#ffffff", eTextBk: p.text2 || ""
+                }));
+                props.typeGame = "Relaciona";
+                props.id = ideviceId;
+                props.author = projectAuthor;
+                props.randomCards = true;
+                // En relate, DataGame se guarda en JSON plano dentro de un <div> HTML; evitamos etiquetas <p> crudas dentro de instructions
+                props.instructions = stripHtmlTags(idev.instructions || "Relacionen cada elemento con su pareja correspondiente.");
+                props.showMinimize = false;
+                props.itinerary = { showClue: false, clueGame: "", percentageClue: 40, showCodeAccess: false, codeAccess: "", messageCodeAccess: "" };
+                props.cardsGame = cardsGame;
+                props.isScorm = 0;
+                props.textButtonScorm = "Guardar la puntuación";
+                props.repeatActivity = true;
+                props.weighted = 100;
+                props.textAfter = feedbackHtmlView ? jsEscape(feedbackHtmlView) : "";
+                props.version = 2;
+                props.percentajeCards = 100;
+                props.type = idev.gameType || 0;
+                props.showSolution = true;
+                props.timeShowSolution = 3;
+                props.time = idev.time || 0;
+                props.evaluation = false;
+                props.evaluationID = evalId;
+                props.msgs = COMMON_GAME_MSGS;
+            }
+
+            if (idevType === 'crossword') {
+                const words = idev.terms || idev.words || [];
+                feedbackHtmlView = idev.feedback ? ensureParagraph(idev.feedback) : "";
+                const wordsGame = (Array.isArray(idev.wordsGame) && idev.wordsGame.length > 0) ? idev.wordsGame : words.map(w => ({
+                    word: (w.word || w.term || "").toUpperCase().trim(),
+                    definition: w.definition || w.description || w.hint || "",
+                    x: 0, y: 0, author: "", alt: "", url: "", audio: "", percentageShow: null
+                }));
+                props.typeGame = "Crucigrama";
+                props.id = ideviceId;
+                props.instructions = ensureParagraph(idev.instructions || "Completen el siguiente crucigrama educativo.");
+                props.showMinimize = false;
+                props.showSolution = true;
+                props.itinerary = { showClue: false, clueGame: "", percentageClue: 40, showCodeAccess: false, codeAccess: "", messageCodeAccess: "" };
+                props.wordsGame = wordsGame;
+                props.isScorm = 0;
+                props.hasBack = true;
+                props.urlBack = "";
+                props.textButtonScorm = "Guardar la puntuación";
+                props.repeatActivity = true;
+                props.weighted = 100;
+                props.textFeedBack = feedbackHtmlView ? jsEscape(feedbackHtmlView) : "";
+                props.textAfter = "";
+                props.caseSensitive = false;
+                props.tilde = false;
+                props.feedBack = Boolean(feedbackHtmlView);
+                props.percentajeFB = 100;
+                props.version = 2;
+                props.evaluation = false;
+                props.evaluationID = evalId;
+                props.percentajeQuestions = "100";
+                props.difficulty = "100";
+                props.time = String(idev.time || "0");
+                props.authorBackImage = "";
+                props.msgs = COMMON_GAME_MSGS;
+            }
+
+            if (idevType === 'word-search') {
+                const wordsList = idev.words || idev.terms || [];
+                feedbackHtmlView = idev.feedback ? ensureParagraph(idev.feedback) : "";
+                const wordsGame = (Array.isArray(idev.wordsGame) && idev.wordsGame.length > 0) ? idev.wordsGame : wordsList.map(w => ({
+                    word: (typeof w === 'string' ? w : (w.word || w.term || "")).toUpperCase().trim(),
+                    definition: (typeof w === 'object' ? (w.definition || w.hint || "") : ""),
+                    x: 0, y: 0, author: "", alt: "", url: "", audio: "",
+                    percentageShow: 100
+                }));
+
+                props.typeGame = "Sopa";
+                props.id = ideviceId;
+                props.instructions = ensureParagraph(idev.instructions || "Encuentren las palabras ocultas en la sopa de letras.");
+                props.showMinimize = false;
+                props.itinerary = { showClue: false, clueGame: "", percentageClue: 40, showCodeAccess: false, codeAccess: "", messageCodeAccess: "" };
+                props.wordsGame = wordsGame.length ? wordsGame : [{ word: "EDUCACION", definition: "Proceso formativo", x: 0, y: 0, author: "", alt: "", url: "", audio: "", percentageShow: 100 }];
+                props.isScorm = 0;
+                props.textButtonScorm = "Guardar la puntuación";
+                props.repeatActivity = true;
+                props.weighted = 100;
+                props.textFeedBack = feedbackHtmlView ? jsEscape(feedbackHtmlView) : "";
+                props.textAfter = "";
+                props.feedBack = Boolean(feedbackHtmlView);
+                props.percentajeFB = 100;
+                props.version = 2;
+                props.percentajeQuestions = 100;
+                props.time = idev.time || 0;
+                props.hideTimeIcon = idev.hide_time_icon !== undefined ? Boolean(idev.hide_time_icon) : false;
+                props.diagonals = Boolean(idev.diagonals);
+                props.reverses = Boolean(idev.reverses);
+                props.showResolve = true;
+                props.evaluation = false;
+                props.evaluationID = evalId;
+                props.msgs = COMMON_GAME_MSGS;
+            }
+
+            if (idevType === 'rosco') {
+                const spanishLetters = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ";
+                const wordsList = idev.words || idev.terms || [];
+                const wordsGame = [];
+                for (let i = 0; i < spanishLetters.length; i++) {
+                    const letter = spanishLetters[i];
+                    const found = wordsList.find(w => (w.letter || "").toUpperCase() === letter);
+                    if (found) {
+                        wordsGame.push({
+                            letter,
+                            word: found.word || found.term || "",
+                            definition: found.definition || found.description || "",
+                            type: found.type || 0,
+                            time: 0, x: 0, y: 0, author: "", alt: "", url: "", audio: ""
+                        });
+                    } else {
+                        wordsGame.push({
+                            letter, word: "", definition: "", type: 0,
+                            time: 0, x: 0, y: 0, author: "", alt: "", url: "", audio: ""
+                        });
+                    }
+                }
+                props.typeGame = "Rosco";
+                props.id = ideviceId;
+                props.instructions = ensureParagraph(idev.instructions || "Observen las letras, identifiquen y completen las palabras correspondientes a cada definición.");
+                props.timeShowSolution = 3;
+                props.durationGame = idev.time || 240;
+                props.numberTurns = 1;
+                props.showSolution = true;
+                props.showMinimize = false;
+                props.itinerary = { showClue: false, clueGame: "", percentageClue: 40, showCodeAccess: false, codeAccess: "", messageCodeAccess: "" };
+                props.wordsGame = wordsGame;
+                props.isScorm = 0;
+                props.textButtonScorm = "Guardar la puntuación";
+                props.repeatActivity = true;
+                props.weighted = 100;
+                props.letters = spanishLetters;
+                props.textAfter = "";
+                props.caseSensitive = false;
+                props.version = 2;
+                props.modeBoard = false;
+                props.evaluation = false;
+                props.evaluationID = evalId;
+                props.msgs = COMMON_GAME_MSGS;
+            }
+
+            if (idevType === 'guess') {
+                const rawWords = idev.words || idev.terms || (idev.term ? [{ word: idev.term, definition: idev.hint || "", feedback: idev.feedback || "" }] : []);
+                const wordsGame = (Array.isArray(idev.wordsGame) && idev.wordsGame.length > 0) ? idev.wordsGame : rawWords.map(w => ({
+                    word: (w.word || w.term || "").toUpperCase().trim(),
+                    definition: w.definition || w.hint || "",
+                    msgHit: w.feedback || idev.feedback || "¡Correcto!",
+                    msgError: "¡Incorrecto!",
+                    type: 0, time: 0, x: 0, y: 0, author: "", alt: "", url: "", audio: "",
+                    percentageShow: 35
+                }));
+                props.typeGame = "Adivina";
+                props.version = 2;
+                props.id = ideviceId;
+                props.instructions = ensureParagraph(idev.instructions || "Descubran el término oculto a partir de su definición.");
+                props.wordsGame = wordsGame;
+                props.showMinimize = false;
+                props.optionsRamdon = false;
+                props.showSolution = true;
+                props.timeShowSolution = 3;
+                props.useLives = true;
+                props.numberLives = 3;
+                props.isScorm = 0;
+                props.textButtonScorm = "Guardar la puntuación";
+                props.repeatActivity = true;
+                props.weighted = 100;
+                props.evaluation = false;
+                props.evaluationID = evalId;
+                props.itinerary = { showClue: false, clueGame: "", percentageClue: 40, showCodeAccess: false, codeAccess: "", messageCodeAccess: "" };
+                props.msgs = { ...COMMON_GAME_MSGS, msgTypeGame: "Adivina" };
+            }
+
+            if (idevType === 'quick-questions' || idevType === 'quick-questions-multiple-choice') {
+                const rawQuestions = idev.questions || idev.items || [];
+                const questionsGame = (Array.isArray(idev.questionsGame) && idev.questionsGame.length > 0) ? idev.questionsGame : rawQuestions.map((q, idx) => {
+                    const rawOptions = q.options || ["Opción A", "Opción B", "Opción C", "Opción D"];
+                    const options = rawOptions.map(opt => typeof opt === 'string' ? opt : (opt.text || opt.option || ""));
+                    let solutionIdx = 0;
+                    if (typeof q.solution === 'number') {
+                        solutionIdx = q.solution;
+                    } else if (q.correct_index !== undefined) {
+                        solutionIdx = q.correct_index;
+                    } else if (typeof q.solution === 'string' && q.solution.length === 1) {
+                        const code = q.solution.toUpperCase().charCodeAt(0);
+                        if (code >= 65 && code <= 90) solutionIdx = code - 65;
+                    }
+                    return {
+                        type: 0, time: 0, numberOptions: options.length, typeSelect: 0,
+                        x: 0, y: 0, author: "", alt: "", customScore: 1, url: "", audio: "",
+                        hit: 1, error: -1, msgHit: q.feedback_right || "¡Correcto!", msgError: q.feedback_wrong || "¡Incorrecto!",
+                        soundVideo: 1, imageVideo: 1, iVideo: 0, fVideo: 0, silentVideo: 0, tSilentVideo: 0,
+                        eText: "",
+                        question: q.question || q.text || `Pregunta ${idx + 1}`,
+                        options: options,
+                        solution: String(solutionIdx),
+                        solutionQuestion: "",
+                        percentageShow: 100
+                    };
+                });
+
+                props.typeGame = idevType === 'quick-questions-multiple-choice' ? "Selecciona" : "Quext";
+                props.id = ideviceId;
+                props.instructions = ensureParagraph(idev.instructions || "Seleccionen la respuesta correcta para cada pregunta.");
+                props.showMinimize = false;
+                props.optionsRamdon = false;
+                props.answersRamdon = false;
+                props.showSolution = true;
+                props.timeShowSolution = 3;
+                props.useLives = true;
+                props.numberLives = 3;
+                props.itinerary = { showClue: false, clueGame: "", percentageClue: 40, showCodeAccess: false, codeAccess: "", messageCodeAccess: "" };
+                props.questionsGame = questionsGame;
+                props.isScorm = 0;
+                props.textButtonScorm = "Guardar la puntuación";
+                props.repeatActivity = true;
+                props.weighted = 100;
+                props.title = idev.title || "Preguntas Rápidas";
+                props.customScore = false;
+                props.textAfter = "";
+                props.textFeedBack = "";
+                props.gameMode = 1;
+                props.feedBack = false;
+                props.percentajeFB = 100;
+                props.version = 2;
+                props.customMessages = false;
+                props.percentajeQuestions = 100;
+                props.evaluation = false;
+                props.evaluationID = evalId;
+                props.msgs = COMMON_GAME_MSGS;
+            }
+
             if (idevType === 'trueorfalse') {
                 const questionsRaw = idev.questions || idev.items || [];
                 const questionsGame = questionsRaw.map(q => {
                     const qText = typeof q === 'string' ? q : (q.question || q.text || "");
                     const isTrue = (q.solution === 1 || q.solution === true || q.answer === true || String(q.solution).toLowerCase() === 'verdadero');
                     return {
-                        question: qText.startsWith('<p>') ? qText : `<p>${qText}</p>`,
+                        question: ensureParagraph(qText),
                         feedback: q.feedback || "",
                         suggestion: q.suggestion || q.hint || "",
                         solution: isTrue ? 1 : 0
@@ -606,7 +1128,8 @@ export async function compileExeProject(projectInput, customOptions = {}) {
                 });
 
                 props.typeGame = "TrueOrFalse";
-                props.instructions = idev.instructions || "Indique si cada afirmación es verdadera o falsa.";
+                props.instructions = ensureParagraph(idev.instructions || "Indiquen si cada afirmación es verdadera o falsa.");
+                props.eXeGameInstructions = props.instructions;
                 props.questionsGame = questionsGame.length ? questionsGame : [{
                     question: "<p>Afirmación de ejemplo</p>",
                     feedback: "Retroalimentación",
@@ -628,13 +1151,13 @@ export async function compileExeProject(projectInput, customOptions = {}) {
                 props.questionsRandom = false;
                 props.percentageQuestions = "100";
                 props.time = "0";
-                props.eXeFormInstructions = `<p>${idev.instructions || "Responda a las cuestiones formuladas:"}</p>`;
+                props.eXeFormInstructions = ensureParagraph(idev.instructions || "Respondan a las cuestiones formuladas:");
                 props.questionsData = (idev.questions || []).map((q, idx) => {
                     const qText = typeof q === 'string' ? q : (q.question || q.text || "");
                     return {
                         id: Date.now() + idx + "-" + Math.random().toString(36).substr(2, 5).toUpperCase(),
                         activityType: q.type || "true-false",
-                        baseText: qText.startsWith("<p>") ? qText : `<p>${qText}</p>`,
+                        baseText: ensureParagraph(qText),
                         feedbackRight: q.feedbackRight || "¡Correcto!",
                         feedbackWrong: q.feedbackWrong || "Incorrecto",
                         suggestion: q.suggestion || "",
@@ -652,31 +1175,9 @@ export async function compileExeProject(projectInput, customOptions = {}) {
                 props.passRate = Math.floor((props.questionsData || []).length / 2);
             }
 
-            if (idevType === 'word-search') {
-                const wordsList = idev.words || idev.terms || [];
-                const wordsGame = wordsList.map(w => ({
-                    word: (typeof w === 'string' ? w : (w.word || w.term || "")).toUpperCase().trim(),
-                    definition: (typeof w === 'object' ? (w.definition || w.hint || "") : ""),
-                    x: 0, y: 0, author: "", alt: "", url: "", audio: "",
-                    percentageShow: 100
-                }));
-
-                props.typeGame = "Sopa";
-                props.instructions = idev.instructions || "<p>Encuentre las palabras ocultas en la sopa de letras.</p>";
-                props.wordsGame = wordsGame.length ? wordsGame : [{ word: "EDUCACION", definition: "Proceso formativo" }];
-                props.hideTimeIcon = idev.hide_time_icon !== undefined ? idev.hide_time_icon : false;
-                props.time = idev.time || 0;
-                props.isScorm = 0;
-                props.textButtonScorm = "Guardar la puntuación";
-                props.repeatActivity = true;
-                props.weighted = 100;
-                props.version = 1;
-                props.msgs = COMMON_GAME_MSGS;
-            }
-
             if (idevType === 'progress-report') {
                 props.typeGame = "Progress Report";
-                props.instructions = idev.description || idev.instructions || "Informe general del avance en la Situación de Aprendizaje.";
+                props.instructions = stripHtmlTags(idev.description || idev.instructions || "Informe general del avance en la Situación de Aprendizaje.");
                 props.evaluationID = ideviceId;
                 props.id = ideviceId;
                 props.typeshow = 0;
@@ -700,179 +1201,95 @@ export async function compileExeProject(projectInput, customOptions = {}) {
                 props.videoType = "youtube";
             }
 
-            // Sincronizar jsonProperties
-            let mergedProps = { ...props };
-            snippet = snippet.replace(/(<jsonProperties><!\[CDATA\[)(.*?)(\]\]><\/jsonProperties>)/, (match, p1, p2, p3) => {
-                let originalJson = {};
-                try {
-                    if (p2 && p2.trim() !== "") originalJson = JSON.parse(p2);
-                } catch (e) {}
-                mergedProps = { ...originalJson, ...props };
-                mergedProps.id = ideviceId;
-                mergedProps.ideviceId = ideviceId;
-                mergedProps.evaluationID = evalId;
-                mergedProps.evaluation = props.evaluation || false;
-                if (props.title) mergedProps.title = props.title;
-                return p1 + JSON.stringify(mergedProps) + p3;
-            });
-
-            // Reemplazo de marcadores en htmlView
+            // Construcción de contenido principal con imagen opcional
             let finalMainContent = props.main_text || props.textTextarea || props.story || props.content || "";
             if (props.image && !finalMainContent.includes(props.image)) {
                 const imgHtml = `<p style="text-align:center;"><img src="${props.image}" alt="Imagen didáctica" style="max-width:100%; height:auto; border-radius:8px; box-shadow:0 4px 6px -1px rgba(0,0,0,0.1);"></p>`;
                 finalMainContent = imgHtml + finalMainContent;
             }
 
+            if (idevType === 'text') {
+                props.textTextarea = `<div class="exe-text-activity">${finalMainContent}</div>`;
+            } else if (idevType === 'casestudy') {
+                props.history = finalMainContent;
+            }
+
+            const instructionsInner = stripOuterParagraph(props.instructions || "Lean con atención y completen la actividad:");
+            const casestudyActivity = (props.activities && props.activities[0]) ? props.activities[0].activity : "";
+            const casestudyFeedback = (props.activities && props.activities[0]) ? props.activities[0].feedback : "";
+
+            // 1. Reemplazo de marcadores en htmlView ANTES de serializar jsonProperties
             const placeholders = {
-                '{{INSTRUCTIONS}}': props.instructions || "Lea con atención y complete la actividad:",
+                '{{INSTRUCTIONS}}': instructionsInner,
                 '{{CONTENT}}': finalMainContent,
                 '{{UDL_EASY}}': props.easy_reading || props.easyReadingTextarea || "",
                 '{{UDL_AUDIO}}': props.audio_script || props.audioScriptTextarea || "",
                 '{{VIDEO_URL}}': props.videoURL || "",
                 '{{VIDEO_TYPE}}': props.videoType || "youtube",
                 '{{URL}}': props.url || "",
-                '{{ACTIVITY}}': (props.activities && props.activities[0]) ? props.activities[0].activity : "",
-                '{{FEEDBACK}}': (props.activities && props.activities[0]) ? props.activities[0].feedback : "",
+                '{{ACTIVITY}}': casestudyActivity,
+                '{{FEEDBACK}}': idevType === 'casestudy' ? casestudyFeedback : feedbackHtmlView,
                 '{{TITLE}}': props.rubricTitle || props.title || "",
                 '{{INSTRUCTIONS_DATA}}': props.instructionsData || "",
                 '{{DIGCOMPEDU_COUNT}}': String(props.digcompeduCount || 0),
-                '{{DIGCOMPEDU_TABLE}}': props.digcompeduTableHtml || ""
+                '{{DIGCOMPEDU_MODE}}': props.digcompeduDisplayMode || "table",
+                '{{DIGCOMPEDU_TABLE}}': props.digcompeduSummaryTableHtml || "",
+                '{{DIGCOMPEDU_TEXT}}': props.digcompeduSummaryTextHtml || "",
+                '{{LOMLOE_HTML}}': props.lomloeSummaryHtml || ""
             };
 
             for (const [key, val] of Object.entries(placeholders)) {
                 snippet = snippet.replaceAll(key, val);
             }
 
-            // Codificación XOR interactiva para juegos Nodex (v4.0.5)
-            const uriEncodedTypes = [
+            // 2. Limpiar propiedades auxiliares y serializar jsonProperties con JSON.stringify seguro
+            const cleanProps = { ...props };
+            delete cleanProps.type;
+            delete cleanProps.idevice;
+            if (props.type !== undefined && ['sort', 'relate'].includes(idevType)) {
+                cleanProps.type = props.type;
+            }
+
+            let mergedProps = { ...cleanProps };
+            snippet = snippet.replace(/(<jsonProperties><!\[CDATA\[)([\s\S]*?)(\]\]><\/jsonProperties>)/, (match, p1, p2, p3) => {
+                let originalJson = {};
+                try {
+                    if (p2 && p2.trim() !== "") originalJson = JSON.parse(p2);
+                } catch (e) {}
+                mergedProps = { ...originalJson, ...cleanProps };
+                mergedProps.id = ideviceId;
+                mergedProps.ideviceId = ideviceId;
+                mergedProps.evaluationID = evalId;
+                mergedProps.evaluation = Boolean(props.evaluation);
+                if (props.title) mergedProps.title = props.title;
+                return p1 + JSON.stringify(mergedProps) + p3;
+            });
+
+            // Codificación del contenedor DataGame en htmlView (eXeLearning v4.0.5)
+            const dataGameTypes = [
                 'checklist', 'guess', 'select-media-files', 'rubric', 'complete',
                 'trueorfalse', 'quick-questions-multiple-choice', 'quick-questions',
                 'quick-questions-video', 'progress-report', 'rosco', 'crossword',
                 'sort', 'relate', 'word-search'
             ];
 
-            if (uriEncodedTypes.includes(idevType)) {
+            if (dataGameTypes.includes(idevType)) {
                 const dataGameRegex = /(<div[^>]*class="[^"]*DataGame[^"]*"[^>]*>)(.*?)(<\/div>)/i;
                 if (dataGameRegex.test(snippet)) {
                     snippet = snippet.replace(dataGameRegex, (match, p1, p2, p3) => {
-                        let encryptedData = '';
+                        let encodedPayload = '';
                         if (idevType === 'rubric') {
-                            const jsonStr = JSON.stringify(mergedProps);
-                            encryptedData = encodeURIComponent(jsonStr)
-                                .replace(/%C3%A1/g, "%E1").replace(/%C3%A9/g, "%E9")
-                                .replace(/%C3%AD/g, "%ED").replace(/%C3%B3/g, "%F3")
-                                .replace(/%C3%BA/g, "%FA").replace(/%C3%B1/g, "%F1")
-                                .replace(/%C3%81/g, "%C1").replace(/%C3%89/g, "%C9")
-                                .replace(/%C3%8D/g, "%CD").replace(/%C3%93/g, "%D3")
-                                .replace(/%C3%9A/g, "%DA").replace(/%C3%91/g, "%D1")
-                                .replace(/%C2%BF/g, "%BF").replace(/%C2%A1/g, "%A1");
-                        } else if (idevType === 'progress-report') {
-                            encryptedData = JSON.stringify(mergedProps);
-                        } else if (idevType === 'sort') {
-                            const items = idev.items || [];
-                            const phrasesGame = items.map((it, idx) => ({
-                                cards: [{ id: Date.now() + idx, type: 2, x: 0, y: 0, author: "", alt: "", url: "", audio: "", eText: "", color: "#000000", backcolor: "#ffffff" }],
-                                msgError: "", msgHit: "", definition: "", phrase: it.text || it || "", audioDefinition: "", audioHit: "", audioError: ""
-                            }));
-                            const dataGame = {
-                                typeGame: "Ordena", author: projectAuthor,
-                                instructions: `<p>${idev.instructions || "Arrastre cada tarjeta hasta su posición correcta."}</p>`,
-                                showMinimize: false, showSolution: true,
-                                itinerary: { showClue: false, clueGame: "", percentageClue: 40, showCodeAccess: false, codeAccess: "", messageCodeAccess: "" },
-                                phrasesGame: phrasesGame,
-                                isScorm: 0, textButtonScorm: "Guardar la puntuación", repeatActivity: true, weighted: 100,
-                                attempsNumber: idev.attempts || 2,
-                                textFeedBack: "", textAfter: "", caseSensitive: false, feedBack: false, percentajeFB: 100,
-                                customMessages: false, percentajeQuestions: 100, timeShowSolution: 3, time: 0, version: 1.5,
-                                maxWidth: true, cardHeight: 200, startAutomatically: false, orderedColumns: false, gameColumns: 0,
-                                evaluation: false, evaluationID: evalId, wordBorder: true, id: ideviceId, type: 0, msgs: COMMON_GAME_MSGS
-                            };
-                            encryptedData = exeEncrypt(JSON.stringify(dataGame));
-                        } else if (idevType === 'relate') {
-                            const pairs = idev.pairs || [];
-                            const cardsGame = pairs.map(p => ({
-                                url: p.image1 || "", x: 0, y: 0, author: "", alt: "", audio: "", color: "#000000", backcolor: "#ffffff", eText: p.text1 || "",
-                                urlBk: p.image2 || "", xBk: 0, yBk: 0, authorBk: "", altBk: "", audioBk: "", colorBk: "#000000", backcolorBk: "#ffffff", eTextBk: p.text2 || ""
-                            }));
-                            const dataGame = {
-                                typeGame: "Relaciona", author: projectAuthor, randomCards: true,
-                                instructions: `<p>${idev.instructions || "Relacione cada elemento con su pareja correspondiente."}</p>`,
-                                showMinimize: false,
-                                itinerary: { showClue: false, clueGame: "", percentageClue: 40, showCodeAccess: false, codeAccess: "", messageCodeAccess: "" },
-                                cardsGame: cardsGame, isScorm: 0, textButtonScorm: "Guardar la puntuación", repeatActivity: true,
-                                weighted: 100, textAfter: "", version: 2, percentajeCards: 100, type: 0, showSolution: true,
-                                timeShowSolution: 3, time: 3, evaluation: false, evaluationID: evalId, id: ideviceId, msgs: COMMON_GAME_MSGS
-                            };
-                            encryptedData = exeEncrypt(JSON.stringify(dataGame));
-                        } else if (idevType === 'crossword') {
-                            const words = idev.terms || idev.words || [];
-                            const wordsGame = words.map(w => ({
-                                word: (w.word || w.term || "").toUpperCase().trim(),
-                                definition: w.definition || w.description || "",
-                                x: 0, y: 0, author: "", alt: "", url: "", audio: "", percentageShow: null
-                            }));
-                            const dataGame = {
-                                typeGame: "Crucigrama",
-                                instructions: `<p>${idev.instructions || "Complete el siguiente crucigrama educativo."}</p>`,
-                                showMinimize: false, showSolution: true,
-                                itinerary: { showClue: false, clueGame: "", percentageClue: 40, showCodeAccess: false, codeAccess: "", messageCodeAccess: "" },
-                                wordsGame: wordsGame, isScorm: 0, hasBack: true, urlBack: "", textButtonScorm: "Guardar la puntuación",
-                                repeatActivity: true, weighted: 100, textFeedBack: "", textAfter: "", caseSensitive: false,
-                                tilde: true, feedBack: false, percentajeFB: 100, version: 2, evaluation: false,
-                                evaluationID: evalId, percentajeQuestions: "100", difficulty: "100", time: "0",
-                                authorBackImage: "", id: ideviceId, msgs: COMMON_GAME_MSGS
-                            };
-                            encryptedData = exeEncrypt(JSON.stringify(dataGame));
-                        } else if (idevType === 'word-search') {
-                            const dataGame = {
-                                typeGame: "Sopa",
-                                instructions: `<p>${idev.instructions || "Encuentre las palabras ocultas en la sopa de letras."}</p>`,
-                                showMinimize: false,
-                                itinerary: { showClue: false, clueGame: "", percentageClue: 40, showCodeAccess: false, codeAccess: "", messageCodeAccess: "" },
-                                wordsGame: mergedProps.wordsGame || [],
-                                isScorm: 0, textButtonScorm: "Guardar la puntuación", repeatActivity: true, weighted: 100,
-                                textFeedBack: "", textAfter: "", feedBack: false, percentajeFB: 100, version: 1,
-                                percentajeQuestions: 100, time: idev.time || 0, hideTimeIcon: !!idev.hide_time_icon,
-                                diagonals: false, reverses: false, showResolve: true, evaluation: false,
-                                evaluationID: evalId, id: ideviceId, msgs: COMMON_GAME_MSGS
-                            };
-                            encryptedData = exeEncrypt(JSON.stringify(dataGame));
-                        } else if (idevType === 'rosco') {
-                            const spanishLetters = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ";
-                            const wordsList = idev.words || idev.terms || [];
-                            const wordsGame = [];
-                            for (let i = 0; i < spanishLetters.length; i++) {
-                                const letter = spanishLetters[i];
-                                const found = wordsList.find(w => (w.letter || "").toUpperCase() === letter);
-                                if (found) {
-                                    wordsGame.push({
-                                        letter, word: found.word || found.term || "",
-                                        definition: found.definition || found.description || "",
-                                        type: 0, time: 0, x: 0, y: 0, author: "", alt: "", url: "", audio: ""
-                                    });
-                                } else {
-                                    wordsGame.push({
-                                        letter, word: "", definition: "", type: 0,
-                                        time: 0, x: 0, y: 0, author: "", alt: "", url: "", audio: ""
-                                    });
-                                }
-                            }
-                            const dataGame = {
-                                typeGame: "Rosco",
-                                instructions: idev.instructions || "<p>Observe las letras, identifique y rellene las palabras que faltan.</p>",
-                                timeShowSolution: 3, durationGame: idev.time || 240, numberTurns: 1,
-                                showSolution: true, showMinimize: false,
-                                itinerary: { showClue: false, clueGame: "", percentageClue: 40, showCodeAccess: false, codeAccess: "", messageCodeAccess: "" },
-                                wordsGame: wordsGame, isScorm: 0, textButtonScorm: "Guardar la puntuación", repeatActivity: true,
-                                weighted: 100, letters: spanishLetters, textAfter: "", caseSensitive: false, version: 2,
-                                modeBoard: false, evaluation: false, evaluationID: evalId, id: ideviceId, msgs: COMMON_GAME_MSGS
-                            };
-                            encryptedData = exeEncrypt(JSON.stringify(dataGame));
+                            // rubric.js decodifica DataGame con unescape()
+                            encodedPayload = jsEscape(JSON.stringify(mergedProps));
+                        } else if (idevType === 'progress-report' || idevType === 'relate') {
+                            // progress-report y relate leen DataGame como JSON plano sin desencriptar
+                            encodedPayload = JSON.stringify(mergedProps);
                         } else {
-                            encryptedData = exeEncrypt(JSON.stringify(mergedProps));
+                            // Todos los demás juegos Nodex desencriptan con $exe.decrypt() (UTF-16 XOR 146 + unescape)
+                            encodedPayload = exeEncrypt(JSON.stringify(mergedProps));
                         }
                         const cleanTag = p1.replace(/\s(data-id|id)="[^"]*"/g, '');
-                        return cleanTag + encryptedData + p3;
+                        return cleanTag + encodedPayload + p3;
                     });
                 }
             }
@@ -885,15 +1302,15 @@ export async function compileExeProject(projectInput, customOptions = {}) {
     <odePagStructure>
       <odePageId>${pageId}</odePageId>
       <odeBlockId>${blockId}</odeBlockId>
-      <blockName>${blockName}</blockName>
-      <iconName>${iconName}</iconName>
+      <blockName>${escapeXml(blockName)}</blockName>
+      <iconName>${escapeXml(iconName)}</iconName>
       <odePagStructureOrder>${componentOrder++}</odePagStructureOrder>
       <odePagStructureProperties>
         <odePagStructureProperty><key>visibility</key><value>${isVisible ? 'true' : 'false'}</value></odePagStructureProperty>
         <odePagStructureProperty><key>teacherOnly</key><value>${isTeacherOnly ? 'true' : 'false'}</value></odePagStructureProperty>
         <odePagStructureProperty><key>allowToggle</key><value>true</value></odePagStructureProperty>
         <odePagStructureProperty><key>minimized</key><value>false</value></odePagStructureProperty>
-        <odePagStructureProperty><key>cssClass</key><value>${idev.cssClass || ''}</value></odePagStructureProperty>
+        <odePagStructureProperty><key>cssClass</key><value>${escapeXml(idev.cssClass || '')}</value></odePagStructureProperty>
       </odePagStructureProperties>
       <odeComponents>
 ${snippet}
